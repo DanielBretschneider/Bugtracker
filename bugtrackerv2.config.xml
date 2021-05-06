@@ -1,0 +1,104 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+	<!-- 
+	DEBUG: Logging can here be activated / deactivated
+	-->
+	<debug>
+		<log enabled='false' />
+	</debug>
+	
+	<!--
+	TARGET: Folder where bugtracks will be sent
+	default value -> \\10.74.10.100\bugTracker
+	-->
+	<target path='\\10.74.10.100\bugTracker'> 
+	</target>
+
+	<!--
+	APPLICATION SECTION
+	-->
+	<applications>
+		<!--
+		<application name="SQL" type="SQL" connectionString="....." enable="true" standard="false" show ="false">
+			<query name ="SQLString" queryString="select 1"/>
+		</application>
+		-->
+
+		<!--
+		TEST ENTRY
+		-->
+		<application Name="TestProg" type="log" bevorExecute="c:\bla.exe">
+			<log location="client"
+                 path="\bla\"
+                 fileName="*"
+                 find="TODAY"/>
+		</application>
+
+		<!--
+		ImagePro 7
+		-->
+		<application name="IP7" type="log" executable ="c:/programm" enable="enable" standard="false" show="onExist">
+			<log location="client"
+				 path=""
+				 filename="*.log"
+				 find="NEW"/>
+		</application>
+
+		<!--
+		ImagePro 8
+		-->
+		<application name="IP8" type="log" executable ="c:/program" enable="true" standard="false" show="onExist">
+			<log location="client"
+				 path=""
+				 filename="*.log"
+				 find="NEW"/>
+		</application>
+
+		<!--
+		XR5 Manage
+		-->
+		<application name="XR5" type="log" executable ="c:/program"  enable="true" standard="false" show="onExist">
+			<log location="server"
+				 path="\\server\xr50\log\"
+				 filename="xrwordaddin.%clientname%_*.log.log"
+				 find="NEW"/>
+		</application>
+
+		<!--
+		XR Wordaddin
+		-->
+		<application name="XR-Wordplugin" type="log" executable ="c:/program" enable="true" standard="false" show="onExist">
+			<log location="server"
+				 path="\\server\xr50\log\"
+				 Name="xrwordaddin.%clientname%_*.log"
+				 find="NEW"/>
+
+			<log location="client"
+				 path="programdata/data/"
+				 filename="xrwordaddin.*.log"
+				 find="NEW"/>
+		</application>
+
+		<!--
+		XR5 Importer
+		-->
+		<application name="Importer" executable ="c:/program" type="log" enable="true" standard="false" show="true">
+			<log location="server"
+				 path="\\server\xr50\log\"
+				 filename="xrwordaddin.%clientname%_*.log"
+				 find="NEW" />
+		</application>
+
+		<!--
+		Speechmagic
+		-->
+		<application name="Speechmagic" executable ="c:/program" type="log" enable="true" standard="true" show="true">
+			<log location="client"
+				 path="%programmdata%/Data/"
+				 filename ="*.log"
+				 find="ALL"/>
+		</application>
+		
+	</applications>
+	
+</configuration>
