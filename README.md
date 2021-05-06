@@ -19,17 +19,6 @@ Der Bugtracker wurde in Visual Basic programmiert und über einen One-Click-Inst
 Die Problemkategorien wurde erstellt, damit ein wiederkehrendes Fehlverhalten nicht jedes Mal aufs Neue im darunterliegenden Textfeld, oder telefonisch, beschrieben bzw. erklärt werden muss und um den Rahmen bei der Fehlersuche einzugrenzen. Im Textfeld können Kommentare zur Problematik gemacht werden.
 In der Programmsektion kann die bzw. können die fehlerhaften Programme ausgewählt werden. Die Logdateien der Programme deren Checkbox aktiv ist werden gesammelt. 
 Mittels „Aufzeichnen und Beenden“ werden die Logdateien eingeholt, die Screenshots ausgeführt und alle Dateien samt Bugtracker-Logdatei im Netzwerkordner gespeichert. 
-Bisher definierte Problemkategorien im Bugtracker v1:
-*	Allgemeiner Fehler
-*	Syngo Via Bilder fehlen
-*	IP8 langsam
-*	Bilder fehlen
-*	Bilder Benennung falsch
-*	IP8 Hanging
-*	XR reagiert nicht
-*	Word Problem 
-*	TH langsam
-*	SMS-Problem
 
 
 ### Funktionen des neuen Bugtrackers
