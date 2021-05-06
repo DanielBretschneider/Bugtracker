@@ -1,4 +1,6 @@
+```bat
 Code wird zur Zeit im Master-Branch entwickelt.
+```
 
 # Bugtracker
 Der Bugtracker dient in erster Linie der raschen Fehlerdokumentation und erleichtert die Analyse und Identifikation bei Softwareproblematiken. Ausgeführt als Applikation mit 
