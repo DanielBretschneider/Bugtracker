@@ -7,3 +7,4 @@ C:\Users\Daniel Bretschneider\source\repos\Bugtracker Version 2\bin\Debug\bugtra
 C:\Users\Daniel Bretschneider\source\repos\Bugtracker Version 2\obj\Debug\bugtracker.exe
 C:\Users\Daniel Bretschneider\source\repos\Bugtracker Version 2\obj\Debug\bugtracker.pdb
 C:\Users\Daniel Bretschneider\source\repos\Bugtracker Version 2\obj\Debug\Bugtracker.Form1.resources
+C:\Users\Daniel Bretschneider\source\repos\Bugtracker Version 2\obj\Debug\Bugtracker Version 2.csprojAssemblyReference.cache

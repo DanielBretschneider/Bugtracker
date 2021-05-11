@@ -30,6 +30,10 @@ namespace Bugtracker
 
             // create tmp folder
             CreateTempFolder();
+
+            // start application lookup
+            // find installed applications
+
         }
 
 
