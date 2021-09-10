@@ -4,7 +4,7 @@
 	DEBUG: Logging can here be activated / deactivated
 	-->
 	<debug>
-		<log enabled='false' />
+		<log enabled="false" />
 	</debug>
 	
 	<!--

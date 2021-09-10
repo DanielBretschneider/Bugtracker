@@ -48,6 +48,8 @@ namespace Bugtracker
 
         /// <summary>
         /// CONFIG_FILE_PATH holds the path where the configuration xml file is stored
+        /// The 'x' on the end of filename can be changed into a combination of pc name and 
+        /// domain.
         /// </summary>
         public const string CONFIG_FILE_PATH = APPLICATION_DIRECTORY + "bugtracker_config_x.xml";
 

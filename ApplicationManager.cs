@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Bugtracker_Version_2
+namespace Bugtracker
 {
     /// <summary>
     /// This class is resonsible for the application 
@@ -31,7 +31,7 @@ namespace Bugtracker_Version_2
         /// <returns></returns>
         private bool IsApplicationInstalled(string path)
         {
-
+            
             // dummy return
             return false;
         }
@@ -40,7 +40,7 @@ namespace Bugtracker_Version_2
 
 
     /// <summary>
-    /// This class cotains all the information 
+    /// This class contains all the information 
     /// needed for one application.
     /// 
     /// RELEVANT INFORMATION ON OBJECT CREATION
@@ -221,18 +221,13 @@ namespace Bugtracker_Version_2
 
         /// <summary>
         /// Can only be executed if hasMultipleLogfiles is set to false!
+        /// Should only be used if application has one logfile
         /// </summary>
         /// <returns></returns>
         public string GetLogFileLocation()
-        {
-            // check if multiple log files are setted
-            if (hasMultipleLogFiles == true)
-            {
-                return "";
-            }
-
+        { 
             // since only one object is store return first element
-            return this.LogFileLocations.First();
+            return (hasMultipleLogFiles == false) ? this.LogFileLocations.First() : "";
         }
 
         #endregion

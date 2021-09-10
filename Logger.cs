@@ -40,6 +40,22 @@ namespace Bugtracker
 
 
         /// <summary>
+        /// return content of bugtrackerv2.config.xml
+        /// 
+        /// TODO: Change static path
+        /// </summary>
+        /// <returns></returns>
+        public string GetConfigFileContent()
+        {
+            // get content of config file
+            string fileContent = File.ReadAllText(@"C:\Users\Daniel Bretschneider\source\repos\Bugtracker Version 2\bugtrackerv2.config.xml");
+
+            // return content as string
+            return fileContent;
+        }
+
+
+        /// <summary>
         /// This method checks if a config file already exists in local
         /// if so, nothing will be done. If not, then the default configuration
         /// will be copied to specified location.
@@ -53,7 +69,7 @@ namespace Bugtracker
                 using (StreamWriter sw = File.CreateText(Globals.CONFIG_FILE_PATH))
                 {
                     // write xml content to file
-                    sw.WriteLine(Globals.CONFIG_FILE_CONTENT);
+                    sw.WriteLine(GetConfigFileContent());
                 }
             }
         }
@@ -73,15 +89,13 @@ namespace Bugtracker
             {
                 while (reader.Read())
                 {
-                    if (reader.NodeType == XmlNodeType.Element)
+                    Console.WriteLine(reader.Value);
+                    if (reader.IsStartElement())
                     {
-                        if (reader.LocalName == "log")
+                        if (reader.Name.Equals("log"))
                         {
-                            // get value of target
-                            string value = reader.GetAttribute("enabled");
-
-                            // if visible == "true" getHostname
-                            if (value.Equals("true"))
+                            Console.WriteLine(reader.Name);
+                            if (reader.GetAttribute("enabled").Equals("true"))
                             {
                                 log = true;
                             }
@@ -89,7 +103,6 @@ namespace Bugtracker
                     }
                 }
             }
-
             return log;
         }
 
