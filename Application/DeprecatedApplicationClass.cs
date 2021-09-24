@@ -1,58 +1,24 @@
-﻿using System;
+﻿
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Bugtracker
 {
-    /// <summary>
-    /// This class is resonsible for the application 
-    /// handling. 
-    /// </summary>
-    class ApplicationManager
+    class DeprecatedApplicationClass
     {
-
         /// <summary>
-        /// Default Constructor
+        /// This class contains all the information 
+        /// needed for one application.
+        /// 
+        /// RELEVANT INFORMATION ON OBJECT CREATION
+        /// if application has multiple logfiles, create object like f.e.
+        ///     Application application = new Application("appName", "appPath", "exefile.exe");
+        ///     and add the log file afterwards via addLogFileLocation("/.../...");
+        ///     
+        /// if application has a single logfile then just write it into the constructor call
+        ///     Application application = new Application("appName", "appPath", "exefile.exe", "logfilelocation.log");
         /// </summary>
-        public ApplicationManager()
-        {
-
-        }
-
-
-        /// <summary>
-        /// This method trys to find a given file 
-        /// (f.e. notepad.exe), if found than application
-        /// is seen as installed -> return true
-        /// </summary>
-        /// <param name="path"></param>
-        /// <returns></returns>
-        private bool IsApplicationInstalled(string path)
-        {
-            
-            // dummy return
-            return false;
-        }
-
-    }
-
-
-    /// <summary>
-    /// This class contains all the information 
-    /// needed for one application.
-    /// 
-    /// RELEVANT INFORMATION ON OBJECT CREATION
-    /// if application has multiple logfiles, create object like f.e.
-    ///     Application application = new Application("appName", "appPath", "exefile.exe");
-    ///     and add the log file afterwards via addLogFileLocation("/.../...");
-    ///     
-    /// if application has a single logfile then just write it into the constructor call
-    ///     Application application = new Application("appName", "appPath", "exefile.exe", "logfilelocation.log");
-    /// </summary>
-    class Application
-    {
+        /// 
 
         #region globals
         // Here are the class attributes stored
@@ -95,7 +61,7 @@ namespace Bugtracker
         /// <summary>
         /// Default Constructor with Parameters
         /// </summary>
-        public Application(string applicationName, string applicationPath, string executableFilePath)
+        public DeprecatedApplicationClass(string applicationName, string applicationPath, string executableFilePath)
         {
             this.applicationName = applicationName;
             this.applicationPath = applicationPath;
@@ -106,7 +72,7 @@ namespace Bugtracker
         /// <summary>
         /// Default Constructor with Parameters used for applicatio with only one logfile
         /// </summary>
-        public Application(string applicationName, string applicationPath, string executableFilePath, string logFileLocation)
+        public DeprecatedApplicationClass(string applicationName, string applicationPath, string executableFilePath, string logFileLocation)
         {
             this.applicationName = applicationName;
             this.applicationPath = applicationPath;
@@ -225,12 +191,11 @@ namespace Bugtracker
         /// </summary>
         /// <returns></returns>
         public string GetLogFileLocation()
-        { 
+        {
             // since only one object is store return first element
             return (hasMultipleLogFiles == false) ? this.LogFileLocations.First() : "";
         }
 
         #endregion
-
     }
 }

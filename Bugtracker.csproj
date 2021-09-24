@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{2BB1DD28-2E71-4A5A-8ACD-96EAB5EF84B0}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <RootNamespace>Bugtracker_Version_2</RootNamespace>
     <AssemblyName>bugtracker</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
@@ -50,25 +50,28 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ApplicationManager.cs" />
-    <Compile Include="ConfigHandler.cs" />
-    <Compile Include="ConsoleHandler.cs" />
-    <Compile Include="Form1.cs">
+    <Compile Include="Application\Application.cs" />
+    <Compile Include="Application\ApplicationManager.cs" />
+    <Compile Include="Application\DeprecatedApplicationClass.cs" />
+    <Compile Include="Connsole\ApplicationCommand.cs" />
+    <Compile Include="Connsole\ParameterValidationObject.cs" />
+    <Compile Include="Connsole\ICommand.cs" />
+    <Compile Include="GUI\Form1.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form1.Designer.cs">
+    <Compile Include="GUI\Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="Globals.cs" />
-    <Compile Include="LogfileFetcher.cs" />
-    <Compile Include="Logger.cs" />
-    <Compile Include="PCInfo.cs" />
+    <Compile Include="Log\Log.cs" />
+    <Compile Include="Globals and Information\ConfigHandler.cs" />
+    <Compile Include="Connsole\ConsoleHandler.cs" />
+    <Compile Include="Globals and Information\Globals.cs" />
+    <Compile Include="Log\LogfileFetcher.cs" />
+    <Compile Include="Log\Logger.cs" />
+    <Compile Include="Globals and Information\PCInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ScreenCaptureHandler.cs" />
-    <EmbeddedResource Include="Form1.resx">
-      <DependentUpon>Form1.cs</DependentUpon>
-    </EmbeddedResource>
+    <Compile Include="ScreenCapture\ScreenCaptureHandler.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -78,7 +81,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <None Include="packages.config" />
+    <None Include="Configuration\packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -90,10 +93,8 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="Configuration\App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="bugtrackerv2.config.xml" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -8,3 +8,13 @@ C:\Users\Daniel Bretschneider\source\repos\Bugtracker Version 2\obj\Debug\Bugtra
 C:\Users\Daniel Bretschneider\source\repos\Bugtracker Version 2\obj\Debug\Bugtracker Version 2.csproj.CoreCompileInputs.cache
 C:\Users\Daniel Bretschneider\source\repos\Bugtracker Version 2\obj\Debug\bugtracker.exe
 C:\Users\Daniel Bretschneider\source\repos\Bugtracker Version 2\obj\Debug\bugtracker.pdb
+C:\Users\Dominik Beyerle\Documents\Bugtracker\bin\Debug\bugtracker.exe.config
+C:\Users\Dominik Beyerle\Documents\Bugtracker\bin\Debug\bugtracker.exe
+C:\Users\Dominik Beyerle\Documents\Bugtracker\bin\Debug\bugtracker.pdb
+C:\Users\Dominik Beyerle\Documents\Bugtracker\obj\Debug\Bugtracker Version 2.csproj.AssemblyReference.cache
+C:\Users\Dominik Beyerle\Documents\Bugtracker\obj\Debug\Bugtracker.Form1.resources
+C:\Users\Dominik Beyerle\Documents\Bugtracker\obj\Debug\Bugtracker_Version_2.Properties.Resources.resources
+C:\Users\Dominik Beyerle\Documents\Bugtracker\obj\Debug\Bugtracker Version 2.csproj.GenerateResource.cache
+C:\Users\Dominik Beyerle\Documents\Bugtracker\obj\Debug\Bugtracker Version 2.csproj.CoreCompileInputs.cache
+C:\Users\Dominik Beyerle\Documents\Bugtracker\obj\Debug\bugtracker.exe
+C:\Users\Dominik Beyerle\Documents\Bugtracker\obj\Debug\bugtracker.pdb

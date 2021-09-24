@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Bugtracker_Version_2.GUI;
 
 namespace Bugtracker
 {
@@ -105,6 +106,9 @@ namespace Bugtracker
         [STAThread]
         static void Main(String[] args)
         {
+            //sends all unhandled exception to console handler unhandled exception trapper
+            System.AppDomain.CurrentDomain.UnhandledException += ConsoleHandler.UnhandledExceptionTrapper;
+
             // set up basic application directory 
             // and initialize logging
             SetupApplication();

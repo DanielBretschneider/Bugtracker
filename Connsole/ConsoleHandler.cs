@@ -94,6 +94,11 @@ namespace Bugtracker
         [return: MarshalAs(UnmanagedType.Bool)]
         static extern bool FreeConsole();
 
+        internal static void UnhandledExceptionTrapper(object sender, UnhandledExceptionEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion  // Private PInvokes
     }
     
@@ -132,7 +137,7 @@ namespace Bugtracker
         /// Prints text to the console
         /// </summary>
         /// <param name="msg"></param>
-        public void Print(String msg)
+        public static void Print(String msg)
         {
             System.Console.Write(msg);
         }
@@ -419,6 +424,25 @@ namespace Bugtracker
                 if (cmd.Equals("exit"))
                     return;
             }
+        }
+
+        /// <summary>
+        /// Handles all exceptions and errors in program
+        /// Output all noteable information to console
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        static void UnhandledExceptionTrapper(object sender, UnhandledExceptionEventArgs e)
+        {
+            //switch(e.ExceptionObject.GetType())
+            //{
+            //    case System.NotImplementedException:
+            //}
+            Exception ex = (Exception)e.ExceptionObject;
+                
+
+            Print(e.ExceptionObject.ToString());
+            Print("Press Enter to continue");
         }
 
     }

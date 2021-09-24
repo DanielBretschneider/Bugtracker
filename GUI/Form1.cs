@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Bugtracker
+namespace Bugtracker_Version_2.GUI
 {
     public partial class Form1 : Form
     {
