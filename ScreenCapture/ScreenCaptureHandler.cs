@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Bugtracker.GlobalsInformation;
 
 namespace Bugtracker
 {
@@ -13,7 +14,7 @@ namespace Bugtracker
     /// This class handles everthing related to 
     /// taking screenshots
     /// 
-    /// TODO: test with multiple screens
+    /// TODO: Test with multiple screens
     /// </summary>
     class ScreenCaptureHandler
     {

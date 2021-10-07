@@ -50,12 +50,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Application\Application.cs" />
-    <Compile Include="Application\ApplicationManager.cs" />
-    <Compile Include="Application\DeprecatedApplicationClass.cs" />
-    <Compile Include="Connsole\ApplicationCommand.cs" />
-    <Compile Include="Connsole\ParameterValidationObject.cs" />
-    <Compile Include="Connsole\ICommand.cs" />
+    <Compile Include="Console\Commands\HelpMessage.cs" />
+    <Compile Include="InternalApplication\Application.cs" />
+    <Compile Include="InternalApplication\ApplicationManager.cs" />
+    <Compile Include="Exceptions\CommandActionDoesNotExistEception.cs" />
+    <Compile Include="Console\Commands\ModifyApplication.cs" />
+    <Compile Include="Exceptions\ApplicationNotFoundException.cs" />
+    <Compile Include="InternalApplication\DeprecatedApplicationClass.cs" />
+    <Compile Include="Console\Commands\ApplicationManagerCommand.cs" />
+    <Compile Include="Console\Commands\BaseCommand.cs" />
+    <Compile Include="Exceptions\ParameterNotValidException.cs" />
+    <Compile Include="Console\Commands\ApplicationCommand.cs" />
+    <Compile Include="Console\Commands\ICommand.cs" />
+    <Compile Include="Exceptions\ConfigFileParseException.cs" />
+    <Compile Include="Globals and Information\RunningConfiguration.cs" />
+    <Compile Include="Globals and Information\Singleton.cs" />
     <Compile Include="GUI\Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -64,7 +73,7 @@
     </Compile>
     <Compile Include="Log\Log.cs" />
     <Compile Include="Globals and Information\ConfigHandler.cs" />
-    <Compile Include="Connsole\ConsoleHandler.cs" />
+    <Compile Include="Console\ConsoleHandler.cs" />
     <Compile Include="Globals and Information\Globals.cs" />
     <Compile Include="Log\LogfileFetcher.cs" />
     <Compile Include="Log\Logger.cs" />

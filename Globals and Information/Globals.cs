@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Bugtracker
+namespace Bugtracker.GlobalsInformation
 {
     /// <summary>
     /// This Class stores all constants and global variables needed. The variables

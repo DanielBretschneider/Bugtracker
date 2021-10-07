@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Bugtracker_Version_2.GUI;
+using Bugtracker.Console;
+using Bugtracker.GlobalsInformation;
+using Bugtracker.GUI;
 
 namespace Bugtracker
 {
@@ -18,7 +20,7 @@ namespace Bugtracker
         /// <summary>
         /// Logger 
         /// </summary>
-        private static Logger logger = new Logger();
+        private static Logger logger = Logger.GetInstance();
 
 
         /// <summary>
@@ -115,19 +117,42 @@ namespace Bugtracker
 
             // decide which Bugtracker version should be
             // executed.
-            if (args.Length == 0)
-            {
-                // As no command line arguments have been
-                // passed Bugtracker will be executed as 
-                // GUI Application
-                StartGraphicalInterfaceApplication();
-            } 
-            else
-            {
-                // Command line Arguments have been entered
-                // so the application will be executed on terminal
-                StartCommandLineApplication();
-            }
+
+            StartCommandLineApplication();
+
+            //try
+            //{
+            //    StartCommandLineApplication();
+            //}
+            //catch (Exception e)
+            //{
+            //    if(e.GetType() == typeof(System.ArgumentOutOfRangeException))
+            //    {
+            //        BugtrackConsole.Print("Too few Arguments, write <command> " +
+            //           "help for a list of all arguments");
+            //    }
+            //    else
+            //    {
+            //        BugtrackConsole.Print(e.ToString());
+            //        BugtrackConsole.Print("Press Enter to continue");
+            //    }
+
+            //}
+
+
+            //if (args.Length == 0)
+            //{
+            //    // As no command line arguments have been
+            //    // passed Bugtracker will be executed as 
+            //    // GUI Application
+            //    StartGraphicalInterfaceApplication();
+            //} 
+            //else
+            //{
+            //    // Command line Arguments have been entered
+            //    // so the application will be executed on terminal
+            //    StartCommandLineApplication();
+            //}
         }
     }
 }

@@ -1,11 +1,6 @@
-﻿using Bugtracker;
-using Bugtracker.Connsole;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Bugtracker.InternalApplication;
 
 namespace Bugtracker.Console
 {
@@ -32,12 +27,12 @@ namespace Bugtracker.Console
         {
             switch(_applicationAction)
             {
-                case ApplicationAction.ChangeName:
+                case ApplicationAction.name:
                     if (tempParameter.Length != 0)
                         return true;
                     else
                         throw new ParameterNotValidExeption(tempParameter, tempParameter, appAction.ToString());
-                case ApplicationAction.ChangeExe:
+                case ApplicationAction.exe:
                     if (tempParameter.Length != 0)
                     {
                         //check if path is realy an existing path on this machine -> throw exception if not
@@ -47,50 +42,43 @@ namespace Bugtracker.Console
 
                     else
                         throw new NotImplementedException();
-                        return false;
-                    break;
-                case ApplicationAction.ChangeShowSpec:
-                        return false;
+                case ApplicationAction.showspec:
+                        
+                    return false;
 
-                    break;
-                case ApplicationAction.ChangeStandard:
+                case ApplicationAction.standard:
 
                         return false;
-                    break;
 
                 default:
                         return false;
-                    break;
             }
         }
 
-        public void ExecuteAction()
+        public string ExecuteAction()
         {
             switch(_applicationAction)
             {
-                case ApplicationAction.ChangeName:
+                case ApplicationAction.name:
 
                     throw new NotImplementedException();
 
                     break;
-                case ApplicationAction.ChangeExe:
+                case ApplicationAction.exe:
 
                     throw new NotImplementedException();
 
                     break;
-                case ApplicationAction.ChangeShowSpec:
+                case ApplicationAction.showspec:
 
                     throw new NotImplementedException();
 
                     break;
-                case ApplicationAction.ChangeStandard:
+                case ApplicationAction.standard:
 
                     throw new NotImplementedException();
-
-                    break;
-
                 default:
-
+                    throw new CommandActionDoesNotExistEception();
                     break;
                 
             }

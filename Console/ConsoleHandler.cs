@@ -7,8 +7,10 @@ using System.Runtime.InteropServices;
 using System.Diagnostics.CodeAnalysis;
 using System.Security;
 using System.IO;
+using Bugtracker.InternalApplication;
+using Bugtracker.GlobalsInformation;
 
-namespace Bugtracker
+namespace Bugtracker.Console
 {
 
     /// <summary>
@@ -93,10 +95,25 @@ namespace Bugtracker
         [DllImport("kernel32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         static extern bool FreeConsole();
-
+        /// <summary>
+        /// Handles all exceptions and errors in program
+        /// Output all noteable information to console
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         internal static void UnhandledExceptionTrapper(object sender, UnhandledExceptionEventArgs e)
         {
-            throw new NotImplementedException();
+            //TODO: Implement out of bounds for too few arguments, ex: applications add <arg1>
+            Exception ex = (Exception)e.ExceptionObject;
+
+            //if(ex.GetType() == typeof(System.ArgumentOutOfRangeException))
+            //{
+            //    BugtrackConsole.Print("Too few Arguments, write <command> help for a list of all arguments");
+
+            //}
+
+            //BugtrackConsole.Print(ex.ToString());
+            //BugtrackConsole.Print("Press Enter to continue");
         }
 
         #endregion  // Private PInvokes
@@ -338,6 +355,29 @@ namespace Bugtracker
             System.Console.Clear();
         }
 
+        private void ApplicationCom(List<string> arguments)
+        {
+            //first argument Application,
+            //getApplicationbyName -> Application Manager
+            //getAppActionPerString -> Application static
+            //temp parameter get converted and 
+
+            ApplicationCommand appComand = new ApplicationCommand
+                (ApplicationManager.GetInstance().GetApplicationByName(arguments[0]), 
+                Application.GetAppActionPerString(arguments[1]), 
+                arguments[2]);
+
+            appComand.ExecuteAction();
+        }
+        private void ApplicationsCom(List<string> arguments)
+        {
+            //TODO: Handle out-of-bound-exception in main try catch
+            ApplicationManagerCommand appManCommand = new ApplicationManagerCommand(
+                ApplicationManager.GetInstance(),
+                arguments);
+
+            BugtrackConsole.Print(appManCommand.ExecuteAction());
+        }
 
         /// <summary>
         /// Process entered command 
@@ -351,6 +391,9 @@ namespace Bugtracker
             // arguments are f.e. -f, -s and so on
             string argument = "";
 
+            //using arguments list for multiple arguments
+            List<string> arguments = new List<string>();
+
             // if fullCommand contains space " " 
             // then split command. This is needed for 
             // commands like capture -s etc.
@@ -361,11 +404,15 @@ namespace Bugtracker
                 // change command and arguement to given command
                 command = splittedCommand[0];
                 argument = splittedCommand[1];
+
+                //setting arguments list from split[1] to end of array
+                arguments = new List<string>(splittedCommand);
+                arguments.RemoveAt(0);
             }
-                
+
 
             // Switch evaluates one command each time
-            switch(command)
+            switch (command)
             {
                 // Print help message
                 case "help":
@@ -392,6 +439,13 @@ namespace Bugtracker
                     ClearScreen();
                     break;
 
+                case "application":
+                    ApplicationCom(arguments);
+                    break;
+                case "applications":
+                    ApplicationsCom(arguments);
+                    break;
+
                 // no input should be ignored and not be interpreted as command
                 case "":
                     break;
@@ -404,6 +458,8 @@ namespace Bugtracker
             }
         }
 
+
+
         /// <summary>
         /// Here is a while(true) loop 
         /// that lets you enter commands util 
@@ -412,10 +468,10 @@ namespace Bugtracker
         public void StartBugtrackerConsoleLogic()
         {
             // exit will stop the while true loop
-            while(true)
+            while (true)
             {
                 // fetch new command
-                string cmd  = GetCommand();
+                string cmd = GetCommand();
 
                 // process command
                 ProcessCommand(cmd);
@@ -425,26 +481,6 @@ namespace Bugtracker
                     return;
             }
         }
-
-        /// <summary>
-        /// Handles all exceptions and errors in program
-        /// Output all noteable information to console
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        static void UnhandledExceptionTrapper(object sender, UnhandledExceptionEventArgs e)
-        {
-            //switch(e.ExceptionObject.GetType())
-            //{
-            //    case System.NotImplementedException:
-            //}
-            Exception ex = (Exception)e.ExceptionObject;
-                
-
-            Print(e.ExceptionObject.ToString());
-            Print("Press Enter to continue");
-        }
-
     }
 }
 

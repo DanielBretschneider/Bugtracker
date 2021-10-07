@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Bugtracker
+namespace Bugtracker.InternalApplication
 {
 	/// <summary>
 	/// Enumarator specifieing the Actions you can take with
@@ -8,16 +8,19 @@ namespace Bugtracker
 	/// </summary>
 	public enum ApplicationAction
     {
-		ChangeName,
-		ChangeExe,
-		ChangeStandard,
-		ChangeShowSpec
+		name,
+		exe,
+		standard,
+		showspec
     }
-	public class Application
+
+    class Application
 	{
 		public enum ShowAppSpecifier
 		{
-			onExist
+			onExist,
+			show,
+			hide
 		}
 
 
@@ -55,11 +58,20 @@ namespace Bugtracker
 
         public override string ToString()
         {
-			return "Name: " + this.Name + Environment.NewLine +
-				   "Executable: " + this.ExecutableLocation + Environment.NewLine +
-				   "Enabled: " + this.Enabled + Environment.NewLine +
-				   "Standard: " + this.IsStandard + Environment.NewLine +
-				   "Show: " + this.ShowSpecifier + Environment.NewLine;
+			return "Name: " + this.Name + "\t \t" +
+				   "Executable: " + this.ExecutableLocation + "\t" +
+				   "Enabled: " + this.Enabled + "\t" +
+				   "Standard: " + this.IsStandard + "\t" +
+				   "Show: " + this.ShowSpecifier;
         }
+
+        internal static ApplicationAction GetAppActionPerString(string actionParameter)
+        {
+			ApplicationAction appAction;
+			if (Enum.TryParse(actionParameter, out appAction))
+				return appAction;
+			else
+				throw new CommandActionDoesNotExistEception("", "application", actionParameter);
+		}
     }
 }

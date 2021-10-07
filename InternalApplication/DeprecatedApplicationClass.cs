@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Bugtracker
+namespace Bugtracker.InternalApplication
 {
     class DeprecatedApplicationClass
     {

@@ -1,5 +1,5 @@
 ﻿
-namespace Bugtracker_Version_2.GUI
+namespace Bugtracker.GUI
 {
     partial class Form1
     {

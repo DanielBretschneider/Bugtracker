@@ -8,7 +8,7 @@ using System.Net.Sockets;
 using System.Net.NetworkInformation;
 using System.Management;
 
-namespace Bugtracker
+namespace Bugtracker.GlobalsInformation
 {
     class PCInfo
     {
