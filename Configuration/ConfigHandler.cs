@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
+using Bugtracker.Exceptions;
 using Bugtracker.InternalApplication;
+using Bugtracker.Logging;
+using static Bugtracker.Logging.Log;
 
 namespace Bugtracker.GlobalsInformation
 {
@@ -62,6 +63,8 @@ namespace Bugtracker.GlobalsInformation
             // start reading autostart.config.xml
             using (XmlReader reader = XmlReader.Create(Globals.CONFIG_FILE_PATH))
             {
+                Application currentApplication = null;
+
                 IXmlLineInfo lineInfo = (IXmlLineInfo) reader;
                 int line = lineInfo.LineNumber;
 
@@ -73,18 +76,36 @@ namespace Bugtracker.GlobalsInformation
                         {
                             Application appToAdd = new Application();
 
-                            System.Diagnostics.Debug.WriteLine("application name: " + reader.GetAttribute("name"));
-                            System.Diagnostics.Debug.WriteLine("application exe: " + reader.GetAttribute("executable"));
-                            System.Diagnostics.Debug.WriteLine("application enable: " + reader.GetAttribute("enable"));
-                            System.Diagnostics.Debug.WriteLine("application standard: " + reader.GetAttribute("standard"));
-
                             appToAdd.Name = reader.GetAttribute("name");
                             appToAdd.ExecutableLocation = reader.GetAttribute("executable");
                             appToAdd.Enabled = Convert.ToBoolean(reader.GetAttribute("enable"));
                             appToAdd.IsStandard = Convert.ToBoolean(reader.GetAttribute("standard"));
                             appToAdd.ShowSpecifier = ConvertStringToShowSpecifier(reader.GetAttribute("show"), appToAdd.Name, lineInfo.LineNumber, lineInfo.LinePosition);
 
+                            currentApplication = appToAdd;
+
                             applications.Add(appToAdd);
+                        }
+
+
+                        if (reader.Name.Equals("log"))
+                        {
+                            Log logToAppend = new Log();
+                            LogLocationType type = LogLocationType.client;
+
+                            if (Enum.TryParse<LogLocationType>(reader.GetAttribute("location"), out type)) ;
+                                logToAppend.LocationType = type;
+
+                            logToAppend.Path = reader.GetAttribute("path");
+                            logToAppend.Filename = reader.GetAttribute("filename");
+
+                            LogFindSpecifier findSpec = LogFindSpecifier.NEW;
+
+                            if (Enum.TryParse<LogFindSpecifier>(reader.GetAttribute("find"), out findSpec)) ;
+                                logToAppend.Find = findSpec;
+
+                            if(currentApplication != null)
+                                currentApplication.LogFiles.Add(logToAppend);
                         }
                     }
                 }
@@ -112,7 +133,7 @@ namespace Bugtracker.GlobalsInformation
                                     return LoggingSeverity.Warning;
 
                                 case "3":
-                                    return LoggingSeverity.Notification;
+                                    return LoggingSeverity.Info;
                                 default:
                                     //TODO: Write Exception for error in logging severity.
                                     System.Diagnostics.Debug.Write("Severity in config not valid.");
@@ -166,6 +187,8 @@ namespace Bugtracker.GlobalsInformation
                 return Application.ShowAppSpecifier.onExist;
             else if (content.Contains("show"))
                 return Application.ShowAppSpecifier.show;
+            else if (content.Contains("hide"))
+                return Application.ShowAppSpecifier.hide;
             else
             {
                 string showSpecifierList = "";

@@ -1,12 +1,9 @@
 ﻿using System;
 using System.IO;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using Bugtracker.Console;
 using Bugtracker.GlobalsInformation;
 using Bugtracker.GUI;
+using Bugtracker.Logging;
 
 namespace Bugtracker
 {
@@ -17,11 +14,6 @@ namespace Bugtracker
     /// </summary>
     static class Program
     {
-        /// <summary>
-        /// Logger 
-        /// </summary>
-        private static Logger logger = Logger.GetInstance();
-
 
         /// <summary>
         /// 
@@ -29,7 +21,7 @@ namespace Bugtracker
         private static void SetupApplication()
         {
             // log start of application
-            logger.log("Bugtracker version 2 was started", 2);
+            Logger.Log("Bugtracker version 2 was started", (LoggingSeverity)2);
 
             // create tmp folder
             CreateTempFolder();
@@ -51,10 +43,10 @@ namespace Bugtracker
             // check if tmp path exits
             if (!File.Exists(Globals.TMP_DIRECTORY))
             {
-                logger.log("Creating tmp directory at '" + Globals.TMP_DIRECTORY + "'", 2);
+                Logger.Log("Creating tmp directory at '" + Globals.TMP_DIRECTORY + "'", (LoggingSeverity)2);
                 DirectoryInfo tmpfolder = new DirectoryInfo(Globals.TMP_DIRECTORY);
                 tmpfolder.Create();
-                logger.log("Tmp folder created", 2);
+                Logger.Log("Tmp folder created", (LoggingSeverity)2);
             }
         }
 
@@ -86,16 +78,16 @@ namespace Bugtracker
         /// 
         /// For more info look into ConsoleHandler.cs
         /// </summary>
-        static void StartCommandLineApplication()
+        static void StartCommandLineApplication(string[] args)
         {
             // create console window
             ConsoleHandler.Create();
 
             // create new bugtrackerConsole object
-            BugtrackConsole console = new BugtrackConsole();
+            //BugtrackConsole console = new BugtrackConsole();
 
             // start console version of bugtracker
-            console.StartBugtrackerConsoleLogic();
+            BugtrackConsole.StartBugtrackerConsoleLogic(args);
 
             // close console session
             ConsoleHandler.Destroy();
@@ -108,6 +100,9 @@ namespace Bugtracker
         [STAThread]
         static void Main(String[] args)
         {
+            //Initialize Running Configuration Instance, before everything else
+            RunningConfiguration runningConfiguration = RunningConfiguration.GetInstance();
+
             //sends all unhandled exception to console handler unhandled exception trapper
             System.AppDomain.CurrentDomain.UnhandledException += ConsoleHandler.UnhandledExceptionTrapper;
 
@@ -118,41 +113,16 @@ namespace Bugtracker
             // decide which Bugtracker version should be
             // executed.
 
-            StartCommandLineApplication();
-
-            //try
-            //{
-            //    StartCommandLineApplication();
-            //}
-            //catch (Exception e)
-            //{
-            //    if(e.GetType() == typeof(System.ArgumentOutOfRangeException))
-            //    {
-            //        BugtrackConsole.Print("Too few Arguments, write <command> " +
-            //           "help for a list of all arguments");
-            //    }
-            //    else
-            //    {
-            //        BugtrackConsole.Print(e.ToString());
-            //        BugtrackConsole.Print("Press Enter to continue");
-            //    }
-
-            //}
-
-
-            //if (args.Length == 0)
-            //{
-            //    // As no command line arguments have been
-            //    // passed Bugtracker will be executed as 
-            //    // GUI Application
-            //    StartGraphicalInterfaceApplication();
-            //} 
-            //else
-            //{
-            //    // Command line Arguments have been entered
-            //    // so the application will be executed on terminal
-            //    StartCommandLineApplication();
-            //}
+            if(args.Length > 0  && args[0].Contains("gui"))
+                //    // As the gui command line argument has been
+                //    // passed Bugtracker will be executed as 
+                //    // GUI Application
+                StartGraphicalInterfaceApplication();
+            else
+                //    // Command line Arguments have been entered
+                //    // so the application will be executed on terminal
+                //    StartCommandLineApplication();
+                StartCommandLineApplication(args);
         }
     }
 }

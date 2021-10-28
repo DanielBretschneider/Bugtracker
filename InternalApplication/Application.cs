@@ -1,19 +1,8 @@
-﻿using System;
+﻿using Bugtracker.Logging;
+using System.Collections.Generic;
 
 namespace Bugtracker.InternalApplication
 {
-	/// <summary>
-	/// Enumarator specifieing the Actions you can take with
-	/// an Application Object in the command line
-	/// </summary>
-	public enum ApplicationAction
-    {
-		name,
-		exe,
-		standard,
-		showspec
-    }
-
     class Application
 	{
 		public enum ShowAppSpecifier
@@ -49,11 +38,17 @@ namespace Bugtracker.InternalApplication
 		/// Specifier if show "onExist" -> show Application in when installed on PC
 		/// </summary>
 		public ShowAppSpecifier ShowSpecifier { get; set; }
-		#endregion
 
-		public Application()
+		/// <summary>
+		/// 
+		/// </summary>
+        public List<Log> LogFiles { get; set; }
+
+        #endregion
+
+        public Application()
 		{
-
+			LogFiles = new List<Log>();
 		}
 
         public override string ToString()
@@ -64,14 +59,5 @@ namespace Bugtracker.InternalApplication
 				   "Standard: " + this.IsStandard + "\t" +
 				   "Show: " + this.ShowSpecifier;
         }
-
-        internal static ApplicationAction GetAppActionPerString(string actionParameter)
-        {
-			ApplicationAction appAction;
-			if (Enum.TryParse(actionParameter, out appAction))
-				return appAction;
-			else
-				throw new CommandActionDoesNotExistEception("", "application", actionParameter);
-		}
     }
 }

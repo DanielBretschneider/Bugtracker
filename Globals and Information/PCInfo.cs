@@ -1,29 +1,22 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Net;
 using System.Net.Sockets;
 using System.Net.NetworkInformation;
 using System.Management;
+using Bugtracker.Logging;
 
 namespace Bugtracker.GlobalsInformation
 {
     class PCInfo
-    {
-        /// <summary>
-        /// New logger
-        /// </summary>
-        Logger logger = new Logger();
-
-
+    { 
         /// <summary>
         /// constructor
         /// </summary>
         public PCInfo()
         {
-            logger.log("New PCinfo object was created.", 2);
+            Logger.Log("New PCinfo object was created.", (LoggingSeverity)2);
         }
 
 
@@ -33,7 +26,7 @@ namespace Bugtracker.GlobalsInformation
         /// <returns></returns>
         public string GetHostname()
         {
-            logger.log("GetHostname() executed", 2);
+            Logger.Log("GetHostname() executed", (LoggingSeverity)2);
             return Dns.GetHostName();
         }
 
@@ -43,7 +36,7 @@ namespace Bugtracker.GlobalsInformation
         /// <returns></returns>
         public string GetDomainName()
         {
-            logger.log("GetDomainName() executed", 2);
+            Logger.Log("GetDomainName() executed", (LoggingSeverity)2);
             return System.Environment.UserDomainName;
         }
 
@@ -53,7 +46,7 @@ namespace Bugtracker.GlobalsInformation
         /// <returns></returns>
         public string GetIPAddress()
         {
-            logger.log("GetIPAddress() executed", 2);
+            Logger.Log("GetIPAddress() executed", (LoggingSeverity)2);
             // host
             var host = Dns.GetHostEntry(Dns.GetHostName());
             
@@ -159,7 +152,7 @@ namespace Bugtracker.GlobalsInformation
             }
             catch (Exception e)
             {
-                logger.log(e.Message, 0);
+                Logger.Log(e.Message, 0);
             }
 
             return info.ToString();

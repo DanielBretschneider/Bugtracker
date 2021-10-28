@@ -1,0 +1,13 @@
+{
+  "profiles": {
+    "Bugracker GUI": {
+      "commandName": "Executable",
+      "executablePath": "C:\\Users\\Dominik Beyerle\\Documents\\Bugtracker\\bin\\Debug\\net5.0-windows\\Bugtracker.exe",
+      "commandLineArgs": "gui"
+    },
+    "Bugtracker Console": {
+      "commandName": "Executable",
+      "executablePath": "C:\\Users\\Dominik Beyerle\\Documents\\Bugtracker\\bin\\Debug\\net5.0-windows\\Bugtracker.exe"
+    }
+  }
+}

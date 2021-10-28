@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace Bugtracker
+namespace Bugtracker.Exceptions
 {
     [Serializable]
     internal class ConfigFileParseException : Exception
