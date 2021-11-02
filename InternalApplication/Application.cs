@@ -1,5 +1,6 @@
 ﻿using Bugtracker.Logging;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Bugtracker.InternalApplication
 {
@@ -33,6 +34,18 @@ namespace Bugtracker.InternalApplication
 		/// Specifies if its the Standard Application
 		/// </summary>
 		public bool IsStandard { get; set; }
+
+		public bool IsInstalled
+        {
+			get
+            {
+				System.Diagnostics.Debug.WriteLine("File check exist: "  + Name + ": " + (LogFiles[0].Path != "" && Directory.Exists(LogFiles[0].Path)));
+				if (LogFiles[0].Path != "" && Directory.Exists(LogFiles[0].Path))
+					return true;
+				else
+					return false;
+            }
+        }
 
 		/// <summary>
 		/// Specifier if show "onExist" -> show Application in when installed on PC

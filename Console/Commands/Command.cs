@@ -22,6 +22,26 @@ namespace Bugtracker.Console
         public Command              ParentCommand { get; set; }
         public bool                 ExecutionAllowed { get; set; }
         public string               CommandReverse { get; set; }
+        public int                  CommandDepth { get; set; }
+
+        public Command RootCommand
+        {
+            get
+            {
+                Command rootCommand = ParentCommand;
+
+                while(rootCommand != null)
+                {
+                    if (rootCommand.ParentCommand != null)
+                        rootCommand = rootCommand.ParentCommand;
+                    else
+                        break;
+                }
+
+                System.Diagnostics.Debug.WriteLine("Command: " + this.CommandName + "Command Root: " + rootCommand);
+                return rootCommand;
+            }
+        }
 
         public Command()
         {
@@ -227,7 +247,15 @@ namespace Bugtracker.Console
 
         public virtual string Execute()
         {
-            return GlobalMessages.NOT_IMPLEMENTED + Environment.NewLine;
+            if (RootCommand != null)
+                return RootCommand.RootExecution();
+            else
+                return "Not implemented yet";
+        }
+
+        public virtual string RootExecution()
+        {
+            return "";
         }
     }
 }

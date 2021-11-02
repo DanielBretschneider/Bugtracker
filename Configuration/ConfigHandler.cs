@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
+using bugracker.Targeting;
 using Bugtracker.Exceptions;
 using Bugtracker.InternalApplication;
 using Bugtracker.Logging;
@@ -112,6 +113,51 @@ namespace Bugtracker.GlobalsInformation
             }
 
             return applications;
+        }
+
+        public static List<Target> GetSpecifiedTargets()
+        {
+            List<Target> targets = new List<Target>();
+
+            // start reading autostart.config.xml
+            using (XmlReader reader = XmlReader.Create(Globals.CONFIG_FILE_PATH))
+            {
+
+                IXmlLineInfo lineInfo = (IXmlLineInfo)reader;
+                int line = lineInfo.LineNumber;
+
+                while (reader.Read())
+                {
+                    if (reader.NodeType == XmlNodeType.Element)
+                    {
+                        if (reader.LocalName.Equals("target"))
+                        {
+                            Target targetToAdd = new Target();
+
+                            targetToAdd.Name = reader.GetAttribute("name");
+
+                            TargetType type = TargetType.folder;
+
+                            if (Enum.TryParse<TargetType>(reader.GetAttribute("type"), out type)) ;
+                            targetToAdd.TargetType = type;
+
+                            bool defaultT = false;
+
+                            if (reader.GetAttribute("default") != null)
+                                Boolean.TryParse(reader.GetAttribute("default"), out defaultT);
+
+                            targetToAdd.Default = defaultT;
+
+                            targetToAdd.Path = reader.GetAttribute("path");
+                            targetToAdd.Address = reader.GetAttribute("address");
+
+                            targets.Add(targetToAdd);
+                        }
+                    }
+                }
+            }
+
+            return targets;
         }
 
         public static LoggingSeverity GetLoggingSeverity()

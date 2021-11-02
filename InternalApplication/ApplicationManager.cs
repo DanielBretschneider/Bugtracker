@@ -36,19 +36,6 @@ namespace Bugtracker.InternalApplication
             applications.Add(app);
         }
 
-        /// <summary>
-        /// This method trys to find a given file 
-        /// (f.e. notepad.exe), if found than application
-        /// is seen as installed -> return true
-        /// </summary>
-        /// <param name="path"></param>
-        /// <returns></returns>
-        private bool IsApplicationInstalled(string path)
-        {
-            // dummy return
-            return false;
-        }
-
         public List<Application> GetApplications()
         {
             return applications;

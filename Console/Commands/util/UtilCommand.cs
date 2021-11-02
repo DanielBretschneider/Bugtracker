@@ -6,7 +6,7 @@ using System.IO;
 
 namespace bugracker.Console.Commands
 {
-    [Command("util", "utl", "Utility to show current running configuration parameters.")]
+    [Command("util", "utl", "A collection of utitly commands.")]
     [Arguments(new[] { "subcommand" })]
     class UtilCommand : Command
     {
@@ -25,7 +25,7 @@ namespace bugracker.Console.Commands
             DirectoryInfo directory = BugtrackerUtils.CreateBugtrackFolder();
 
             RunningConfiguration.GetInstance().BugtrackerFolderName = folderName;
-            RunningConfiguration.GetInstance().BugtrackerFolder =  directory;
+            RunningConfiguration.GetInstance().NewestBugtrackerFolder =  directory;
             return "Created Bugtrackerfolder under: " + directory.FullName;
         }
     }

@@ -28,8 +28,8 @@ namespace bugracker.Console.Commands
     {
         public override string Execute()
         {
-            if (RunningConfiguration.GetInstance().BugtrackerFolder != null)
-                return RunningConfiguration.GetInstance().BugtrackerFolder.FullName;
+            if (RunningConfiguration.GetInstance().NewestBugtrackerFolder != null)
+                return RunningConfiguration.GetInstance().NewestBugtrackerFolder.FullName;
             else
                 return "Not created yet use: " + BugtrackConsole.GetReverseLookUpForCommand(typeof(UtilInitCommand)) + "to initialize.";
         }

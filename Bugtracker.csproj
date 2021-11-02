@@ -26,6 +26,11 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="ScreenCapture\**" />
+    <EmbeddedResource Remove="ScreenCapture\**" />
+    <None Remove="ScreenCapture\**" />
+  </ItemGroup>
+  <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.7.2">
       <Visible>False</Visible>
       <ProductName>Microsoft .NET Framework 4.7.2 %28x86 und x64%29</ProductName>
@@ -43,12 +48,5 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Windows.Compatibility" Version="5.0.2" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="MouseKeyHook" Version="5.6.0" />
-    <PackageReference Include="RawInput.Sharp" Version="0.0.4" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="ScreenCapture\" />
   </ItemGroup>
 </Project>

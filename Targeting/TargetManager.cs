@@ -1,11 +1,18 @@
-﻿using System;
+﻿using Bugtracker.GlobalsInformation;
+using System;
 using System.Collections.Generic;
 
-namespace bugracker.Target
+namespace bugracker.Targeting
 {
     class TargetManager
     {
-        List<Target> Targets = new List<Target>();
+        public List<Target> Targets { get; set; }
+
+        public TargetManager()
+        {
+            Targets = ConfigHandler.GetSpecifiedTargets();
+        }
+
 
         public Target GetTargetByName(string name)
         {

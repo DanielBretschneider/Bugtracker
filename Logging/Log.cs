@@ -47,7 +47,7 @@ namespace Bugtracker.Logging
         {
             string retString = "";
 
-            retString += "Log Information";
+            retString += "Log Information" + Environment.NewLine;
             retString += "Path: " + Path + Environment.NewLine;
             retString += "Location Type: " + Enum.GetName(typeof(LogLocationType), LocationType) + Environment.NewLine;
             retString += "Log FIND: " + Enum.GetName(typeof(LogFindSpecifier), Find) + Environment.NewLine;
