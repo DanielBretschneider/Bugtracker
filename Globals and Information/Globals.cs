@@ -1,4 +1,4 @@
-﻿namespace Bugtracker.GlobalsInformation
+﻿namespace Bugtracker.Globals_and_Information
 {
     /// <summary>
     /// This Class stores all constants and global variables needed. The variables

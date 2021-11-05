@@ -1,0 +1,634 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Bugtracker</name>
+    </assembly>
+    <members>
+        <member name="M:Bugtracker.Capture.Log.LogfileFetcher.#ctor(System.Collections.Generic.List{Bugtracker.InternalApplication.Application})">
+            <summary>
+            LogFileFetcher() - default Constructor
+            </summary>
+        </member>
+        <member name="M:Bugtracker.Capture.Log.LogfileFetcher.InitLogFilesFromAllTargetedApplications">
+            <summary>
+            Returns a list of paths for each log file existing
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Bugtracker.Capture.Log.LogfileFetcher.BuildDestinationPath">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Bugtracker.Capture.Log.LogfileFetcher.GetLineCount(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="filepath"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Bugtracker.Capture.Log.LogfileFetcher.CopyFile(System.String,System.String)">
+            <summary>
+            Copies file 
+            If file has more lines than n = MAX_LINES_OF_LOG_FILE
+            than only the last n lines will be stored in bugtracker zip
+            </summary>
+        </member>
+        <member name="M:Bugtracker.Capture.Log.LogfileFetcher.FetchLog(System.String,Bugtracker.InternalApplication.Application)">
+            <summary>
+            This procedure fetches the last 2000 
+            (default value is MAX_LINES_OF_LOG_FILE) lines
+            </summary>
+            <param name="logfilePath"></param>
+            <param name="destination"></param>
+            <returns>
+            
+            fetchstatus
+            0 = successfull
+            1 = failed
+            </returns>
+        </member>
+        <member name="T:Bugtracker.Capture.Screen.ScreenCaptureHandler">
+            <summary>
+            This class handles everthing related to 
+            taking screenshots
+            
+            TODO: Test with multiple screens
+            </summary>
+        </member>
+        <member name="M:Bugtracker.Capture.Screen.ScreenCaptureHandler.#ctor">
+            <summary>
+            public constructor
+            </summary>
+        </member>
+        <member name="M:Bugtracker.Capture.Screen.ScreenCaptureHandler.BuildScreenShotFileName">
+            <summary>
+            Assamble screenshot image file name
+            
+            PCName_data_time.jpg
+            f.e. PC01_0102021_081243.jpg
+            for PC01 01.02.2021 08:12:43
+            </summary>
+        </member>
+        <member name="M:Bugtracker.Capture.Screen.ScreenCaptureHandler.GenerateScreenshotSequence">
+            <summary>
+            This method is responsible for
+            generating the screenshots for
+            the current bugtrack in a sequence following the mouse click event
+            </summary>
+        </member>
+        <member name="M:Bugtracker.Capture.Screen.ScreenCaptureHandler.GenerateScreenshots(System.String,System.Boolean)">
+            <summary>
+            This method is responsible for
+            generating the screenshots for
+            the current bugtrack
+            </summary>
+            <param name="bugtrackFolderName"></param>
+            <returns>Screenshot Path</returns>
+        </member>
+        <member name="T:Bugtracker.Configuration.ConfigHandler">
+            <summary>
+            This class is only here to handle all the XML-Magic
+            </summary>
+        </member>
+        <member name="M:Bugtracker.Configuration.ConfigHandler.#ctor">
+            <summary>
+            Default Constructor,
+            does nothing
+            </summary>
+        </member>
+        <member name="M:Bugtracker.Configuration.ConfigHandler.GetNumberOfApplications">
+            <summary>
+            Returns number of applications specified in bugtracker Config
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Bugtracker.Configuration.ConfigHandler.GetSpecifiedApplications">
+            <summary>
+            Returns a List of applications specified in the logfile
+            Parameters are loglocation type, path, filename (regex), find (per timeperiod)
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Bugtracker.Configuration.ConfigHandler.IsLoggingEnabled">
+            <summary>
+            To log, or not to log.
+            Checks if logging is enabled via the logger - enabled xml tag and attribute
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:Bugtracker.Configuration.RunningConfiguration.PCInfo">
+            <summary>
+            PC Info Object
+            </summary>
+        </member>
+        <member name="T:Bugtracker.Console.Commands.Command">
+            <summary>
+            Holds methods and values every command should inherit
+            ex: GetHelp, returns string how to use given command
+            </summary>
+        </member>
+        <member name="M:Bugtracker.Console.Commands.Command.InitializeSubCommands">
+            <summary>
+            Looks through class files seatching for command and argument atrributes
+            then adds subcommands to this command through its defined parent command
+            </summary>
+        </member>
+        <member name="M:Bugtracker.Console.Commands.help.HelpCommand.Execute">
+            <summary>
+            Print Help Message and show + describe
+            available commands
+            </summary>
+        </member>
+        <member name="T:Bugtracker.Console.Commands.pcinfo.PcInfoCommand">
+            <summary>
+            Print information of PC 
+            </summary>
+        </member>
+        <member name="T:Bugtracker.Console.Commands.utilCommands.ClearConsoleCommand">
+            <summary>
+            Clear Terminal screen
+            </summary>
+        </member>
+        <member name="T:Bugtracker.Console.Commands.utilCommands.ExitConsoleCommand">
+            <summary>
+            Sets Console Running bool to false -> console loop closes
+            </summary>
+        </member>
+        <member name="T:Bugtracker.Console.ConsoleHandler">
+            <summary>
+            Does the console windows creation 
+            and redirecting the text to console 
+            window
+            </summary>
+        </member>
+        <member name="M:Bugtracker.Console.ConsoleHandler.#ctor">
+            <summary>
+            Default Constructor
+            </summary>
+        </member>
+        <member name="M:Bugtracker.Console.ConsoleHandler.Create">
+            <summary>
+            Creates a console output window, if one doesn't already exist.
+            This window will receive all outputs from System.Console.Write()
+            </summary>
+            <returns>
+            0 if successful, else the Windows API error code from Marshal.GetLastWin32Error()
+            </returns>
+            <remarks>See the AllocConsole() function in the Windows API for full details.</remarks>
+        </member>
+        <member name="M:Bugtracker.Console.ConsoleHandler.Destroy">
+            <summary>
+            Destroys the console window, if it exists.
+            </summary>
+            <returns>
+            0 if successful, else the Windows API error code from Marshal.GetLastWin32Error()
+            </returns>
+            <remarks>See the FreeConsole() function in the Windows API for full details.</remarks>
+        </member>
+        <member name="M:Bugtracker.Console.ConsoleHandler.AllocConsole">
+            <summary>
+            AllocConsole() - open new console window
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Bugtracker.Console.ConsoleHandler.FreeConsole">
+            <summary>
+            Close previously opened console window and free memory
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Bugtracker.Console.ConsoleHandler.UnhandledExceptionTrapper(System.Object,System.UnhandledExceptionEventArgs)">
+            <summary>
+            Handles all exceptions and errors in program
+            Output all noteable information to console
+            </summary>
+            <param name="sender"></param>
+            <param name="e"></param>
+        </member>
+        <member name="T:Bugtracker.Console.BugtrackConsole">
+            <summary>
+            Implements the command line logic
+            </summary>
+        </member>
+        <member name="F:Bugtracker.Console.BugtrackConsole.commandRegestry">
+            <summary>
+            A Dictionairy containing a string[] with command name, and alias - and A Command Object
+            </summary>
+        </member>
+        <member name="M:Bugtracker.Console.BugtrackConsole.Print(System.String)">
+            <summary>
+            Prints text to the console
+            </summary>
+            <param name="msg"></param>
+        </member>
+        <member name="M:Bugtracker.Console.BugtrackConsole.GetCommand">
+            <summary>
+            Used to fetch a new command from the user
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Bugtracker.Console.BugtrackConsole.Pause">
+            <summary>
+            Works like the cmd command "pause"
+            </summary>
+        </member>
+        <member name="M:Bugtracker.Console.BugtrackConsole.ProcessCommand(System.String)">
+            <summary>
+            Process entered command 
+            </summary>
+            <param name="command"></param>
+        </member>
+        <member name="M:Bugtracker.Console.BugtrackConsole.StartBugtrackerConsoleLogic(System.String[])">
+            <summary>
+            Here is a while(true) loop 
+            that lets you enter commands util 
+            the command "exit" ist entered
+            </summary>
+        </member>
+        <member name="M:Bugtracker.Console.BugtrackConsole.ConsoleUtilites.GettHelpMessageCommandDescription(System.String,System.String)">
+            <summary>
+            Print formatted command
+            number of tabs depends on command length
+            </summary>
+        </member>
+        <member name="M:Bugtracker.Globals_and_Information.BugtrackerUtils.CreateBugtrackFolder">
+            <summary>
+            PCname and date will be added later
+            name of folder / zip file
+            </summary>
+            <summary>
+            Create current bugtrack folder
+            </summary>
+        </member>
+        <member name="M:Bugtracker.Globals_and_Information.BugtrackerUtils.CreateBugtrackFolderName">
+            <summary>
+            Create Bugtracker folder name
+            </summary>
+        </member>
+        <member name="M:Bugtracker.Globals_and_Information.BugtrackerUtils.GenerateScreenCapture">
+            <summary>
+            Generates screenshots of all
+            monitors
+            </summary>
+            <returns>Screen capture file path</returns>
+        </member>
+        <member name="M:Bugtracker.Globals_and_Information.BugtrackerUtils.DirectoryCopy(System.String,System.String,System.Boolean)">
+            <summary>
+            Copys full direcotry
+            </summary>
+            <param name="sourceDirName"></param>
+            <param name="destDirName"></param>
+            <param name="copySubDirs"></param>
+        </member>
+        <member name="T:Bugtracker.Globals_and_Information.GlobalMessages">
+            <summary>
+            Stores global message values like Error Messages
+            </summary>
+        </member>
+        <member name="T:Bugtracker.Globals_and_Information.Globals">
+            <summary>
+            This Class stores all constants and global variables needed. The variables
+            are readonly.
+            </summary>
+        </member>
+        <member name="F:Bugtracker.Globals_and_Information.Globals.EOL_CHARACTER">
+            <summary>
+            End of Line Character
+            </summary>
+        </member>
+        <member name="F:Bugtracker.Globals_and_Information.Globals.SPACE_CHARACTER">
+            <summary>
+            space
+            </summary>
+        </member>
+        <member name="F:Bugtracker.Globals_and_Information.Globals.APPLICATION_DIRECTORY">
+            <summary>
+            APPLICATION_PATH stores the path to the bugtracker directory
+            </summary>
+        </member>
+        <member name="F:Bugtracker.Globals_and_Information.Globals.TMP_DIRECTORY">
+            <summary>
+            Temp folder where the bugtrack files will be gathered, zipped and sent
+            out. BT Files + .zip files will be automatically deleted when sent out
+            </summary>
+        </member>
+        <member name="F:Bugtracker.Globals_and_Information.Globals.LOG_FILE_PATH">
+            <summary>
+            LOG_FILE_PATH stores the absolute path to bugtracker.log
+            </summary>
+        </member>
+        <member name="F:Bugtracker.Globals_and_Information.Globals.CONFIG_FILE_PATH">
+            <summary>
+            CONFIG_FILE_PATH holds the path where the configuration xml file is stored
+            The 'x' on the end of filename can be changed into a combination of pc name and 
+            domain.
+            </summary>
+        </member>
+        <member name="F:Bugtracker.Globals_and_Information.Globals.DEFAULT_BUGTRACKER_SERVER">
+            <summary>
+            DEFAULT_BUGTRACKER_SERVER holds the default value where the file have to be copied to
+            </summary>
+        </member>
+        <member name="F:Bugtracker.Globals_and_Information.Globals.SCREENSHOT_FILE_FORMAT">
+            <summary>
+            Image file format of screenshots, jpg by default
+            </summary>
+        </member>
+        <member name="F:Bugtracker.Globals_and_Information.Globals.MAX_LINES_OF_LOG_FILE">
+            <summary>
+            Number of lines that should be saved in log file
+            </summary>
+        </member>
+        <member name="M:Bugtracker.Globals_and_Information.PCInfo.#ctor">
+            <summary>
+            constructor
+            </summary>
+        </member>
+        <member name="M:Bugtracker.Globals_and_Information.PCInfo.GetHostname">
+            <summary>
+            Returns hostname of device
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Bugtracker.Globals_and_Information.PCInfo.GetDomainName">
+            <summary>
+            Returns the domain name
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Bugtracker.Globals_and_Information.PCInfo.GetIPAddress">
+            <summary>
+            Returns IP address of device
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Bugtracker.Globals_and_Information.PCInfo.GetMACAddress">
+            <summary>
+            Returns MAC address of device
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Bugtracker.Globals_and_Information.PCInfo.GetCurrentUserName">
+            <summary>
+            Returns name of current user
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Bugtracker.Globals_and_Information.PCInfo.GetLastBootUpTime">
+            <summary>
+            Get time and date of last boot up 
+            from WMI
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Bugtracker.Globals_and_Information.PCInfo.GetPCInformationSummary">
+            <summary>
+            Summary on pc contains, hostname
+            ip, mac, domain name and currently logged
+            in user
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Bugtracker.Globals_and_Information.Singleton`1">
+            <summary>
+            Singleton Class from User: Moo-Juice
+            https://stackoverflow.com/questions/16865413/implementing-singleton-inheritable-class-in-c-sharp
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="T:Bugtracker.GUI.Form1">
+            <summary>
+            Default Form-Window for GUI
+            </summary>
+        </member>
+        <member name="M:Bugtracker.GUI.Form1.#ctor">
+            <summary>
+            /Constructor
+            </summary>
+        </member>
+        <member name="F:Bugtracker.GUI.Form1.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:Bugtracker.GUI.Form1.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:Bugtracker.GUI.Form1.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="P:Bugtracker.InternalApplication.Application.Name">
+            <summary>
+            The Name specifies the name of the Application
+            </summary>
+        </member>
+        <member name="P:Bugtracker.InternalApplication.Application.ExecutableLocation">
+            <summary>
+            Specifies the location of the executable as a string 
+            </summary>
+        </member>
+        <member name="P:Bugtracker.InternalApplication.Application.Enabled">
+            <summary>
+            Specifies if Application is enabled in Bugtracker
+            </summary>
+        </member>
+        <member name="P:Bugtracker.InternalApplication.Application.IsStandard">
+            <summary>
+            Specifies if its the Standard Application
+            </summary>
+        </member>
+        <member name="P:Bugtracker.InternalApplication.Application.ShowSpecifier">
+            <summary>
+            Specifier if show "onExist" -> show Application in when installed on PC
+            </summary>
+        </member>
+        <member name="P:Bugtracker.InternalApplication.Application.LogFiles">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Bugtracker.InternalApplication.ApplicationManager">
+             <summary>
+             This class is responsible for the application 
+             handling and storing logical Applications as Objects in the form of lists. 
+             </summary>
+            
+        </member>
+        <member name="F:Bugtracker.InternalApplication.ApplicationManager.applications">
+            <summary>
+            A list of all managed Applications
+            </summary>
+        </member>
+        <member name="M:Bugtracker.InternalApplication.ApplicationManager.#ctor">
+            <summary>
+            Default Constructor
+            </summary>
+        </member>
+        <member name="T:Bugtracker.Logging.Log">
+            <summary>
+            This Class represents the specified log in the config.xml
+            it has a location type, a path, a filename and timespan specifier
+            </summary>
+        </member>
+        <member name="P:Bugtracker.Logging.Log.LocationType">
+            <summary>
+            The Log Location Type specifies if the log file is stored on the server or on the client
+            </summary>
+        </member>
+        <member name="P:Bugtracker.Logging.Log.Path">
+            <summary>
+            The Path specifies the location of the log file
+            </summary>
+        </member>
+        <member name="P:Bugtracker.Logging.Log.Filename">
+            <summary>
+            The Filename specifies the name of the logfile
+            </summary>
+        </member>
+        <member name="P:Bugtracker.Logging.Log.TimeSpan">
+            <summary>
+            The TimeSpan specifies from which point in time (x) to which other point in time (x) 
+            the log lines will be fetched
+            </summary>
+        </member>
+        <member name="M:Bugtracker.Logging.Logger.InitializeLogging">
+            <summary>
+            Check if log file exists
+            or has to be created
+            </summary>
+        </member>
+        <member name="M:Bugtracker.Logging.Logger.GetConfigFileContent">
+            <summary>
+            return content of bugtrackerv2.config.xml
+            
+            TODO: Change static path
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Bugtracker.Logging.Logger.CheckConfigFile">
+            <summary>
+            This method checks if a config file already exists in local
+            if so, nothing will be done. If not, then the default configuration
+            will be copied to specified location.
+            </summary>
+        </member>
+        <member name="M:Bugtracker.Logging.Logger.Log(System.String,Bugtracker.Logging.LoggingSeverity)">
+            <summary>
+            log message with priority
+            0 = ERRROR
+            1 = WARNING
+            2 = INFO
+            </summary>
+            <param name="msg"></param>
+            <param name="priority"></param>
+        </member>
+        <member name="M:Bugtracker.Logging.Logger.AppendToFile(System.String)">
+            <summary>
+            Append message to log file
+            </summary>
+            <param name="msg"></param>
+        </member>
+        <member name="T:Bugtracker.Program">
+            <summary>
+            This is the starting point of 
+            bugtracker programming project
+            </summary>
+        </member>
+        <member name="M:Bugtracker.Program.SetupApplication">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Bugtracker.Program.CreateTempFolder">
+            <summary>
+            Creates directory in bugtrack folder where the 
+            different logfiles and screenshots will be gathered,
+            zipped and sent out to management server 
+            After successfully sending the file it gets deleted
+            </summary>
+        </member>
+        <member name="M:Bugtracker.Program.StartGraphicalInterfaceApplication">
+            <summary>
+            This application is responsible for displaying
+            the Bugtracker GUI. As the GUI will be developed in 
+            Version 2.2, this method will not be called in this Version.
+            <br />
+            This method is only called when no command line arguments
+            have been passed
+            </summary>
+        </member>
+        <member name="M:Bugtracker.Program.StartCommandLineApplication(System.String[])">
+            <summary>
+            Run bugtracker as CMDlet using
+            ConsoleHandler. 
+            
+            As this project is define as windows 
+            forms application system.console.writeline (..)
+            wont work, so we have to manually include
+            kernel32.dll.
+            
+            For more info look into ConsoleHandler.cs
+            </summary>
+        </member>
+        <member name="M:Bugtracker.Program.Main(System.String[])">
+            <summary>
+            This is the main method.
+            </summary>
+        </member>
+        <member name="T:Bugtracker.Properties.Resources">
+            <summary>
+              Eine stark typisierte Ressourcenklasse zum Suchen von lokalisierten Zeichenfolgen usw.
+            </summary>
+        </member>
+        <member name="P:Bugtracker.Properties.Resources.ResourceManager">
+            <summary>
+              Gibt die zwischengespeicherte ResourceManager-Instanz zurück, die von dieser Klasse verwendet wird.
+            </summary>
+        </member>
+        <member name="P:Bugtracker.Properties.Resources.Culture">
+            <summary>
+              Überschreibt die CurrentUICulture-Eigenschaft des aktuellen Threads für alle
+              Ressourcenzuordnungen, die diese stark typisierte Ressourcenklasse verwenden.
+            </summary>
+        </member>
+        <member name="T:Bugtracker.Sending.SendHandler">
+            <summary>
+            Providing methods to send Bugtracker folders of local session to given targets.
+            </summary>
+        </member>
+        <member name="M:Bugtracker.Sending.SendHandler.ReturnCompletionStatus(System.Collections.Generic.List{System.Boolean})">
+            <summary>
+            Returns completion status tuple ex. 1
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Bugtracker.Sending.SendHandler.Send">
+            <summary>
+            Sends bugtracker folders either by copy or per mail
+            </summary>
+            <returns>The status of sending completion of all folders</returns>
+        </member>
+        <member name="M:Bugtracker.Sending.SendHandler.SendPerMail(Bugtracker.Targeting.Target)">
+            <summary>
+            Per Default sends all folders created in this bugtracker session per mail
+            to default target
+            </summary>
+            <returns>The status of sending completion of all folders</returns>
+        </member>
+        <member name="M:Bugtracker.Sending.SendHandler.SendPerCopy(Bugtracker.Targeting.Target)">
+            <summary>
+            Per Default send all folder created in this bugtracker session per copy
+            to default target
+            </summary>
+            <returns>The status of sending completion of all folders</returns>
+        </member>
+    </members>
+</doc>

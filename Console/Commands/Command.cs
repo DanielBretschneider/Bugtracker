@@ -1,10 +1,10 @@
-﻿using Bugtracker.Globals_and_Information;
-using Bugtracker.Attributes;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Bugtracker.Attributes;
+using Bugtracker.Globals_and_Information;
 
-namespace Bugtracker.Console
+namespace Bugtracker.Console.Commands
 {
     /// <summary>
     /// Holds methods and values every command should inherit
@@ -12,17 +12,17 @@ namespace Bugtracker.Console
     /// </summary>
     class Command
     {
-        public string               HelpMessage;
-        public string               CommandName { get; set; }
-        public string               CommandAlias { get; set; }
-        public string[]             CommandRequiredAttributes { get; set; }
-        public string[]             CommandOptionalAttributes { get; set; }
-        public List<string>         GivenArguments { get; set; }
-        public List<Command>        SubCommands { get; set; }
-        public Command              ParentCommand { get; set; }
-        public bool                 ExecutionAllowed { get; set; }
-        public string               CommandReverse { get; set; }
-        public int                  CommandDepth { get; set; }
+        public string HelpMessage;
+        public string CommandName { get; set; }
+        public string CommandAlias { get; set; }
+        public string[] CommandRequiredAttributes { get; set; }
+        public string[] CommandOptionalAttributes { get; set; }
+        public List<string> GivenArguments { get; set; }
+        public List<Command> SubCommands { get; set; }
+        public Command ParentCommand { get; set; }
+        public bool ExecutionAllowed { get; set; }
+        public string CommandReverse { get; set; }
+        public int CommandDepth { get; set; }
 
         public Command RootCommand
         {
@@ -30,7 +30,7 @@ namespace Bugtracker.Console
             {
                 Command rootCommand = ParentCommand;
 
-                while(rootCommand != null)
+                while (rootCommand != null)
                 {
                     if (rootCommand.ParentCommand != null)
                         rootCommand = rootCommand.ParentCommand;
@@ -56,7 +56,7 @@ namespace Bugtracker.Console
             Type type = t;
 
             CommandAttribute commandAtr = (CommandAttribute)type.GetCustomAttribute(typeof(CommandAttribute));
-            ArgumentsAttribute argAtr = (ArgumentsAttribute) type.GetCustomAttribute(typeof(ArgumentsAttribute));
+            ArgumentsAttribute argAtr = (ArgumentsAttribute)type.GetCustomAttribute(typeof(ArgumentsAttribute));
 
             Command thisCommand = (Command)Activator.CreateInstance(type);
 
@@ -90,11 +90,11 @@ namespace Bugtracker.Console
         /// </summary>
         public void InitializeSubCommands()
         {
-            foreach(Type type in Assembly.GetExecutingAssembly().GetTypes())
+            foreach (Type type in Assembly.GetExecutingAssembly().GetTypes())
             {
-                if(type.GetCustomAttributes(typeof(CommandAttribute), true).Length > 0)
+                if (type.GetCustomAttributes(typeof(CommandAttribute), true).Length > 0)
                 {
-                    CommandAttribute commandAtr = (CommandAttribute) type.GetCustomAttribute(typeof(CommandAttribute));
+                    CommandAttribute commandAtr = (CommandAttribute)type.GetCustomAttribute(typeof(CommandAttribute));
 
                     if (commandAtr.ParentCommand != null && commandAtr.ParentCommand.Equals(this.GetType()))
                     {
@@ -137,7 +137,7 @@ namespace Bugtracker.Console
 
             Command currentLocation = command;
 
-            while(currentLocation.ParentCommand != null)
+            while (currentLocation.ParentCommand != null)
             {
                 currentLocation = currentLocation.ParentCommand;
 
@@ -166,7 +166,7 @@ namespace Bugtracker.Console
 
             helpMessageT += "Use like: " + CommandReverseLookup(this);
 
-            if(requiredParams != null)
+            if (requiredParams != null)
             {
                 for (int i = 0; i < requiredParams.Length; i++)
                 {
@@ -200,11 +200,11 @@ namespace Bugtracker.Console
         {
             GivenArguments = arguments;
 
-            if(!ParametersEmpty())
+            if (!ParametersEmpty())
             {
                 //return InitParameters();
 
-                if(arguments[0] == "help" || arguments[0] == "hlp")
+                if (arguments[0] == "help" || arguments[0] == "hlp")
                 {
                     if (SubCommands.Count != 0)
                         return GetAllHelpMessages();
@@ -214,7 +214,7 @@ namespace Bugtracker.Console
                 else
                 {
                     foreach (Command subCommand in SubCommands)
-                    { 
+                    {
                         if (subCommand.CommandName == GivenArguments[0] || subCommand.CommandAlias == GivenArguments[0])
                         {
                             arguments.RemoveAt(0);
@@ -222,7 +222,7 @@ namespace Bugtracker.Console
                         }
                     }
 
-                    if(CommandRequiredAttributes != null)
+                    if (CommandRequiredAttributes != null)
                         return Execute();
 
                     string argumentList = "";
@@ -237,7 +237,7 @@ namespace Bugtracker.Console
             }
             else
             {
-                if(CommandRequiredAttributes == null)
+                if (CommandRequiredAttributes == null)
                     return Execute();
                 else
                     return GlobalMessages.TOO_FEW_ARGUMENTS + " Use " + CommandReverse + " help, for a list of all suitable arguments" + Environment.NewLine;

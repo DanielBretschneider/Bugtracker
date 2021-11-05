@@ -1,4 +1,4 @@
-﻿namespace bugracker.Console.Commands
+﻿namespace Bugtracker.Console.Commands.snapshot
 {
     class SnapshotCommand
     {

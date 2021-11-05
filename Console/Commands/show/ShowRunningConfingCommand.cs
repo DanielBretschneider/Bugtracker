@@ -1,8 +1,8 @@
 ﻿using Bugtracker.Attributes;
-using Bugtracker.Console;
-using Bugtracker.GlobalsInformation;
+using Bugtracker.Configuration;
+using Bugtracker.Console.Commands.util;
 
-namespace bugracker.Console.Commands
+namespace Bugtracker.Console.Commands.show
 {
     [Command("show", "shw", "Utility to show current running configuration parameters.")]
     [Arguments(new[] { "parameters to show" })]

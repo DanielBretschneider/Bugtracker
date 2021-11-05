@@ -1,7 +1,7 @@
-﻿using Bugtracker.Globals_and_Information;
-using Bugtracker.Attributes;
+﻿using Bugtracker.Attributes;
+using Bugtracker.Globals_and_Information;
 
-namespace Bugtracker.Console.Commands.applications
+namespace Bugtracker.Console.Commands.applications.subcommands
 {
     [Command("remove", "Removes an Application from the running configuration.", typeof(ApplicationManagerCommand))]
     [Arguments(new[] { "appname" })]

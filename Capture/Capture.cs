@@ -1,4 +1,4 @@
-﻿namespace bugracker
+﻿namespace Bugtracker.Capture
 {
     class Capture
     {

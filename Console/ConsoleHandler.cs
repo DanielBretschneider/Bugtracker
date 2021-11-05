@@ -1,13 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Diagnostics.CodeAnalysis;
-using System.Security;
-using Bugtracker.GlobalsInformation;
-using System.Reflection;
-using Bugtracker.Attributes;
+﻿using Bugtracker.Attributes;
 using Bugtracker.Logging;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Security;
+using Bugtracker.Console.Commands;
+using Bugtracker.Globals_and_Information;
 
 namespace Bugtracker.Console
 {
@@ -26,7 +27,7 @@ namespace Bugtracker.Console
         /// </summary>
         public ConsoleHandler()
         {
-            
+
         }
 
         #endregion // constructor
@@ -117,8 +118,8 @@ namespace Bugtracker.Console
 
         #endregion  // Private PInvokes
     }
-    
-    
+
+
     /// <summary>
     /// Implements the command line logic
     /// </summary>
@@ -142,7 +143,7 @@ namespace Bugtracker.Console
 
         public static string GetReverseLookUpForCommand(Type commandType)
         {
-            foreach(Command con in commandRegestry.Values)
+            foreach (Command con in commandRegestry.Values)
             {
                 if (con.GetType() == commandType)
                     return con.CommandReverse;
@@ -176,7 +177,7 @@ namespace Bugtracker.Console
                 Logger.Log("GetCommand() - A problem while reading user input happend. This incident will be logged:", 0);
                 Logger.Log(e.Message, 0);
             }
-            
+
             // return inputed command
             return command;
         }
@@ -186,7 +187,7 @@ namespace Bugtracker.Console
             // define empty string
             string command = "";
 
-            for(int i = 0; i <= args.Length -1; i++)
+            for (int i = 0; i <= args.Length - 1; i++)
             {
                 if (i != args.Length - 1)
                     command += args[i] + " ";
@@ -231,11 +232,11 @@ namespace Bugtracker.Console
             var types = Assembly.GetExecutingAssembly().GetTypes().Where(type => type.GetCustomAttribute(typeof(CommandAttribute), true) != null);
             Dictionary<string[], Command> commandReg = new Dictionary<string[], Command>();
 
-            foreach(Type t in types)
+            foreach (Type t in types)
             {
                 CommandAttribute comAtr = (CommandAttribute)t.GetCustomAttribute(typeof(CommandAttribute), true);
 
-                if(comAtr.ParentCommand == null)
+                if (comAtr.ParentCommand == null)
                 {
                     commandReg.Add(new[] { comAtr.CommandName, comAtr.CommandAlias, comAtr.CommandHelpMessage }, Command.Initialize(t));
                 }
@@ -246,9 +247,9 @@ namespace Bugtracker.Console
 
         private static Command InterpretCommand(string command)
         {
-            foreach(var item in commandRegestry)
-            { 
-                if(item.Key[0] == command || item.Key[1] == command)
+            foreach (var item in commandRegestry)
+            {
+                if (item.Key[0] == command || item.Key[1] == command)
                 {
                     return item.Value;
                 }
@@ -302,7 +303,7 @@ namespace Bugtracker.Console
         /// </summary>
         public static void StartBugtrackerConsoleLogic(string[] args)
         {
-            if(args.Length > 0)
+            if (args.Length > 0)
             {
                 ProcessCommand(GetCommand(args));
             }

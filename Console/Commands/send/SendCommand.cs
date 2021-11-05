@@ -1,11 +1,10 @@
-﻿using bugracker.Sending;
-using bugracker.Targeting;
+﻿using System.Collections.Generic;
 using Bugtracker.Attributes;
-using Bugtracker.Console;
-using Bugtracker.GlobalsInformation;
-using System.Collections.Generic;
+using Bugtracker.Configuration;
+using Bugtracker.Sending;
+using Bugtracker.Targeting;
 
-namespace bugracker.Console.Commands
+namespace Bugtracker.Console.Commands.send
 {
     [Command("send", "snd", "Utility to send captures to target")]
     [Arguments(null, new[] { "target1", "target2", "..targetx" })]
@@ -16,7 +15,7 @@ namespace bugracker.Console.Commands
             TargetManager tm = RunningConfiguration.GetInstance().TargetManager;
             List<Target> targetsToSend = new List<Target>();
 
-            foreach(string target in GivenArguments)
+            foreach (string target in GivenArguments)
             {
                 if (tm.GetTargetByName(target) != null && tm.GetTargetByName(target).Default)
                     targetsToSend.Add(tm.GetTargetByName(target));

@@ -1,12 +1,13 @@
-﻿using Bugtracker.Globals_and_Information;
-using Bugtracker.Attributes;
-using Bugtracker.GlobalsInformation;
-using bugracker;
-using System.Collections.Generic;
-using Bugtracker.Logging;
+﻿using Bugtracker.Attributes;
+using Bugtracker.Globals_and_Information;
 using Bugtracker.InternalApplication;
-using System.Diagnostics;
+using Bugtracker.Logging;
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using Bugtracker.Capture.Log;
+using Bugtracker.Capture.Screen;
+using Bugtracker.Configuration;
 
 namespace Bugtracker.Console.Commands.capture
 {
@@ -41,7 +42,7 @@ namespace Bugtracker.Console.Commands.capture
     }
 
     [Command("-log", "-l", "Captures Log Files only", typeof(CaptureCommand))]
-    [Arguments(new[] { "application / all" }, new[] { "application2", "application3..."})]
+    [Arguments(new[] { "application / all" }, new[] { "application2", "application3..." })]
     class CaptureLogFilesCommand : Command
     {
         public override string Execute()
@@ -50,8 +51,8 @@ namespace Bugtracker.Console.Commands.capture
             ApplicationManager am = RunningConfiguration.GetInstance().ApplicationManager;
 
             foreach (string argument in GivenArguments)
-            {   
-                if(am.GetApplicationByName(argument) != null)
+            {
+                if (am.GetApplicationByName(argument) != null)
                     targetedApplications.Add(am.GetApplicationByName(argument));
                 else
                     return "One or more given applications do not exist or names do not match!";
@@ -102,18 +103,29 @@ namespace Bugtracker.Console.Commands.capture
         }
     }
 
-    [Command("-full", "-s", "Captures all log files and makes screenshots", typeof(CaptureCommand))]
+    [Command("-full", "-f", "Captures all log files and makes screenshots", typeof(CaptureCommand))]
+    [Arguments(new [] { "application" }, new[] { "application2" , "application3", "application4..." })]
     class CaptureFullCommand : Command
     {
         public override string Execute()
         {
-            CaptureScreenShotsCommand captureScreenShotsCommand = new CaptureScreenShotsCommand();
-            CaptureAllLogFilesCommand captureAllLogFilesCommand = new CaptureAllLogFilesCommand();
-
             string result = "";
 
+            CaptureScreenShotsCommand captureScreenShotsCommand = new CaptureScreenShotsCommand();
             result += captureScreenShotsCommand.Execute() + Environment.NewLine;
-            result += captureAllLogFilesCommand.Execute() + Environment.NewLine;
+
+            if (GivenArguments.Count == 0)
+            {
+                CaptureAllLogFilesCommand captureAllLogFilesCommand = new CaptureAllLogFilesCommand();
+                result += captureAllLogFilesCommand.Execute() + Environment.NewLine;
+            }
+            else
+            {
+                CaptureLogFilesCommand captureLogFilesCommand = new CaptureLogFilesCommand();
+                captureLogFilesCommand.GivenArguments = this.GivenArguments;
+
+                result += captureLogFilesCommand.Execute() + Environment.NewLine;
+            }
 
             return result;
         }

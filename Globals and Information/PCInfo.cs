@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Linq;
-using System.Text;
-using System.Net;
-using System.Net.Sockets;
-using System.Net.NetworkInformation;
 using System.Management;
+using System.Net;
+using System.Net.NetworkInformation;
+using System.Net.Sockets;
+using System.Text;
 using Bugtracker.Logging;
 
-namespace Bugtracker.GlobalsInformation
+namespace Bugtracker.Globals_and_Information
 {
     class PCInfo
-    { 
+    {
         /// <summary>
         /// constructor
         /// </summary>
@@ -49,7 +49,7 @@ namespace Bugtracker.GlobalsInformation
             Logger.Log("GetIPAddress() executed", (LoggingSeverity)2);
             // host
             var host = Dns.GetHostEntry(Dns.GetHostName());
-            
+
             // multiple results possible
             foreach (var ip in host.AddressList)
             {

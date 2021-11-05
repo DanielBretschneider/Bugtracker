@@ -1,4 +1,4 @@
-﻿namespace Bugtracker
+﻿namespace Bugtracker.Globals_and_Information
 {
     /// <summary>
     /// Singleton Class from User: Moo-Juice

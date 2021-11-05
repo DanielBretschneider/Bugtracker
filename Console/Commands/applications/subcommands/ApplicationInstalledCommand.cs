@@ -1,7 +1,7 @@
 ﻿using Bugtracker.Attributes;
 using Bugtracker.Globals_and_Information;
 
-namespace Bugtracker.Console.Commands.applications
+namespace Bugtracker.Console.Commands.applications.subcommands
 {
     [Command("installed", "Shows all configured Applications that are installed.", typeof(ApplicationManagerCommand))]
     [Arguments(new[] { "appname" })]

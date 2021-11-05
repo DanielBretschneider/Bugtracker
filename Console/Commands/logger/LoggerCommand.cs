@@ -1,11 +1,10 @@
 ﻿using Bugtracker.Attributes;
-using Bugtracker.Console;
 using Bugtracker.Globals_and_Information;
-using Bugtracker.GlobalsInformation;
 using Bugtracker.Logging;
 using System;
+using Bugtracker.Configuration;
 
-namespace bugracker.Console.Commands.logger
+namespace Bugtracker.Console.Commands.logger
 {
     [Command("logger", "log", "Logger command utility")]
     [Arguments(new[] { "subcommand" })]
@@ -18,21 +17,21 @@ namespace bugracker.Console.Commands.logger
     }
 
     [Command("log", "-l", "Saves log message", typeof(LoggerCommand))]
-    [Arguments(new[] { "log message" }, new[]{ "loggin severity" })]
+    [Arguments(new[] { "log message" }, new[] { "loggin severity" })]
     class LoggerLogCommand : Command
     {
         public override string Execute()
         {
             string logMessage = "";
 
-            foreach(string argument in GivenArguments)
+            foreach (string argument in GivenArguments)
             {
                 logMessage += argument + " ";
             }
 
             Logger.Log(logMessage, LoggingSeverity.Info);
 
-            return "Saved: " + "\"" + logMessage + "\" to log." + Environment.NewLine; 
+            return "Saved: " + "\"" + logMessage + "\" to log." + Environment.NewLine;
         }
     }
 
@@ -51,14 +50,14 @@ namespace bugracker.Console.Commands.logger
                 RunningConfiguration.GetInstance().LoggerEnabled = true;
                 return "Enabled Logger";
             }
-            
-            if(x == false)
+
+            if (x == false)
             {
                 RunningConfiguration.GetInstance().LoggerEnabled = false;
                 return "Disabled Logger";
             }
             return "";
-            
+
         }
     }
 

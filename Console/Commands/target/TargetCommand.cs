@@ -1,11 +1,10 @@
 ﻿using Bugtracker.Attributes;
-using Bugtracker.Console;
-using Bugtracker.GlobalsInformation;
+using Bugtracker.Configuration;
 
-namespace bugracker.Console.Commands
+namespace Bugtracker.Console.Commands.target
 {
     [Command("target", "Utility to manage targets.")]
-    [Arguments(new[] { "arguments"})]
+    [Arguments(new[] { "arguments" })]
     class TargetCommand : Command
     {
         public override string Execute()

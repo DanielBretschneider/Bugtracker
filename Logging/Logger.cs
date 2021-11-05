@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
-using Bugtracker.GlobalsInformation;
+using Bugtracker.Configuration;
+using Bugtracker.Globals_and_Information;
 
 namespace Bugtracker.Logging
 {

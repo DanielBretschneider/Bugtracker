@@ -2,11 +2,12 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Windows.Forms;
+using Bugtracker.Configuration;
 using Bugtracker.Console;
-using Bugtracker.GlobalsInformation;
+using Bugtracker.Globals_and_Information;
 using Bugtracker.Logging;
 
-namespace Bugtracker
+namespace Bugtracker.Capture.Screen
 {
     /// <summary>
     /// This class handles everthing related to 
@@ -75,14 +76,14 @@ namespace Bugtracker
         }
 
 
-    /// <summary>
-    /// This method is responsible for
-    /// generating the screenshots for
-    /// the current bugtrack
-    /// </summary>
-    /// <param name="bugtrackFolderName"></param>
-    /// <returns>Screenshot Path</returns>
-    public string GenerateScreenshots(string bugtrackFolderName, bool sequence = false)
+        /// <summary>
+        /// This method is responsible for
+        /// generating the screenshots for
+        /// the current bugtrack
+        /// </summary>
+        /// <param name="bugtrackFolderName"></param>
+        /// <returns>Screenshot Path</returns>
+        public string GenerateScreenshots(string bugtrackFolderName, bool sequence = false)
         {
             CurrentNumberInSequence++;
             // log info
@@ -109,10 +110,10 @@ namespace Bugtracker
                         g.CopyFromScreen(screenLeft, screenTop, 0, 0, bmp.Size);
                     }
 
-                    if(sequence)
+                    if (sequence)
                         bmp.Save(bugtrackFolderName + @"\" + screenShotFileName + "sequence_" + CurrentNumberInSequence, ImageFormat.Jpeg);
                     else
-                    // Do something with the Bitmap here, like save it to a file:
+                        // Do something with the Bitmap here, like save it to a file:
                         bmp.Save(bugtrackFolderName + @"\" + screenShotFileName, ImageFormat.Jpeg);
                 }
 

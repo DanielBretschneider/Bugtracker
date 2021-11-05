@@ -1,10 +1,9 @@
-﻿using Bugtracker.Attributes;
-using Bugtracker.Console;
+﻿using System.IO;
+using Bugtracker.Attributes;
+using Bugtracker.Configuration;
 using Bugtracker.Globals_and_Information;
-using Bugtracker.GlobalsInformation;
-using System.IO;
 
-namespace bugracker.Console.Commands
+namespace Bugtracker.Console.Commands.util
 {
     [Command("util", "utl", "A collection of utitly commands.")]
     [Arguments(new[] { "subcommand" })]
@@ -25,7 +24,7 @@ namespace bugracker.Console.Commands
             DirectoryInfo directory = BugtrackerUtils.CreateBugtrackFolder();
 
             RunningConfiguration.GetInstance().BugtrackerFolderName = folderName;
-            RunningConfiguration.GetInstance().NewestBugtrackerFolder =  directory;
+            RunningConfiguration.GetInstance().NewestBugtrackerFolder = directory;
             return "Created Bugtrackerfolder under: " + directory.FullName;
         }
     }

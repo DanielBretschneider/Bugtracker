@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml;
-using bugracker.Targeting;
 using Bugtracker.Exceptions;
+using Bugtracker.Globals_and_Information;
 using Bugtracker.InternalApplication;
 using Bugtracker.Logging;
+using Bugtracker.Targeting;
 using static Bugtracker.Logging.Log;
 
-namespace Bugtracker.GlobalsInformation
+namespace Bugtracker.Configuration
 {
     /// <summary>
     /// This class is only here to handle all the XML-Magic
@@ -66,7 +67,7 @@ namespace Bugtracker.GlobalsInformation
             {
                 Application currentApplication = null;
 
-                IXmlLineInfo lineInfo = (IXmlLineInfo) reader;
+                IXmlLineInfo lineInfo = (IXmlLineInfo)reader;
                 int line = lineInfo.LineNumber;
 
                 while (reader.Read())
@@ -94,7 +95,7 @@ namespace Bugtracker.GlobalsInformation
                             Log logToAppend = new Log();
                             LogLocationType type = LogLocationType.client;
 
-                            if (Enum.TryParse<LogLocationType>(reader.GetAttribute("location"), out type)) ;
+                            if (Enum.TryParse<LogLocationType>(reader.GetAttribute("location"), out type))
                                 logToAppend.LocationType = type;
 
                             logToAppend.Path = reader.GetAttribute("path");
@@ -102,10 +103,10 @@ namespace Bugtracker.GlobalsInformation
 
                             LogFindSpecifier findSpec = LogFindSpecifier.NEW;
 
-                            if (Enum.TryParse<LogFindSpecifier>(reader.GetAttribute("find"), out findSpec)) ;
+                            if (Enum.TryParse<LogFindSpecifier>(reader.GetAttribute("find"), out findSpec))
                                 logToAppend.Find = findSpec;
 
-                            if(currentApplication != null)
+                            if (currentApplication != null)
                                 currentApplication.LogFiles.Add(logToAppend);
                         }
                     }
@@ -138,8 +139,8 @@ namespace Bugtracker.GlobalsInformation
 
                             TargetType type = TargetType.folder;
 
-                            if (Enum.TryParse<TargetType>(reader.GetAttribute("type"), out type)) ;
-                            targetToAdd.TargetType = type;
+                            if (Enum.TryParse<TargetType>(reader.GetAttribute("type"), out type))
+                                targetToAdd.TargetType = type;
 
                             bool defaultT = false;
 
@@ -253,7 +254,7 @@ namespace Bugtracker.GlobalsInformation
                 throw new ConfigFileParseException(appname + " at line " + line + "postion: " + linePosition +
                     ".show=\"\" has to be one of the following: " + showSpecifierList);
             }
-                
+
         }
 
     }

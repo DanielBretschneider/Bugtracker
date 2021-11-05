@@ -1,10 +1,10 @@
-﻿using Bugtracker.Attributes;
-using Bugtracker.GlobalsInformation;
+﻿using System;
+using Bugtracker.Attributes;
+using Bugtracker.Configuration;
 using Bugtracker.InternalApplication;
 using Bugtracker.Logging;
-using System;
 
-namespace Bugtracker.Console
+namespace Bugtracker.Console.Commands.application
 {
     [Command("application", "app", "Lists information for given application")]
     [Arguments(new[] { "subcommand/application" })]
@@ -26,7 +26,7 @@ namespace Bugtracker.Console
 
             Application appX = RunningConfiguration.GetInstance().ApplicationManager.GetApplicationByName(GivenArguments[0]);
 
-            foreach(Log l in appX.LogFiles)
+            foreach (Log l in appX.LogFiles)
             {
                 retString += l.ToString() + Environment.NewLine;
             }

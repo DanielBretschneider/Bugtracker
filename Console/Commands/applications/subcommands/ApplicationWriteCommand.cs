@@ -1,7 +1,7 @@
-﻿using Bugtracker.Globals_and_Information;
-using Bugtracker.Attributes;
+﻿using Bugtracker.Attributes;
+using Bugtracker.Globals_and_Information;
 
-namespace Bugtracker.Console.Commands.applications
+namespace Bugtracker.Console.Commands.applications.subcommands
 {
     [Command("write", "Writes all new Application-Changes to the configuraiton file.", typeof(ApplicationManagerCommand))]
     class ApplicationWriteCommand : Command

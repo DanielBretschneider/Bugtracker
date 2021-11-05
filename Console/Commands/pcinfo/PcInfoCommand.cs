@@ -1,5 +1,5 @@
 ﻿using Bugtracker.Attributes;
-using Bugtracker.GlobalsInformation;
+using Bugtracker.Globals_and_Information;
 
 namespace Bugtracker.Console.Commands.pcinfo
 {

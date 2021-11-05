@@ -1,12 +1,12 @@
-﻿using Bugtracker.Attributes;
+﻿using System;
+using Bugtracker.Attributes;
+using Bugtracker.Configuration;
 using Bugtracker.Globals_and_Information;
-using Bugtracker.GlobalsInformation;
-using System;
 
-namespace Bugtracker.Console.Commands.applications
+namespace Bugtracker.Console.Commands.applications.subcommands
 {
     [Command("list", "Lists all Applications of the running configuration.", typeof(ApplicationManagerCommand))]
-    [Arguments(null , new[] { "all / specific" })]
+    [Arguments(null, new[] { "all / specific" })]
     class ApplicationListCommand : Command
     {
         public override string Execute()

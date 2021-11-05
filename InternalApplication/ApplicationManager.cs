@@ -1,12 +1,12 @@
-﻿using Bugtracker.GlobalsInformation;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using Bugtracker.Configuration;
 
 namespace Bugtracker.InternalApplication
 {
 
     /// <summary>
-    /// This class is resonsible for the application 
+    /// This class is responsible for the application 
     /// handling and storing logical Applications as Objects in the form of lists. 
     /// </summary>
     ///
@@ -44,7 +44,7 @@ namespace Bugtracker.InternalApplication
         public List<string> GetApplicationNames()
         {
             List<string> appNames = new List<string>();
-            foreach(Application app in applications)
+            foreach (Application app in applications)
             {
                 appNames.Add(app.Name);
             }
@@ -55,7 +55,7 @@ namespace Bugtracker.InternalApplication
         {
             string applicationList = "";
 
-            foreach(Application a in applications)
+            foreach (Application a in applications)
             {
                 applicationList += a.ToString() + Environment.NewLine;
             }
@@ -65,9 +65,9 @@ namespace Bugtracker.InternalApplication
 
         internal Application GetApplicationByName(string appNameParameter)
         {
-            foreach(Application app in applications)
+            foreach (Application app in applications)
             {
-                if(app.Name == appNameParameter)
+                if (app.Name == appNameParameter)
                     return app;
             }
 

@@ -1,9 +1,10 @@
-﻿using System;
-using System.IO;
-using Bugtracker.Console;
-using Bugtracker.GlobalsInformation;
+﻿using Bugtracker.Console;
 using Bugtracker.GUI;
 using Bugtracker.Logging;
+using System;
+using System.IO;
+using Bugtracker.Configuration;
+using Bugtracker.Globals_and_Information;
 
 namespace Bugtracker
 {
@@ -113,7 +114,7 @@ namespace Bugtracker
             // decide which Bugtracker version should be
             // executed.
 
-            if(args.Length > 0  && args[0].Contains("gui"))
+            if (args.Length > 0 && args[0].Contains("gui"))
                 //    // As the gui command line argument has been
                 //    // passed Bugtracker will be executed as 
                 //    // GUI Application

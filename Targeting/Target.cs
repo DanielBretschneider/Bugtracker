@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace bugracker.Targeting
+namespace Bugtracker.Targeting
 {
     enum TargetType
     {
@@ -9,11 +9,11 @@ namespace bugracker.Targeting
     }
     class Target
     {
-        public bool        Default { get; set; }
-        public TargetType  TargetType { get; set; }
-        public string      Name { get; set; }
-        public string      Path { get; set; }
-        public string      Address { get; set; }
+        public bool Default { get; set; }
+        public TargetType TargetType { get; set; }
+        public string Name { get; set; }
+        public string Path { get; set; }
+        public string Address { get; set; }
 
         public override string ToString()
         {

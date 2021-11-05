@@ -1,8 +1,8 @@
-﻿using Bugtracker.GlobalsInformation;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using Bugtracker.Configuration;
 
-namespace bugracker.Targeting
+namespace Bugtracker.Targeting
 {
     class TargetManager
     {
@@ -16,9 +16,9 @@ namespace bugracker.Targeting
 
         public Target GetTargetByName(string name)
         {
-            foreach(Target t in Targets)
+            foreach (Target t in Targets)
             {
-                if(t.Name == name)
+                if (t.Name == name)
                     return t;
             }
             return null;
@@ -28,7 +28,7 @@ namespace bugracker.Targeting
         {
             string returnString = "";
 
-            foreach(Target t in Targets)
+            foreach (Target t in Targets)
             {
                 returnString += t.ToString() + Environment.NewLine;
             }
