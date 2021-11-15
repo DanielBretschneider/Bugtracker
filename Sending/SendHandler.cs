@@ -3,6 +3,7 @@ using Bugtracker.Targeting;
 using System.Collections.Generic;
 using System.IO;
 using Bugtracker.Configuration;
+using Bugtracker.Problem_Descriptors;
 
 namespace Bugtracker.Sending
 {
@@ -46,7 +47,7 @@ namespace Bugtracker.Sending
         /// Sends bugtracker folders either by copy or per mail
         /// </summary>
         /// <returns>The status of sending completion of all folders</returns>
-        public List<bool> Send()
+        public List<bool> Send(ProblemDescriptor problemDescriptor = null)
         {
             List<bool> completionStatus = new List<bool>();
 
@@ -65,7 +66,7 @@ namespace Bugtracker.Sending
         /// to default target
         /// </summary>
         /// <returns>The status of sending completion of all folders</returns>
-        public bool SendPerMail(Target t)
+        public bool SendPerMail(Target t, ProblemDescriptor problemDescriptor = null)
         {
             //TODO Implement in next version.
 
@@ -77,7 +78,7 @@ namespace Bugtracker.Sending
         /// to default target
         /// </summary>
         /// <returns>The status of sending completion of all folders</returns>
-        public bool SendPerCopy(Target t)
+        public bool SendPerCopy(Target t, ProblemDescriptor problemDescriptor = null)
         {
             if ((t.Path != null || t.Path != ""))
             {
@@ -86,6 +87,10 @@ namespace Bugtracker.Sending
                     foreach (DirectoryInfo di in RunningConfiguration.GetInstance().BugtrackerFolders)
                     {
                         Directory.CreateDirectory(t.Path + "\\" + di.Name);
+
+                        if(problemDescriptor != null)
+                            CreateProblemDescriptionFile(t.Path + "\\" + di.Name + "\\" + problemDescriptor.ProblemCategory + "_Problem_Description", problemDescriptor);
+
                         BugtrackerUtils.DirectoryCopy(di.FullName, t.Path + "\\" + di.Name, true);
                     }
 
@@ -94,6 +99,14 @@ namespace Bugtracker.Sending
             }
 
             return false;
+        }
+
+        public void CreateProblemDescriptionFile(string path, ProblemDescriptor problemDescriptor)
+        {
+            using (StreamWriter sw = File.CreateText(path))
+            {
+                sw.WriteLine(problemDescriptor.ProblemDescription);
+            }
         }
     }
 }

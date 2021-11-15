@@ -15,36 +15,30 @@ namespace Bugtracker.InternalApplication
         /// <summary>
         /// A list of all managed Applications
         /// </summary>
-        private List<Application> applications;
+        public List<Application> Applications { get; set; }
 
         /// <summary>
         /// Default Constructor
         /// </summary>
         public ApplicationManager()
         {
-            applications = ConfigHandler.GetSpecifiedApplications();
-        }
-
-        public void Init()
-        {
-            //get all pre configured applications from config.xml
-            applications = ConfigHandler.GetSpecifiedApplications();
+            Applications = new List<Application>();
         }
 
         public void AddApplication(Application app)
         {
-            applications.Add(app);
+            Applications.Add(app);
         }
 
         public List<Application> GetApplications()
         {
-            return applications;
+            return Applications;
         }
 
         public List<string> GetApplicationNames()
         {
             List<string> appNames = new List<string>();
-            foreach (Application app in applications)
+            foreach (Application app in Applications)
             {
                 appNames.Add(app.Name);
             }
@@ -55,7 +49,7 @@ namespace Bugtracker.InternalApplication
         {
             string applicationList = "";
 
-            foreach (Application a in applications)
+            foreach (Application a in Applications)
             {
                 applicationList += a.ToString() + Environment.NewLine;
             }
@@ -65,7 +59,7 @@ namespace Bugtracker.InternalApplication
 
         internal Application GetApplicationByName(string appNameParameter)
         {
-            foreach (Application app in applications)
+            foreach (Application app in Applications)
             {
                 if (app.Name == appNameParameter)
                     return app;

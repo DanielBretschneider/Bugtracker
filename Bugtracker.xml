@@ -104,21 +104,21 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Bugtracker.Configuration.ConfigHandler.GetSpecifiedApplications">
+        <member name="M:Bugtracker.Configuration.ConfigHandler.GetSpecifiedApplications(System.String)">
             <summary>
             Returns a List of applications specified in the logfile
             Parameters are loglocation type, path, filename (regex), find (per timeperiod)
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Bugtracker.Configuration.ConfigHandler.IsLoggingEnabled">
+        <member name="M:Bugtracker.Configuration.ConfigHandler.IsLoggingEnabled(System.String)">
             <summary>
             To log, or not to log.
             Checks if logging is enabled via the logger - enabled xml tag and attribute
             </summary>
             <returns></returns>
         </member>
-        <member name="P:Bugtracker.Configuration.RunningConfiguration.PCInfo">
+        <member name="P:Bugtracker.Configuration.RunningConfiguration.PcInfo">
             <summary>
             PC Info Object
             </summary>
@@ -319,7 +319,14 @@
             LOG_FILE_PATH stores the absolute path to bugtracker.log
             </summary>
         </member>
-        <member name="F:Bugtracker.Globals_and_Information.Globals.CONFIG_FILE_PATH">
+        <member name="F:Bugtracker.Globals_and_Information.Globals.LOCAL_CONFIG_FILE_PATH">
+            <summary>
+            CONFIG_FILE_PATH holds the path where the configuration xml file is stored
+            The 'x' on the end of filename can be changed into a combination of pc name and 
+            domain.
+            </summary>
+        </member>
+        <member name="F:Bugtracker.Globals_and_Information.Globals.LOCAL_CONFIG_FILES_PATH">
             <summary>
             CONFIG_FILE_PATH holds the path where the configuration xml file is stored
             The 'x' on the end of filename can be changed into a combination of pc name and 
@@ -391,6 +398,12 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:Bugtracker.Globals_and_Information.ServerUtils.GetServerStatus">
+            <summary>
+            Method to test if server path still exists
+            </summary>
+            <returns>Returns DateTime of last connection-test, return 0,0,0 DateTime when not connected.</returns>
+        </member>
         <member name="T:Bugtracker.Globals_and_Information.Singleton`1">
             <summary>
             Singleton Class from User: Moo-Juice
@@ -398,28 +411,45 @@
             </summary>
             <typeparam name="T"></typeparam>
         </member>
-        <member name="T:Bugtracker.GUI.Form1">
+        <member name="T:Bugtracker.GUI.Bugtracker">
             <summary>
             Default Form-Window for GUI
             </summary>
         </member>
-        <member name="M:Bugtracker.GUI.Form1.#ctor">
+        <member name="M:Bugtracker.GUI.Bugtracker.#ctor">
             <summary>
             /Constructor
             </summary>
         </member>
-        <member name="F:Bugtracker.GUI.Form1.components">
+        <member name="F:Bugtracker.GUI.Bugtracker.components">
             <summary>
             Required designer variable.
             </summary>
         </member>
-        <member name="M:Bugtracker.GUI.Form1.Dispose(System.Boolean)">
+        <member name="M:Bugtracker.GUI.Bugtracker.Dispose(System.Boolean)">
             <summary>
             Clean up any resources being used.
             </summary>
             <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         </member>
-        <member name="M:Bugtracker.GUI.Form1.InitializeComponent">
+        <member name="M:Bugtracker.GUI.Bugtracker.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:Bugtracker.GUI.PCInfo.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:Bugtracker.GUI.PCInfo.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:Bugtracker.GUI.PCInfo.InitializeComponent">
             <summary>
             Required method for Designer support - do not modify
             the contents of this method with the code editor.
@@ -462,7 +492,7 @@
              </summary>
             
         </member>
-        <member name="F:Bugtracker.InternalApplication.ApplicationManager.applications">
+        <member name="P:Bugtracker.InternalApplication.ApplicationManager.Applications">
             <summary>
             A list of all managed Applications
             </summary>
@@ -535,6 +565,13 @@
             Append message to log file
             </summary>
             <param name="msg"></param>
+        </member>
+        <member name="M:Bugtracker.Problem_Descriptors.ProblemManager.GetDescriptionForProblemByName(System.String)">
+            <summary>
+            Returns First Problem Description for Given Problem by name
+            </summary>
+            <param name="problemName"></param>
+            <returns></returns>
         </member>
         <member name="T:Bugtracker.Program">
             <summary>
@@ -610,20 +647,20 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Bugtracker.Sending.SendHandler.Send">
+        <member name="M:Bugtracker.Sending.SendHandler.Send(Bugtracker.Problem_Descriptors.ProblemDescriptor)">
             <summary>
             Sends bugtracker folders either by copy or per mail
             </summary>
             <returns>The status of sending completion of all folders</returns>
         </member>
-        <member name="M:Bugtracker.Sending.SendHandler.SendPerMail(Bugtracker.Targeting.Target)">
+        <member name="M:Bugtracker.Sending.SendHandler.SendPerMail(Bugtracker.Targeting.Target,Bugtracker.Problem_Descriptors.ProblemDescriptor)">
             <summary>
             Per Default sends all folders created in this bugtracker session per mail
             to default target
             </summary>
             <returns>The status of sending completion of all folders</returns>
         </member>
-        <member name="M:Bugtracker.Sending.SendHandler.SendPerCopy(Bugtracker.Targeting.Target)">
+        <member name="M:Bugtracker.Sending.SendHandler.SendPerCopy(Bugtracker.Targeting.Target,Bugtracker.Problem_Descriptors.ProblemDescriptor)">
             <summary>
             Per Default send all folder created in this bugtracker session per copy
             to default target

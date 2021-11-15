@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Xml;
 using Bugtracker.Exceptions;
 using Bugtracker.Globals_and_Information;
 using Bugtracker.InternalApplication;
 using Bugtracker.Logging;
+using Bugtracker.Problem_Descriptors;
 using Bugtracker.Targeting;
 using static Bugtracker.Logging.Log;
 
@@ -22,7 +25,7 @@ namespace Bugtracker.Configuration
         /// </summary>
         public ConfigHandler()
         {
-            //nop
+
         }
 
         /// <summary>
@@ -35,7 +38,7 @@ namespace Bugtracker.Configuration
             int appCount = 0;
 
             // start reading autostart.config.xml
-            using (XmlReader reader = XmlReader.Create(Globals.CONFIG_FILE_PATH))
+            using (XmlReader reader = XmlReader.Create(Globals.LOCAL_CONFIG_FILE_PATH))
             {
                 while (reader.Read())
                 {
@@ -52,18 +55,55 @@ namespace Bugtracker.Configuration
             return appCount;
         }
 
+        public static bool IsGUIEnabledOnStartup(string customConfigPath = Globals.LOCAL_CONFIG_FILE_PATH)
+        {
+            bool GUIEnabled = false;
+
+            using (XmlReader reader = XmlReader.Create(customConfigPath))
+            {
+                while (reader.Read())
+                {
+                    if (reader.NodeType == XmlNodeType.Element)
+                    {
+                        if (reader.LocalName.Equals("startup"))
+                            Boolean.TryParse(reader.GetAttribute("startGUI"), out GUIEnabled);
+                    }
+                }
+            }
+
+            return GUIEnabled;
+        }
+
+        public static string GetConfigurationFolderPath(string customConfigPath = Globals.LOCAL_CONFIG_FILE_PATH)
+        {
+            string path = "";
+
+            using (XmlReader reader = XmlReader.Create(Globals.LOCAL_CONFIG_FILE_PATH))
+            {
+                while (reader.Read())
+                {
+                    if (reader.NodeType == XmlNodeType.Element)
+                    {
+                        if (reader.LocalName.Equals("startup"))
+                            path = reader.GetAttribute("loadConfigsFrom");
+                    }
+                }
+            }
+
+            return path;
+        }
 
         /// <summary>
         /// Returns a List of applications specified in the logfile
         /// Parameters are loglocation type, path, filename (regex), find (per timeperiod)
         /// </summary>
         /// <returns></returns>
-        public static List<Application> GetSpecifiedApplications()
+        public static List<Application> GetSpecifiedApplications(string customConfigPath = Globals.LOCAL_CONFIG_FILE_PATH)
         {
             List<Application> applications = new List<Application>();
 
             // start reading autostart.config.xml
-            using (XmlReader reader = XmlReader.Create(Globals.CONFIG_FILE_PATH))
+            using (XmlReader reader = XmlReader.Create(customConfigPath))
             {
                 Application currentApplication = null;
 
@@ -116,12 +156,92 @@ namespace Bugtracker.Configuration
             return applications;
         }
 
-        public static List<Target> GetSpecifiedTargets()
+        public static List<ProblemCategory> GetSpecifiedProblemCategories(string customConfigPath = Globals.LOCAL_CONFIG_FILE_PATH)
+        {
+            List<ProblemCategory> problemCategories = new List<ProblemCategory>();
+
+            // start reading autostart.config.xml
+            using (XmlReader reader = XmlReader.Create(customConfigPath))
+            {
+                ProblemCategory currentProblemCategory = null;
+
+                while (reader.Read())
+                {
+                    if (reader.NodeType == XmlNodeType.Element)
+                    {
+                        if (reader.LocalName.Equals("problem-category"))
+                        {
+                            ProblemCategory categoryToAdd = new ProblemCategory();
+                            categoryToAdd.Name = reader.GetAttribute("name");
+                            currentProblemCategory = categoryToAdd;
+                            problemCategories.Add(categoryToAdd);
+                        }
+
+                        if (reader.Name.Equals("description"))
+                        {
+                            string descriptorText = reader.GetAttribute("text");
+
+                            if (currentProblemCategory != null)
+                                currentProblemCategory.Descriptions.Add(descriptorText);
+                        }
+
+                        if(reader.Name.Equals("app-selection"))
+                        {
+                            string selection = reader.ReadElementContentAsString();
+                            System.Diagnostics.Debug.WriteLine("selection text: " + selection);
+                            string[] splitSelect = selection.Split(',');
+
+                            
+
+                            if (currentProblemCategory != null)
+                            {
+                                foreach (string s in splitSelect)
+                                {
+                                    Regex.Replace(s, @"\s+", "");
+
+                                    if (s.Equals("All"))
+                                        currentProblemCategory.SelectAllApplications = true;
+
+                                    if (s.Equals("Screen"))
+                                        currentProblemCategory.SelectScreenshot = true;
+
+                                    if (!s.Equals("All") && !s.Equals("Screen") && !s.Equals(""))
+                                    {
+                                        //currentProblemCategory.SelectedApplications.Add(RunningConfiguration.GetInstance().ApplicationManager.GetApplicationByName(s));
+
+                                        foreach(string path in Directory.GetFiles(GetConfigurationFolderPath(), "*.xml"))
+                                        {
+                                            foreach (Application a in GetSpecifiedApplications(path))
+                                            {
+                                                if (a.Name == s)
+                                                {
+                                                    currentProblemCategory.SelectedApplications.Add(a);
+                                                }
+                                            }
+                                        }
+
+                                    }
+                                        
+                                }
+
+                                Logger.Log("Content of " + currentProblemCategory.Name + " : " + currentProblemCategory.SelectedApplications.ToString(), LoggingSeverity.Info);
+                                Logger.Log("Screenshot selection: " + currentProblemCategory.SelectScreenshot, LoggingSeverity.Info);
+                                Logger.Log("Alle apps selected " + currentProblemCategory.SelectScreenshot, LoggingSeverity.Info);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return problemCategories;
+        }
+
+        public static List<Target> GetSpecifiedTargets(string customConfigPath = Globals.LOCAL_CONFIG_FILE_PATH)
         {
             List<Target> targets = new List<Target>();
 
             // start reading autostart.config.xml
-            using (XmlReader reader = XmlReader.Create(Globals.CONFIG_FILE_PATH))
+            using (XmlReader reader = XmlReader.Create(customConfigPath))
             {
 
                 IXmlLineInfo lineInfo = (IXmlLineInfo)reader;
@@ -161,9 +281,9 @@ namespace Bugtracker.Configuration
             return targets;
         }
 
-        public static LoggingSeverity GetLoggingSeverity()
+        public static LoggingSeverity GetLoggingSeverity(string customConfigPath = Globals.LOCAL_CONFIG_FILE_PATH)
         {
-            using (XmlReader reader = XmlReader.Create(Globals.CONFIG_FILE_PATH))
+            using (XmlReader reader = XmlReader.Create(customConfigPath))
             {
                 while (reader.Read())
                 {
@@ -199,13 +319,13 @@ namespace Bugtracker.Configuration
         /// Checks if logging is enabled via the logger - enabled xml tag and attribute
         /// </summary>
         /// <returns></returns>
-        public static bool IsLoggingEnabled()
+        public static bool IsLoggingEnabled(string customConfigPath = Globals.LOCAL_CONFIG_FILE_PATH)
         {
             // value of target aka site/ip to be pinged
             bool log = false;
 
             // start reading autostart.config.xml
-            using (XmlReader reader = XmlReader.Create(Globals.CONFIG_FILE_PATH))
+            using (XmlReader reader = XmlReader.Create(customConfigPath))
             {
 
                 while (reader.Read())

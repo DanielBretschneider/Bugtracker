@@ -10,9 +10,21 @@ namespace Bugtracker.Targeting
 
         public TargetManager()
         {
-            Targets = ConfigHandler.GetSpecifiedTargets();
+            Targets = new List<Target>();
         }
 
+        public List<Target> GetDefaultTargets()
+        {
+            List<Target> defaultTargets = new List<Target>();
+
+            foreach (Target target in Targets)
+            {
+                if (target.Default)
+                    defaultTargets.Add(target);
+            }
+
+            return defaultTargets;
+        }
 
         public Target GetTargetByName(string name)
         {

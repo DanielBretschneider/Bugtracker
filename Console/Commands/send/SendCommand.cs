@@ -38,13 +38,7 @@ namespace Bugtracker.Console.Commands.send
             TargetManager tm = RunningConfiguration.GetInstance().TargetManager;
             List<Target> targetsToSend = new List<Target>();
 
-            foreach (Target target in tm.Targets)
-            {
-                if (target.Default)
-                    targetsToSend.Add(target);
-            }
-
-            SendHandler sh = new SendHandler(targetsToSend);
+            SendHandler sh = new SendHandler(tm.GetDefaultTargets());
 
             (int, int) completionStatus = SendHandler.ReturnCompletionStatus(sh.Send());
 

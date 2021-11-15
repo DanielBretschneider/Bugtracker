@@ -46,7 +46,7 @@ namespace Bugtracker.Globals_and_Information
             string bugtrackFolderName = "Bugtracker_";
 
             // add pc name
-            bugtrackFolderName += RunningConfiguration.GetInstance().PCInfo.GetHostname();
+            bugtrackFolderName += RunningConfiguration.GetInstance().PcInfo.GetHostname();
 
             // build date format
             DateTime dt = DateTime.Now; // Or whatever

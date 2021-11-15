@@ -63,8 +63,8 @@ namespace Bugtracker
         static void StartGraphicalInterfaceApplication()
         {
             System.Windows.Forms.Application.EnableVisualStyles();
-            System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
-            System.Windows.Forms.Application.Run(new Form1());
+            //System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
+            System.Windows.Forms.Application.Run(new GUI.Bugtracker());
         }
 
 
@@ -114,7 +114,7 @@ namespace Bugtracker
             // decide which Bugtracker version should be
             // executed.
 
-            if (args.Length > 0 && args[0].Contains("gui"))
+            if ((args.Length > 0 && args[0].Contains("gui")) || ConfigHandler.IsGUIEnabledOnStartup())
                 //    // As the gui command line argument has been
                 //    // passed Bugtracker will be executed as 
                 //    // GUI Application

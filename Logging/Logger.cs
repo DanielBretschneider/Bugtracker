@@ -1,7 +1,9 @@
 ﻿using System;
 using System.IO;
+using System.Runtime.CompilerServices;
 using Bugtracker.Configuration;
 using Bugtracker.Globals_and_Information;
+using Microsoft.VisualBasic;
 
 namespace Bugtracker.Logging
 {
@@ -14,8 +16,24 @@ namespace Bugtracker.Logging
         Error = 1
     }
 
+    public class LoggedNewLineEventArgs : EventArgs
+    {
+        public LoggingSeverity LoggingSeverity { get; set; }
+        public string dateAndTime { get; set; }
+        public string Message { get; set; }
+
+        public LoggedNewLineEventArgs(LoggingSeverity loggingSeverity, string dateAndTime, string message)
+        {
+            this.LoggingSeverity = loggingSeverity;
+            this.dateAndTime = dateAndTime;
+            this.Message = message;
+        }
+    }
+
     static class Logger
     {
+        public static event EventHandler LoggedNewLine;
+
         /// <summary>
         /// Check if log file exists
         /// or has to be created
@@ -29,6 +47,8 @@ namespace Bugtracker.Logging
                 Directory.CreateDirectory(Globals.APPLICATION_DIRECTORY);
                 File.Create(Globals.LOG_FILE_PATH).Dispose();
             }
+
+
 
             // check if config file exists
             Logger.CheckConfigFile();
@@ -59,16 +79,18 @@ namespace Bugtracker.Logging
         public static void CheckConfigFile()
         {
             // check if local config exists
-            if (!File.Exists(Globals.CONFIG_FILE_PATH))
+            if (!File.Exists(Globals.LOCAL_CONFIG_FILE_PATH))
             {
                 // Create a file to write to.
-                using (StreamWriter sw = File.CreateText(Globals.CONFIG_FILE_PATH))
+                using (StreamWriter sw = File.CreateText(Globals.LOCAL_CONFIG_FILE_PATH))
                 {
                     // write xml content to file
                     sw.WriteLine(GetConfigFileContent());
                 }
             }
         }
+
+
 
         /// <summary>
         /// log message with priority
@@ -80,6 +102,8 @@ namespace Bugtracker.Logging
         /// <param name="priority"></param>
         public static void Log(string msg, LoggingSeverity loggingSeverity)
         {
+
+
             // get local date and time
             DateTime localDate = DateTime.Now;
 
@@ -87,12 +111,10 @@ namespace Bugtracker.Logging
             string dateAndTime = localDate.ToString("dd.MM.yyyy HH:mm:ss");
 
             // full message
-            string fmsg;
+            string fmsg = "";
 
             // checking if logging is enabled
             //TODO: Fix -> Singleton -> Stackoverflow RunningConfiguration.GetInstance().LoggerEnabled
-            if (ConfigHandler.IsLoggingEnabled() == false)
-                return;
 
             // different message, depends on priority
             switch (loggingSeverity)
@@ -112,6 +134,8 @@ namespace Bugtracker.Logging
                     AppendToFile(fmsg);
                     break;
             }
+
+            LoggedNewLine?.Invoke(null, new LoggedNewLineEventArgs(loggingSeverity, dateAndTime, fmsg));
         }
 
 
