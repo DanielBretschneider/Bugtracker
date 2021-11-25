@@ -30,7 +30,7 @@ namespace Bugtracker.Logging
         }
     }
 
-    static class Logger
+    public static class Logger
     {
         public static event EventHandler LoggedNewLine;
 

@@ -1,12 +1,15 @@
 ﻿using Bugtracker.Logging;
 using System;
+using System.Diagnostics;
 using System.IO;
+using System.Runtime.InteropServices;
+using System.Text;
 using Bugtracker.Capture.Screen;
 using Bugtracker.Configuration;
 
 namespace Bugtracker.Globals_and_Information
 {
-    static class BugtrackerUtils
+    public static class BugtrackerUtils
     {
 
         /// <summary>

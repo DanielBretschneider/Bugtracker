@@ -40,7 +40,7 @@ namespace Bugtracker.Capture.Screen
             Logger.Log("Building filename for screenshot file(s).", (LoggingSeverity)2);
 
             // PcInfo object
-            PCInfo pcinfo = new PCInfo();
+            PCInfo pcinfo = RunningConfiguration.GetInstance().PcInfo;
 
             // start with hostname
             string filename = "screenshot_" + pcinfo.GetHostname();

@@ -10,7 +10,7 @@ namespace Bugtracker.Sending
     /// <summary>
     /// Providing methods to send Bugtracker folders of local session to given targets.
     /// </summary>
-    class SendHandler
+    public class SendHandler
     {
         List<Target> targets;
         public SendHandler(List<Target> targets)

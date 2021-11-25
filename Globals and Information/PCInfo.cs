@@ -9,7 +9,7 @@ using Bugtracker.Logging;
 
 namespace Bugtracker.Globals_and_Information
 {
-    class PCInfo
+    public class PCInfo
     {
         /// <summary>
         /// constructor

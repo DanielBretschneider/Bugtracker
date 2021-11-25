@@ -48,10 +48,8 @@ namespace Bugtracker.Console
             {
                 return 0;
             }
-            else
-            {
-                return Marshal.GetLastWin32Error();
-            }
+
+            return Marshal.GetLastWin32Error();
         }
 
         /// <summary>
@@ -67,10 +65,8 @@ namespace Bugtracker.Console
             {
                 return 0;
             }
-            else
-            {
-                return Marshal.GetLastWin32Error();
-            }
+
+            return Marshal.GetLastWin32Error();
         }
 
         #endregion  // public static Methods

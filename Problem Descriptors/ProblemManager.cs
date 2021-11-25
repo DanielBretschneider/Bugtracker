@@ -7,7 +7,7 @@ using Bugtracker.Configuration;
 
 namespace Bugtracker.Problem_Descriptors
 {
-    class ProblemManager
+    public class ProblemManager
     {
         public List<ProblemCategory> ProblemCategories { get; set; }
 

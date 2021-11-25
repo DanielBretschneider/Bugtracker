@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Bugtracker.Problem_Descriptors
 {
-    class ProblemCategory
+    public class ProblemCategory
     {
         public string Name { get; set; }
         public List<string> Descriptions { get; set; }

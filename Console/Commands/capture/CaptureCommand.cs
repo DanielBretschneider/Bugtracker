@@ -151,8 +151,8 @@ namespace Bugtracker.Console.Commands.capture
                 Process.Start(RunningConfiguration.GetInstance().NewestBugtrackerFolder.FullName);
                 return "Opening Path";
             }
-            else
-                return "No path set yet!";
+
+            return "No path set yet!";
         }
     }
 }

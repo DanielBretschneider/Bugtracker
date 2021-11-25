@@ -4,15 +4,25 @@ using Bugtracker.Configuration;
 
 namespace Bugtracker.Targeting
 {
-    class TargetManager
+    /// <summary>
+    /// 
+    /// </summary>
+    public class TargetManager
     {
         public List<Target> Targets { get; set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public TargetManager()
         {
             Targets = new List<Target>();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public List<Target> GetDefaultTargets()
         {
             List<Target> defaultTargets = new List<Target>();
@@ -26,6 +36,11 @@ namespace Bugtracker.Targeting
             return defaultTargets;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public Target GetTargetByName(string name)
         {
             foreach (Target t in Targets)
