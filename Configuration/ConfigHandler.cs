@@ -55,6 +55,24 @@ namespace Bugtracker.Configuration
             return appCount;
         }
 
+        public static string GetMainServerAddress(string customConfigPath = Globals.LOCAL_CONFIG_FILES_PATH)
+        {
+            string serverAddress = "";
+
+            using (XmlReader reader = XmlReader.Create(customConfigPath))
+            {
+                while (reader.Read())
+                {
+                    if (reader.NodeType == XmlNodeType.Element)
+                    {
+                        if (reader.LocalName.Equals("startup"))
+                            serverAddress = reader.GetAttribute("mainserver");
+                    }
+                }
+            }
+
+            return serverAddress;
+        }
         public static bool IsGUIEnabledOnStartup(string customConfigPath = Globals.LOCAL_CONFIG_FILE_PATH)
         {
             bool GUIEnabled = false;
@@ -191,7 +209,7 @@ namespace Bugtracker.Configuration
                             System.Diagnostics.Debug.WriteLine("selection text: " + selection);
                             string[] splitSelect = selection.Split(',');
 
-                            
+                            string configurationPath = Globals.LOCAL_CONFIG_FILES_PATH;
 
                             if (currentProblemCategory != null)
                             {
@@ -207,9 +225,11 @@ namespace Bugtracker.Configuration
 
                                     if (!s.Equals("All") && !s.Equals("Screen") && !s.Equals(""))
                                     {
-                                        //currentProblemCategory.SelectedApplications.Add(RunningConfiguration.GetInstance().ApplicationManager.GetApplicationByName(s));
 
-                                        foreach(string path in Directory.GetFiles(GetConfigurationFolderPath(), "*.xml"))
+                                        if (Directory.Exists(GetConfigurationFolderPath()))
+                                            configurationPath = GetConfigurationFolderPath();
+
+                                        foreach (string path in Directory.GetFiles(configurationPath, "*.xml"))
                                         {
                                             foreach (Application a in GetSpecifiedApplications(path))
                                             {
@@ -352,29 +372,25 @@ namespace Bugtracker.Configuration
         {
             if (content.Contains("onExist"))
                 return Application.ShowAppSpecifier.onExist;
-            else if (content.Contains("show"))
+            if (content.Contains("show"))
                 return Application.ShowAppSpecifier.show;
-            else if (content.Contains("hide"))
+            if (content.Contains("hide"))
                 return Application.ShowAppSpecifier.hide;
-            else
+            string showSpecifierList = "";
+
+            int i = 0;
+            int l = Enum.GetNames(typeof(Application.ShowAppSpecifier)).Count();
+            foreach (string showSpecifier in Enum.GetNames(typeof(Application.ShowAppSpecifier)))
             {
-                string showSpecifierList = "";
-
-                int i = 0;
-                int l = Enum.GetNames(typeof(Application.ShowAppSpecifier)).Count();
-                foreach (string showSpecifier in Enum.GetNames(typeof(Application.ShowAppSpecifier)))
-                {
-                    i++;
-                    if (i < l - 1)
-                        showSpecifierList += showSpecifier + ", ";
-                    else
-                        showSpecifierList += showSpecifier;
-                }
-
-                throw new ConfigFileParseException(appname + " at line " + line + "postion: " + linePosition +
-                    ".show=\"\" has to be one of the following: " + showSpecifierList);
+                i++;
+                if (i < l - 1)
+                    showSpecifierList += showSpecifier + ", ";
+                else
+                    showSpecifierList += showSpecifier;
             }
 
+            throw new ConfigFileParseException(appname + " at line " + line + "postion: " + linePosition +
+                                               ".show=\"\" has to be one of the following: " + showSpecifierList);
         }
 
     }

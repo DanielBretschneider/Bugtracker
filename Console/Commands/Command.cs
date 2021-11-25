@@ -192,8 +192,7 @@ namespace Bugtracker.Console.Commands
         {
             if (GivenArguments.Count == 0)
                 return true;
-            else
-                return false;
+            return false;
         }
 
         public virtual string Run(List<string> arguments)
@@ -208,40 +207,34 @@ namespace Bugtracker.Console.Commands
                 {
                     if (SubCommands.Count != 0)
                         return GetAllHelpMessages();
-                    else
-                        return GetSpecificHelpMessage();
+                    return GetSpecificHelpMessage();
                 }
-                else
+
+                foreach (Command subCommand in SubCommands)
                 {
-                    foreach (Command subCommand in SubCommands)
+                    if (subCommand.CommandName == GivenArguments[0] || subCommand.CommandAlias == GivenArguments[0])
                     {
-                        if (subCommand.CommandName == GivenArguments[0] || subCommand.CommandAlias == GivenArguments[0])
-                        {
-                            arguments.RemoveAt(0);
-                            return subCommand.Run(arguments);
-                        }
+                        arguments.RemoveAt(0);
+                        return subCommand.Run(arguments);
                     }
-
-                    if (CommandRequiredAttributes != null)
-                        return Execute();
-
-                    string argumentList = "";
-
-                    foreach (string arg in arguments)
-                    {
-                        argumentList += arg + " ";
-                    }
-
-                    return "\"" + CommandReverse + " " + argumentList + "\"" + "is not available, type: " + CommandName + "/" + CommandAlias + " help" + " for a list of all arguments." + Environment.NewLine;
                 }
-            }
-            else
-            {
-                if (CommandRequiredAttributes == null)
+
+                if (CommandRequiredAttributes != null)
                     return Execute();
-                else
-                    return GlobalMessages.TOO_FEW_ARGUMENTS + " Use " + CommandReverse + " help, for a list of all suitable arguments" + Environment.NewLine;
+
+                string argumentList = "";
+
+                foreach (string arg in arguments)
+                {
+                    argumentList += arg + " ";
+                }
+
+                return "\"" + CommandReverse + " " + argumentList + "\"" + "is not available, type: " + CommandName + "/" + CommandAlias + " help" + " for a list of all arguments." + Environment.NewLine;
             }
+
+            if (CommandRequiredAttributes == null)
+                return Execute();
+            return GlobalMessages.TOO_FEW_ARGUMENTS + " Use " + CommandReverse + " help, for a list of all suitable arguments" + Environment.NewLine;
         }
 
 
@@ -249,8 +242,7 @@ namespace Bugtracker.Console.Commands
         {
             if (RootCommand != null)
                 return RootCommand.RootExecution();
-            else
-                return "Not implemented yet";
+            return "Not implemented yet";
         }
 
         public virtual string RootExecution()

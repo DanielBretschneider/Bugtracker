@@ -4,7 +4,7 @@ using System.IO;
 
 namespace Bugtracker.InternalApplication
 {
-    class Application
+    public class Application
     {
         public enum ShowAppSpecifier
         {
@@ -42,8 +42,7 @@ namespace Bugtracker.InternalApplication
                 System.Diagnostics.Debug.WriteLine("File check exist: " + Name + ": " + (LogFiles[0].Path != "" && Directory.Exists(LogFiles[0].Path)));
                 if (LogFiles[0].Path != "" && Directory.Exists(LogFiles[0].Path))
                     return true;
-                else
-                    return false;
+                return false;
             }
         }
 

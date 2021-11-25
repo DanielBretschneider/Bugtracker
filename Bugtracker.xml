@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <doc>
     <assembly>
-        <name>Bugtracker</name>
+        <name>BugtrackerSystem</name>
     </assembly>
     <members>
         <member name="M:Bugtracker.Capture.Log.LogfileFetcher.#ctor(System.Collections.Generic.List{Bugtracker.InternalApplication.Application})">
@@ -118,9 +118,139 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="T:Bugtracker.Configuration.ServerStatus">
+            <summary>
+            The current status of the Server of the running instance server connection
+            </summary>
+        </member>
+        <member name="F:Bugtracker.Configuration.ServerStatus.Available">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="F:Bugtracker.Configuration.ServerStatus.NotAvailable">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Bugtracker.Configuration.ConfigSource">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Bugtracker.Configuration.RunningConfiguration.ApplicationManager">
+            <summary>
+            The Manager Object for modifying Applications
+            </summary>
+        </member>
+        <member name="P:Bugtracker.Configuration.RunningConfiguration.TargetManager">
+            <summary>
+            The Manager Object for modifying Targets
+            </summary>
+        </member>
+        <member name="P:Bugtracker.Configuration.RunningConfiguration.ProblemManager">
+            <summary>
+            The Manager Object for modifying Problems and their categories
+            </summary>
+        </member>
+        <member name="P:Bugtracker.Configuration.RunningConfiguration.VariableManager">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Bugtracker.Configuration.RunningConfiguration.ServerStatus">
+            <summary>
+            The current status of the Server, where configurations are loaded from and Captures are sent
+            </summary>
+        </member>
+        <member name="P:Bugtracker.Configuration.RunningConfiguration.ServerAddress">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Bugtracker.Configuration.RunningConfiguration.ServerLastConnectionTime">
+            <summary>
+            The last successful connection time to the main server
+            </summary>
+        </member>
+        <member name="P:Bugtracker.Configuration.RunningConfiguration.ServerPath">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Bugtracker.Configuration.RunningConfiguration.ConfigSource">
+            <summary>
+            
+            </summary>
+        </member>
         <member name="P:Bugtracker.Configuration.RunningConfiguration.PcInfo">
             <summary>
-            PC Info Object
+            PC Info Object containing useful information about the host PC
+            </summary>
+        </member>
+        <member name="P:Bugtracker.Configuration.RunningConfiguration.MainServer">
+            <summary>
+            The Main Server Object containing the ServerStatus
+            </summary>
+        </member>
+        <member name="P:Bugtracker.Configuration.RunningConfiguration.BugtrackerFolderName">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Bugtracker.Configuration.RunningConfiguration.LoggerEnabled">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Bugtracker.Configuration.RunningConfiguration.LogSeverity">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Bugtracker.Configuration.RunningConfiguration.TargetPath">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Bugtracker.Configuration.RunningConfiguration.MainGui">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Bugtracker.Configuration.RunningConfiguration.HideConsole">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Bugtracker.Configuration.RunningConfiguration.ConfigurationFolderPath">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Bugtracker.Configuration.RunningConfiguration.StartupTime">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Bugtracker.Configuration.RunningConfiguration.BugtrackerFolders">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Bugtracker.Configuration.RunningConfiguration.NewestBugtrackerFolder">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Bugtracker.Configuration.RunningConfiguration.#ctor">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Bugtracker.Configuration.RunningConfiguration.InitServerConnectionStatusTimer">
+            <summary>
+            
             </summary>
         </member>
         <member name="T:Bugtracker.Console.Commands.Command">
@@ -328,7 +458,14 @@
         </member>
         <member name="F:Bugtracker.Globals_and_Information.Globals.LOCAL_CONFIG_FILES_PATH">
             <summary>
-            CONFIG_FILE_PATH holds the path where the configuration xml file is stored
+            CONFIG_FILE_PATH holds the path where the configuration xml files are stored
+            The 'x' on the end of filename can be changed into a combination of pc name and 
+            domain.
+            </summary>
+        </member>
+        <member name="F:Bugtracker.Globals_and_Information.Globals.LOCAL_PLUGIN_FILES_PATH">
+            <summary>
+            CONFIG_FILE_PATH holds the path where the configuration xml files are stored
             The 'x' on the end of filename can be changed into a combination of pc name and 
             domain.
             </summary>
@@ -398,11 +535,26 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Bugtracker.Globals_and_Information.ServerUtils.GetServerStatus">
+        <member name="P:Bugtracker.Globals_and_Information.Server.ServerStatus">
             <summary>
-            Method to test if server path still exists
+            
             </summary>
-            <returns>Returns DateTime of last connection-test, return 0,0,0 DateTime when not connected.</returns>
+        </member>
+        <member name="P:Bugtracker.Globals_and_Information.Server.ServerPath">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Bugtracker.Globals_and_Information.Server.CheckInterval">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Bugtracker.Globals_and_Information.Server.#ctor(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="serverPath"></param>
         </member>
         <member name="T:Bugtracker.Globals_and_Information.Singleton`1">
             <summary>
@@ -410,50 +562,6 @@
             https://stackoverflow.com/questions/16865413/implementing-singleton-inheritable-class-in-c-sharp
             </summary>
             <typeparam name="T"></typeparam>
-        </member>
-        <member name="T:Bugtracker.GUI.Bugtracker">
-            <summary>
-            Default Form-Window for GUI
-            </summary>
-        </member>
-        <member name="M:Bugtracker.GUI.Bugtracker.#ctor">
-            <summary>
-            /Constructor
-            </summary>
-        </member>
-        <member name="F:Bugtracker.GUI.Bugtracker.components">
-            <summary>
-            Required designer variable.
-            </summary>
-        </member>
-        <member name="M:Bugtracker.GUI.Bugtracker.Dispose(System.Boolean)">
-            <summary>
-            Clean up any resources being used.
-            </summary>
-            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        </member>
-        <member name="M:Bugtracker.GUI.Bugtracker.InitializeComponent">
-            <summary>
-            Required method for Designer support - do not modify
-            the contents of this method with the code editor.
-            </summary>
-        </member>
-        <member name="F:Bugtracker.GUI.PCInfo.components">
-            <summary>
-            Required designer variable.
-            </summary>
-        </member>
-        <member name="M:Bugtracker.GUI.PCInfo.Dispose(System.Boolean)">
-            <summary>
-            Clean up any resources being used.
-            </summary>
-            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        </member>
-        <member name="M:Bugtracker.GUI.PCInfo.InitializeComponent">
-            <summary>
-            Required method for Designer support - do not modify
-            the contents of this method with the code editor.
-            </summary>
         </member>
         <member name="P:Bugtracker.InternalApplication.Application.Name">
             <summary>
@@ -566,6 +674,11 @@
             </summary>
             <param name="msg"></param>
         </member>
+        <member name="T:Bugtracker.Plugin.IPlugin">
+            <summary>
+            Plugin Interface, should be implemented when creating a plugin type
+            </summary>
+        </member>
         <member name="M:Bugtracker.Problem_Descriptors.ProblemManager.GetDescriptionForProblemByName(System.String)">
             <summary>
             Returns First Problem Description for Given Problem by name
@@ -579,7 +692,7 @@
             bugtracker programming project
             </summary>
         </member>
-        <member name="M:Bugtracker.Program.SetupApplication">
+        <member name="M:Bugtracker.Program.SetupApplication(System.Collections.Generic.IEnumerable{System.String})">
             <summary>
             
             </summary>
@@ -592,7 +705,7 @@
             After successfully sending the file it gets deleted
             </summary>
         </member>
-        <member name="M:Bugtracker.Program.StartGraphicalInterfaceApplication">
+        <member name="M:Bugtracker.Program.StartCommandLineApplication(System.String[])">
             <summary>
             This application is responsible for displaying
             the Bugtracker GUI. As the GUI will be developed in 
@@ -601,8 +714,6 @@
             This method is only called when no command line arguments
             have been passed
             </summary>
-        </member>
-        <member name="M:Bugtracker.Program.StartCommandLineApplication(System.String[])">
             <summary>
             Run bugtracker as CMDlet using
             ConsoleHandler. 
@@ -666,6 +777,60 @@
             to default target
             </summary>
             <returns>The status of sending completion of all folders</returns>
+        </member>
+        <member name="P:Bugtracker.Targeting.Target.Default">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Bugtracker.Targeting.Target.TargetType">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Bugtracker.Targeting.Target.Name">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Bugtracker.Targeting.Target.Path">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Bugtracker.Targeting.Target.Address">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:Bugtracker.Targeting.TargetManager">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Bugtracker.Targeting.TargetManager.#ctor">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Bugtracker.Targeting.TargetManager.GetDefaultTargets">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Bugtracker.Targeting.TargetManager.GetTargetByName(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Bugtracker.Variables.VariableManager.#ctor(System.Object)">
+            <summary>
+            Loads 
+            </summary>
+            <param name="runningConfiguration"></param>
         </member>
     </members>
 </doc>

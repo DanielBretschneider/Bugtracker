@@ -1,10 +1,12 @@
 ﻿using Bugtracker.Console;
-using Bugtracker.GUI;
 using Bugtracker.Logging;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Bugtracker.Configuration;
 using Bugtracker.Globals_and_Information;
+using Bugtracker.Plugin;
 
 namespace Bugtracker
 {
@@ -15,11 +17,10 @@ namespace Bugtracker
     /// </summary>
     static class Program
     {
-
         /// <summary>
         /// 
         /// </summary>
-        private static void SetupApplication()
+        private static void SetupApplication(IEnumerable<string> args)
         {
             // log start of application
             Logger.Log("Bugtracker version 2 was started", (LoggingSeverity)2);
@@ -27,11 +28,9 @@ namespace Bugtracker
             // create tmp folder
             CreateTempFolder();
 
-            // start application lookup
-            // find installed applications
-
+            if(!args.Contains("-sp"))
+                PluginManager.Load();
         }
-
 
         /// <summary>
         /// Creates directory in bugtrack folder where the 
@@ -60,12 +59,6 @@ namespace Bugtracker
         /// This method is only called when no command line arguments
         /// have been passed
         /// </summary>
-        static void StartGraphicalInterfaceApplication()
-        {
-            System.Windows.Forms.Application.EnableVisualStyles();
-            //System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
-            System.Windows.Forms.Application.Run(new GUI.Bugtracker());
-        }
 
 
         /// <summary>
@@ -90,6 +83,7 @@ namespace Bugtracker
             // start console version of bugtracker
             BugtrackConsole.StartBugtrackerConsoleLogic(args);
 
+
             // close console session
             ConsoleHandler.Destroy();
         }
@@ -99,7 +93,7 @@ namespace Bugtracker
         /// This is the main method.
         /// </summary>
         [STAThread]
-        static void Main(String[] args)
+        private static void Main(String[] args)
         {
             //Initialize Running Configuration Instance, before everything else
             RunningConfiguration runningConfiguration = RunningConfiguration.GetInstance();
@@ -109,20 +103,15 @@ namespace Bugtracker
 
             // set up basic application directory 
             // and initialize logging
-            SetupApplication();
+            SetupApplication(args);
+
+            if (args.Contains("-sp"))
+                args = new[] {""};
 
             // decide which Bugtracker version should be
             // executed.
 
-            if ((args.Length > 0 && args[0].Contains("gui")) || ConfigHandler.IsGUIEnabledOnStartup())
-                //    // As the gui command line argument has been
-                //    // passed Bugtracker will be executed as 
-                //    // GUI Application
-                StartGraphicalInterfaceApplication();
-            else
-                //    // Command line Arguments have been entered
-                //    // so the application will be executed on terminal
-                //    StartCommandLineApplication();
+            if (!runningConfiguration.HideConsole)
                 StartCommandLineApplication(args);
         }
     }

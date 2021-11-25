@@ -1,4 +1,5 @@
-﻿using Bugtracker.Globals_and_Information;
+﻿using Bugtracker.Attributes;
+using Bugtracker.Globals_and_Information;
 using Bugtracker.InternalApplication;
 using Bugtracker.Logging;
 using Bugtracker.Problem_Descriptors;
@@ -6,123 +7,223 @@ using Bugtracker.Targeting;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
+using Bugtracker.Variables;
+using static Bugtracker.Configuration.ConfigHandler;
+using Timer = System.Windows.Forms.Timer;
 
 namespace Bugtracker.Configuration
 {
 
+    /// <summary>
+    /// The current status of the Server of the running instance server connection
+    /// </summary>
     public enum ServerStatus
     {
+        /// <summary>
+        /// 
+        /// </summary>
         Available,
+        /// <summary>
+        /// 
+        /// </summary>
         NotAvailable
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public enum ConfigSource
     {
         Server,
         Client
     }
 
-    class RunningConfiguration : Singleton<RunningConfiguration>
+    public class RunningConfiguration : Singleton<RunningConfiguration>
     {
+
+        /// <summary>
+        /// The Manager Object for modifying Applications
+        /// </summary>
         public ApplicationManager ApplicationManager { get; set; }
+
+        /// <summary>
+        /// The Manager Object for modifying Targets
+        /// </summary>
         public TargetManager TargetManager { get; set; }
+
+        /// <summary>
+        /// The Manager Object for modifying Problems and their categories
+        /// </summary>
         public ProblemManager ProblemManager { get; set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        public VariableManager VariableManager { get; set; }
+
+        /// <summary>
+        /// The current status of the Server, where configurations are loaded from and Captures are sent
+        /// </summary>
+        [Key("serverstatus")]
         public ServerStatus ServerStatus { get; set; }
 
-        public DateTime ServerLastConnectionTime { get; set; }
-        public string ServerPath { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        [Key("mainserver")]
+        public string ServerAddress { get; set; }
 
+        /// <summary>
+        /// The last successful connection time to the main server
+        /// </summary>
+        [Key("serverLastConnectionTime")]
+        public DateTime ServerLastConnectionTime { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        [Key("serverPath")]
+        public string ServerPath { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        [Key("configSourceType")]
         public ConfigSource ConfigSource { get; set; }
 
         /// <summary>
-        /// PC Info Object
+        /// PC Info Object containing useful information about the host PC
         /// </summary>
         public PCInfo PcInfo { get; protected set; }
+
+        /// <summary>
+        /// The Main Server Object containing the ServerStatus
+        /// </summary>
+        public Server MainServer { get; set; }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
         public string BugtrackerFolderName { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
         public bool LoggerEnabled { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
         public LoggingSeverity LogSeverity { get; protected set; }
+        /// <summary>
+        /// 
+        /// </summary>
         public string TargetPath { get; protected set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        public Form MainGui { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool HideConsole { get; set; } = false;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        [Key("configurationFolderPath")]
         public string ConfigurationFolderPath { get; protected set; }
+        /// <summary>
+        /// 
+        /// </summary>
         public DateTime StartupTime { get; protected set; }
 
         private List<DirectoryInfo> bugtrackerFolders;
+
+        /// <summary>
+        /// 
+        /// </summary>
         public List<DirectoryInfo> BugtrackerFolders
         {
-            get
-            {
-                return GetAllDirectoriesStillExisting(bugtrackerFolders);
-            }
+            get => GetAllDirectoriesStillExisting(bugtrackerFolders);
 
-            set
-            {
-                bugtrackerFolders = value;
-            }
+            set => bugtrackerFolders = value;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public DirectoryInfo NewestBugtrackerFolder
         {
             get
             {
                 if (BugtrackerFolders.Count != 0)
-                    return BugtrackerFolders[BugtrackerFolders.Count - 1];
-                else
-                {
-                    BugtrackerFolders.Add(BugtrackerUtils.CreateBugtrackFolder());
-                    return NewestBugtrackerFolder;
-                }
+                    return BugtrackerFolders[^1];
+
+                BugtrackerFolders.Add(BugtrackerUtils.CreateBugtrackFolder());
+                return NewestBugtrackerFolder;
 
             }
 
-            set
-            {
-                BugtrackerFolders.Add(value);
-            }
+            set => BugtrackerFolders.Add(value);
         }
 
+
+
+        /// <summary>
+        /// 
+        /// </summary>
         public RunningConfiguration()
         {
-            ConfigurationFolderPath = ConfigHandler.GetConfigurationFolderPath(Globals.LOCAL_CONFIG_FILE_PATH);
-            ServerPath = ConfigHandler.GetConfigurationFolderPath(Globals.LOCAL_CONFIG_FILE_PATH);
+            ServerAddress = GetMainServerAddress(Globals.LOCAL_CONFIG_FILE_PATH);
+            ConfigurationFolderPath = GetConfigurationFolderPath(Globals.LOCAL_CONFIG_FILE_PATH);
+            ServerPath = GetConfigurationFolderPath(Globals.LOCAL_CONFIG_FILE_PATH);
 
             BugtrackerFolders = new List<DirectoryInfo>();
-            BugtrackerFolderName = "not set yet";
-            TargetPath = "not set yet";
 
-            PcInfo = new PCInfo();
             ApplicationManager = new ApplicationManager();
             TargetManager = new TargetManager();
             ProblemManager = new ProblemManager();
 
-            System.Diagnostics.Debug.WriteLine("config folder path: " + ConfigurationFolderPath);
-            Console.BugtrackConsole.Print("config folder path: " + ConfigurationFolderPath);
+            PcInfo = new PCInfo();
+            MainServer = new Server(ServerAddress);
 
-            StartupTime = DateTime.Now; ;
+            StartupTime = DateTime.Now;
+
+            VariableManager = new VariableManager(this);
 
             InitParametersAccordingToConfigurationFiles();
             InitServerConnectionStatusTimer();
+
+            
         }
 
         private Timer serverConnectionStatusTimer;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public void InitServerConnectionStatusTimer()
         {
             serverConnectionStatusTimer = new Timer();
-            serverConnectionStatusTimer.Tick += new EventHandler(checkServerConnectionStatus);
+            serverConnectionStatusTimer.Tick += new EventHandler(CheckServerConnectionStatus);
             serverConnectionStatusTimer.Interval = 2000;
             serverConnectionStatusTimer.Start();
         }
         
-        private void checkServerConnectionStatus(object sender, EventArgs e)
+        private void CheckServerConnectionStatus(object sender, EventArgs e)
         {
-            if (ServerUtils.GetServerStatus() == ServerStatus.NotAvailable)
-                ServerStatus = ServerStatus.NotAvailable;
-            else
+            switch (MainServer.ServerStatus)
             {
-                ServerLastConnectionTime = DateTime.Now;
-                ServerStatus = ServerStatus.Available;
+                case ServerStatus.NotAvailable:
+                    ServerStatus = ServerStatus.NotAvailable;
+                    break;
+                default:
+                    ServerLastConnectionTime = DateTime.Now;
+                    ServerStatus = ServerStatus.Available;
+                    break;
             }
         }
 
@@ -149,27 +250,26 @@ namespace Bugtracker.Configuration
                     File.Copy(filePath, Globals.LOCAL_CONFIG_FILES_PATH + "\\" + Path.GetFileName(filePath), true);
                 }
 
-                LoggerEnabled = ConfigHandler.IsLoggingEnabled(filePath);
-                LogSeverity = ConfigHandler.GetLoggingSeverity(filePath);
-                ApplicationManager.Applications.AddRange(ConfigHandler.GetSpecifiedApplications(filePath));
-                TargetManager.Targets.AddRange(ConfigHandler.GetSpecifiedTargets(filePath));
-                ProblemManager.ProblemCategories.AddRange(ConfigHandler.GetSpecifiedProblemCategories(filePath));
+                LoggerEnabled = IsLoggingEnabled(filePath);
+                LogSeverity = GetLoggingSeverity(filePath);
+                ApplicationManager.Applications.AddRange(GetSpecifiedApplications(filePath));
+                TargetManager.Targets.AddRange(GetSpecifiedTargets(filePath));
+                ProblemManager.ProblemCategories.AddRange(GetSpecifiedProblemCategories(filePath));
             }
         }
 
         private static List<DirectoryInfo> GetAllDirectoriesStillExisting(List<DirectoryInfo> toCheck)
         {
-            foreach (DirectoryInfo di in toCheck)
+            foreach (var di in toCheck.Where(di => di.Exists == false))
             {
-                if (di.Exists == false)
-                    toCheck.Remove(di);
+                toCheck.Remove(di);
             }
 
             return toCheck;
         }
         public override string ToString()
         {
-            string returnString = "";
+            var returnString = "";
 
             returnString += "PcInfo: \n \n";
             returnString += PcInfo.GetPCInformationSummary() + Environment.NewLine;

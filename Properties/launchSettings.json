@@ -2,12 +2,12 @@
   "profiles": {
     "Bugracker GUI": {
       "commandName": "Executable",
-      "executablePath": "C:\\Users\\Dominik Beyerle\\Documents\\Bugtracker\\bin\\Debug\\net5.0-windows\\Bugtracker.exe",
+      "executablePath": "C:\\Users\\Dominik Beyerle\\Documents\\Bugtracker\\bin\\Debug\\net6.0-windows\\BugtrackerSystem.exe",
       "commandLineArgs": "gui"
     },
     "Bugtracker Console": {
       "commandName": "Executable",
-      "executablePath": "C:\\Users\\Dominik Beyerle\\Documents\\Bugtracker\\bin\\Debug\\net5.0-windows\\Bugtracker.exe"
+      "executablePath": "C:\\Users\\Dominik Beyerle\\Documents\\Bugtracker\\bin\\Debug\\net6.0-windows\\Bugtracker.exe"
     }
   }
 }

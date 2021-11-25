@@ -38,21 +38,29 @@
         /// <summary>
         /// LOG_FILE_PATH stores the absolute path to bugtracker.log
         /// </summary>
-        public const string LOG_FILE_PATH = APPLICATION_DIRECTORY + "bugtracker_log_x.log";
+        public const string LOG_FILE_PATH = APPLICATION_DIRECTORY + "bugtracker.log";
 
         /// <summary>
         /// CONFIG_FILE_PATH holds the path where the configuration xml file is stored
         /// The 'x' on the end of filename can be changed into a combination of pc name and 
         /// domain.
         /// </summary>
-        public const string LOCAL_CONFIG_FILE_PATH = APPLICATION_DIRECTORY + "bugtracker_config_x.xml";
+        public const string LOCAL_CONFIG_FILE_PATH = APPLICATION_DIRECTORY + "bugtracker_config_startup.xml";
 
         /// <summary>
-        /// CONFIG_FILE_PATH holds the path where the configuration xml file is stored
+        /// CONFIG_FILE_PATH holds the path where the configuration xml files are stored
         /// The 'x' on the end of filename can be changed into a combination of pc name and 
         /// domain.
         /// </summary>
         public const string LOCAL_CONFIG_FILES_PATH = APPLICATION_DIRECTORY + "\\configs";
+
+
+        /// <summary>
+        /// CONFIG_FILE_PATH holds the path where the configuration xml files are stored
+        /// The 'x' on the end of filename can be changed into a combination of pc name and 
+        /// domain.
+        /// </summary>
+        public const string LOCAL_PLUGIN_FILES_PATH = APPLICATION_DIRECTORY + "\\plugins";
 
         /// <summary>
         /// DEFAULT_BUGTRACKER_SERVER holds the default value where the file have to be copied to

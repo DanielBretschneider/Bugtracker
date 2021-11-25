@@ -2,17 +2,33 @@
 
 namespace Bugtracker.Targeting
 {
-    enum TargetType
+    public enum TargetType
     {
         folder,
         mail
     }
-    class Target
+
+    public class Target
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public bool Default { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
         public TargetType TargetType { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
         public string Name { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
         public string Path { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
         public string Address { get; set; }
 
         public override string ToString()

@@ -10,7 +10,7 @@ namespace Bugtracker.InternalApplication
     /// handling and storing logical Applications as Objects in the form of lists. 
     /// </summary>
     ///
-    class ApplicationManager
+    public class ApplicationManager
     {
         /// <summary>
         /// A list of all managed Applications
@@ -57,7 +57,7 @@ namespace Bugtracker.InternalApplication
             return applicationList;
         }
 
-        internal Application GetApplicationByName(string appNameParameter)
+        public Application GetApplicationByName(string appNameParameter)
         {
             foreach (Application app in Applications)
             {

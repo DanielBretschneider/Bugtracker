@@ -30,8 +30,7 @@ namespace Bugtracker.Console.Commands.show
         {
             if (RunningConfiguration.GetInstance().NewestBugtrackerFolder != null)
                 return RunningConfiguration.GetInstance().NewestBugtrackerFolder.FullName;
-            else
-                return "Not created yet use: " + BugtrackConsole.GetReverseLookUpForCommand(typeof(UtilInitCommand)) + "to initialize.";
+            return "Not created yet use: " + BugtrackConsole.GetReverseLookUpForCommand(typeof(UtilInitCommand)) + "to initialize.";
         }
     }
 }
