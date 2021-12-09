@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using Bugtracker.Configuration;
 using Bugtracker.Problem_Descriptors;
+using Bugtracker.Utils;
 
 namespace Bugtracker.Sending
 {

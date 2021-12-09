@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using Bugtracker.Utils;
 using Bugtracker.Variables;
 using static Bugtracker.Configuration.ConfigHandler;
 using Timer = System.Windows.Forms.Timer;
@@ -101,12 +102,6 @@ namespace Bugtracker.Configuration
         /// </summary>
         public Server MainServer { get; set; }
 
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public string BugtrackerFolderName { get; set; }
-
         /// <summary>
         /// 
         /// </summary>
@@ -159,7 +154,7 @@ namespace Bugtracker.Configuration
         {
             get
             {
-                if (BugtrackerFolders.Count != 0)
+                if (BugtrackerFolders.Count > 0)
                     return BugtrackerFolders[^1];
 
                 BugtrackerFolders.Add(BugtrackerUtils.CreateBugtrackFolder());
@@ -170,7 +165,10 @@ namespace Bugtracker.Configuration
             set => BugtrackerFolders.Add(value);
         }
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        public string BugtrackerFolderName => NewestBugtrackerFolder.Name;
 
         /// <summary>
         /// 
@@ -178,8 +176,9 @@ namespace Bugtracker.Configuration
         public RunningConfiguration()
         {
             ServerAddress = GetMainServerAddress(Globals.LOCAL_CONFIG_FILE_PATH);
-            ConfigurationFolderPath = GetConfigurationFolderPath(Globals.LOCAL_CONFIG_FILE_PATH);
-            ServerPath = GetConfigurationFolderPath(Globals.LOCAL_CONFIG_FILE_PATH);
+
+            ConfigurationFolderPath = GetConfigurationFolderPath();
+            ServerPath = GetConfigurationFolderPath();
 
             BugtrackerFolders = new List<DirectoryInfo>();
 
@@ -196,8 +195,6 @@ namespace Bugtracker.Configuration
 
             InitParametersAccordingToConfigurationFiles();
             InitServerConnectionStatusTimer();
-
-            
         }
 
         private Timer serverConnectionStatusTimer;

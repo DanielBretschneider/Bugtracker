@@ -193,11 +193,6 @@
             The Main Server Object containing the ServerStatus
             </summary>
         </member>
-        <member name="P:Bugtracker.Configuration.RunningConfiguration.BugtrackerFolderName">
-            <summary>
-            
-            </summary>
-        </member>
         <member name="P:Bugtracker.Configuration.RunningConfiguration.LoggerEnabled">
             <summary>
             
@@ -239,6 +234,11 @@
             </summary>
         </member>
         <member name="P:Bugtracker.Configuration.RunningConfiguration.NewestBugtrackerFolder">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Bugtracker.Configuration.RunningConfiguration.BugtrackerFolderName">
             <summary>
             
             </summary>
@@ -383,35 +383,6 @@
             number of tabs depends on command length
             </summary>
         </member>
-        <member name="M:Bugtracker.Globals_and_Information.BugtrackerUtils.CreateBugtrackFolder">
-            <summary>
-            PCname and date will be added later
-            name of folder / zip file
-            </summary>
-            <summary>
-            Create current bugtrack folder
-            </summary>
-        </member>
-        <member name="M:Bugtracker.Globals_and_Information.BugtrackerUtils.CreateBugtrackFolderName">
-            <summary>
-            Create Bugtracker folder name
-            </summary>
-        </member>
-        <member name="M:Bugtracker.Globals_and_Information.BugtrackerUtils.GenerateScreenCapture">
-            <summary>
-            Generates screenshots of all
-            monitors
-            </summary>
-            <returns>Screen capture file path</returns>
-        </member>
-        <member name="M:Bugtracker.Globals_and_Information.BugtrackerUtils.DirectoryCopy(System.String,System.String,System.Boolean)">
-            <summary>
-            Copys full direcotry
-            </summary>
-            <param name="sourceDirName"></param>
-            <param name="destDirName"></param>
-            <param name="copySubDirs"></param>
-        </member>
         <member name="T:Bugtracker.Globals_and_Information.GlobalMessages">
             <summary>
             Stores global message values like Error Messages
@@ -534,27 +505,6 @@
             in user
             </summary>
             <returns></returns>
-        </member>
-        <member name="P:Bugtracker.Globals_and_Information.Server.ServerStatus">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="P:Bugtracker.Globals_and_Information.Server.ServerPath">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="P:Bugtracker.Globals_and_Information.Server.CheckInterval">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="M:Bugtracker.Globals_and_Information.Server.#ctor(System.String)">
-            <summary>
-            
-            </summary>
-            <param name="serverPath"></param>
         </member>
         <member name="T:Bugtracker.Globals_and_Information.Singleton`1">
             <summary>
@@ -705,7 +655,7 @@
             After successfully sending the file it gets deleted
             </summary>
         </member>
-        <member name="M:Bugtracker.Program.StartCommandLineApplication(System.String[])">
+        <member name="M:Bugtracker.Program.Main(System.String[])">
             <summary>
             This application is responsible for displaying
             the Bugtracker GUI. As the GUI will be developed in 
@@ -714,19 +664,6 @@
             This method is only called when no command line arguments
             have been passed
             </summary>
-            <summary>
-            Run bugtracker as CMDlet using
-            ConsoleHandler. 
-            
-            As this project is define as windows 
-            forms application system.console.writeline (..)
-            wont work, so we have to manually include
-            kernel32.dll.
-            
-            For more info look into ConsoleHandler.cs
-            </summary>
-        </member>
-        <member name="M:Bugtracker.Program.Main(System.String[])">
             <summary>
             This is the main method.
             </summary>
@@ -825,6 +762,69 @@
             </summary>
             <param name="name"></param>
             <returns></returns>
+        </member>
+        <member name="M:Bugtracker.Utils.BugtrackerUtils.StartCommandLineApplication(System.String[])">
+            <summary>
+            Run bugtracker as CMDlet using
+            ConsoleHandler. 
+            
+            As this project is define as windows 
+            forms application system.console.writeline (..)
+            wont work, so we have to manually include
+            kernel32.dll.
+            
+            For more info look into ConsoleHandler.cs
+            </summary>
+        </member>
+        <member name="M:Bugtracker.Utils.BugtrackerUtils.CreateBugtrackFolder">
+            <summary>
+            PCname and date will be added later
+            name of folder / zip file
+            </summary>
+            <summary>
+            Create current bugtrack folder
+            </summary>
+        </member>
+        <member name="M:Bugtracker.Utils.BugtrackerUtils.CreateBugtrackFolderName">
+            <summary>
+            Create Bugtracker folder name
+            </summary>
+        </member>
+        <member name="M:Bugtracker.Utils.BugtrackerUtils.GenerateScreenCapture">
+            <summary>
+            Generates screenshots of all
+            monitors
+            </summary>
+            <returns>Screen capture file path</returns>
+        </member>
+        <member name="M:Bugtracker.Utils.BugtrackerUtils.DirectoryCopy(System.String,System.String,System.Boolean)">
+            <summary>
+            Copys full direcotry
+            </summary>
+            <param name="sourceDirName"></param>
+            <param name="destDirName"></param>
+            <param name="copySubDirs"></param>
+        </member>
+        <member name="P:Bugtracker.Utils.Server.ServerStatus">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Bugtracker.Utils.Server.ServerPath">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Bugtracker.Utils.Server.CheckInterval">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Bugtracker.Utils.Server.#ctor(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="serverPath"></param>
         </member>
         <member name="M:Bugtracker.Variables.VariableManager.#ctor(System.Object)">
             <summary>

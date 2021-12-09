@@ -8,6 +8,7 @@ using System.Diagnostics;
 using Bugtracker.Capture.Log;
 using Bugtracker.Capture.Screen;
 using Bugtracker.Configuration;
+using Bugtracker.Utils;
 
 namespace Bugtracker.Console.Commands.capture
 {

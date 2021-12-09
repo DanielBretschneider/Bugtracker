@@ -1,16 +1,42 @@
-﻿using Bugtracker.Logging;
-using System;
-using System.Diagnostics;
+﻿using System;
 using System.IO;
-using System.Runtime.InteropServices;
-using System.Text;
+using System.Management;
 using Bugtracker.Capture.Screen;
 using Bugtracker.Configuration;
+using Bugtracker.Console;
+using Bugtracker.Globals_and_Information;
+using Bugtracker.Logging;
 
-namespace Bugtracker.Globals_and_Information
+namespace Bugtracker.Utils
 {
     public static class BugtrackerUtils
     {
+        /// <summary>
+        /// Run bugtracker as CMDlet using
+        /// ConsoleHandler. 
+        /// 
+        /// As this project is define as windows 
+        /// forms application system.console.writeline (..)
+        /// wont work, so we have to manually include
+        /// kernel32.dll.
+        /// 
+        /// For more info look into ConsoleHandler.cs
+        /// </summary>
+        public static void StartCommandLineApplication(string[] args)
+        {
+            // create console window
+            ConsoleHandler.Create();
+
+            // create new bugtrackerConsole object
+            //BugtrackConsole console = new BugtrackConsole();
+
+            // start console version of bugtracker
+            BugtrackConsole.StartBugtrackerConsoleLogic(args);
+
+
+            // close console session
+            ConsoleHandler.Destroy();
+        }
 
         /// <summary>
         /// PCname and date will be added later
@@ -28,7 +54,6 @@ namespace Bugtracker.Globals_and_Information
 
             // full path 
             string fullPath = Globals.TMP_DIRECTORY + folderName;
-            RunningConfiguration.GetInstance().BugtrackerFolderName = fullPath;
 
             // create folder
             Logger.Log("Creating new bugtrack folder at '" + fullPath + "'", (LoggingSeverity)2);
@@ -46,7 +71,7 @@ namespace Bugtracker.Globals_and_Information
         public static string CreateBugtrackFolderName()
         {
             // first part of folder name
-            string bugtrackFolderName = "Bugtracker_";
+            var bugtrackFolderName = "Bugtracker_";
 
             // add pc name
             bugtrackFolderName += RunningConfiguration.GetInstance().PcInfo.GetHostname();
@@ -70,7 +95,7 @@ namespace Bugtracker.Globals_and_Information
         public static string GenerateScreenCapture()
         {
             // Handler class for screenshots
-            ScreenCaptureHandler screenCaptureHandler = new ScreenCaptureHandler();
+            var screenCaptureHandler = new ScreenCaptureHandler();
 
             // do it
             return screenCaptureHandler.GenerateScreenshots(RunningConfiguration.GetInstance().BugtrackerFolderName);
@@ -85,7 +110,7 @@ namespace Bugtracker.Globals_and_Information
         public static void DirectoryCopy(string sourceDirName, string destDirName, bool copySubDirs)
         {
             // Get the subdirectories for the specified directory.
-            DirectoryInfo dir = new DirectoryInfo(sourceDirName);
+            var dir = new DirectoryInfo(sourceDirName);
 
             if (!dir.Exists)
             {
@@ -94,7 +119,7 @@ namespace Bugtracker.Globals_and_Information
                     + sourceDirName);
             }
 
-            DirectoryInfo[] dirs = dir.GetDirectories();
+            var dirs = dir.GetDirectories();
 
             // If the destination directory doesn't exist, create it.       
             Directory.CreateDirectory(destDirName);
@@ -109,7 +134,7 @@ namespace Bugtracker.Globals_and_Information
             }
 
             // If copying subdirectories, copy them and their contents to new location.
-            if (copySubDirs)
+            if (!copySubDirs) return;
             {
                 foreach (DirectoryInfo subdir in dirs)
                 {

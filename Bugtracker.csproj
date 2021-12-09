@@ -69,4 +69,7 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="powershell.exe -ExecutionPolicy Bypass -NoProfile -NonInteractive -File &quot;C:\Users\Dominik Beyerle\Documents\post-build.ps1&quot;" />
+  </Target>
 </Project>

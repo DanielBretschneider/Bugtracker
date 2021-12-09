@@ -2,6 +2,7 @@
 using Bugtracker.Attributes;
 using Bugtracker.Configuration;
 using Bugtracker.Globals_and_Information;
+using Bugtracker.Utils;
 
 namespace Bugtracker.Console.Commands.util
 {
@@ -23,7 +24,6 @@ namespace Bugtracker.Console.Commands.util
             string folderName = BugtrackerUtils.CreateBugtrackFolderName();
             DirectoryInfo directory = BugtrackerUtils.CreateBugtrackFolder();
 
-            RunningConfiguration.GetInstance().BugtrackerFolderName = folderName;
             RunningConfiguration.GetInstance().NewestBugtrackerFolder = directory;
             return "Created Bugtrackerfolder under: " + directory.FullName;
         }
