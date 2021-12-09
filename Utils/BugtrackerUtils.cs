@@ -1,16 +1,12 @@
-<<<<<<< HEAD:Utils/BugtrackerUtils.cs
 ﻿using System;
 using System.IO;
-using System.Management;
-=======
-﻿using Bugtracker.Logging;
+ using Bugtracker.Logging;
 using System;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
->>>>>>> master:Globals and Information/BugtrackerUtils.cs
-using Bugtracker.Capture.Screen;
+ using Bugtracker.Capture.Screen;
 using Bugtracker.Configuration;
 using Bugtracker.Console;
 using Bugtracker.Globals_and_Information;

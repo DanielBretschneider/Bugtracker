@@ -7,6 +7,7 @@ using System.Linq;
 using Bugtracker.Configuration;
 using Bugtracker.Globals_and_Information;
 using Bugtracker.Plugin;
+using Bugtracker.Utils;
 
 namespace Bugtracker
 {
@@ -110,15 +111,7 @@ namespace Bugtracker
             // decide which Bugtracker version should be
             // executed.
 
-            if ((args.Length > 0 && args[0].Contains("gui")) || ConfigHandler.IsGUIEnabledOnStartup())
-                //    // As the gui command line argument has been
-                //    // passed Bugtracker will be executed as 
-                //    // GUI Application
-                StartGraphicalInterfaceApplication();
-            else
-                //    // Command line Arguments have been entered
-                //    // so the application will be executed on terminal
-                //    StartCommandLineApplication();
+            if (!runningConfiguration.HideConsole)
                 StartCommandLineApplication(args);
         }
     }
