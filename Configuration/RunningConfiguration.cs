@@ -9,7 +9,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+<<<<<<< HEAD
 using Bugtracker.Utils;
+=======
+>>>>>>> master
 using Bugtracker.Variables;
 using static Bugtracker.Configuration.ConfigHandler;
 using Timer = System.Windows.Forms.Timer;
@@ -102,6 +105,15 @@ namespace Bugtracker.Configuration
         /// </summary>
         public Server MainServer { get; set; }
 
+<<<<<<< HEAD
+=======
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string BugtrackerFolderName { get; set; }
+
+>>>>>>> master
         /// <summary>
         /// 
         /// </summary>
@@ -154,7 +166,11 @@ namespace Bugtracker.Configuration
         {
             get
             {
+<<<<<<< HEAD
                 if (BugtrackerFolders.Count > 0)
+=======
+                if (BugtrackerFolders.Count != 0)
+>>>>>>> master
                     return BugtrackerFolders[^1];
 
                 BugtrackerFolders.Add(BugtrackerUtils.CreateBugtrackFolder());
@@ -165,10 +181,14 @@ namespace Bugtracker.Configuration
             set => BugtrackerFolders.Add(value);
         }
 
+<<<<<<< HEAD
         /// <summary>
         /// 
         /// </summary>
         public string BugtrackerFolderName => NewestBugtrackerFolder.Name;
+=======
+
+>>>>>>> master
 
         /// <summary>
         /// 
@@ -176,9 +196,14 @@ namespace Bugtracker.Configuration
         public RunningConfiguration()
         {
             ServerAddress = GetMainServerAddress(Globals.LOCAL_CONFIG_FILE_PATH);
+<<<<<<< HEAD
 
             ConfigurationFolderPath = GetConfigurationFolderPath();
             ServerPath = GetConfigurationFolderPath();
+=======
+            ConfigurationFolderPath = GetConfigurationFolderPath(Globals.LOCAL_CONFIG_FILE_PATH);
+            ServerPath = GetConfigurationFolderPath(Globals.LOCAL_CONFIG_FILE_PATH);
+>>>>>>> master
 
             BugtrackerFolders = new List<DirectoryInfo>();
 
@@ -188,13 +213,21 @@ namespace Bugtracker.Configuration
 
             PcInfo = new PCInfo();
             MainServer = new Server(ServerAddress);
+<<<<<<< HEAD
 
             StartupTime = DateTime.Now;
 
+=======
+
+            StartupTime = DateTime.Now;
+
+>>>>>>> master
             VariableManager = new VariableManager(this);
 
             InitParametersAccordingToConfigurationFiles();
             InitServerConnectionStatusTimer();
+
+            
         }
 
         private Timer serverConnectionStatusTimer;

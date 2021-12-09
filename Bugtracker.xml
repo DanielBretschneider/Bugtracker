@@ -193,6 +193,14 @@
             The Main Server Object containing the ServerStatus
             </summary>
         </member>
+<<<<<<< HEAD
+=======
+        <member name="P:Bugtracker.Configuration.RunningConfiguration.BugtrackerFolderName">
+            <summary>
+            
+            </summary>
+        </member>
+>>>>>>> master
         <member name="P:Bugtracker.Configuration.RunningConfiguration.LoggerEnabled">
             <summary>
             
@@ -238,11 +246,14 @@
             
             </summary>
         </member>
+<<<<<<< HEAD
         <member name="P:Bugtracker.Configuration.RunningConfiguration.BugtrackerFolderName">
             <summary>
             
             </summary>
         </member>
+=======
+>>>>>>> master
         <member name="M:Bugtracker.Configuration.RunningConfiguration.#ctor">
             <summary>
             
@@ -506,6 +517,30 @@
             </summary>
             <returns></returns>
         </member>
+<<<<<<< HEAD
+=======
+        <member name="P:Bugtracker.Globals_and_Information.Server.ServerStatus">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Bugtracker.Globals_and_Information.Server.ServerPath">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Bugtracker.Globals_and_Information.Server.CheckInterval">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Bugtracker.Globals_and_Information.Server.#ctor(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="serverPath"></param>
+        </member>
+>>>>>>> master
         <member name="T:Bugtracker.Globals_and_Information.Singleton`1">
             <summary>
             Singleton Class from User: Moo-Juice
@@ -655,7 +690,11 @@
             After successfully sending the file it gets deleted
             </summary>
         </member>
+<<<<<<< HEAD
         <member name="M:Bugtracker.Program.Main(System.String[])">
+=======
+        <member name="M:Bugtracker.Program.StartCommandLineApplication(System.String[])">
+>>>>>>> master
             <summary>
             This application is responsible for displaying
             the Bugtracker GUI. As the GUI will be developed in 
@@ -664,6 +703,22 @@
             This method is only called when no command line arguments
             have been passed
             </summary>
+<<<<<<< HEAD
+=======
+            <summary>
+            Run bugtracker as CMDlet using
+            ConsoleHandler. 
+            
+            As this project is define as windows 
+            forms application system.console.writeline (..)
+            wont work, so we have to manually include
+            kernel32.dll.
+            
+            For more info look into ConsoleHandler.cs
+            </summary>
+        </member>
+        <member name="M:Bugtracker.Program.Main(System.String[])">
+>>>>>>> master
             <summary>
             This is the main method.
             </summary>
@@ -763,6 +818,7 @@
             <param name="name"></param>
             <returns></returns>
         </member>
+<<<<<<< HEAD
         <member name="M:Bugtracker.Utils.BugtrackerUtils.StartCommandLineApplication(System.String[])">
             <summary>
             Run bugtracker as CMDlet using
@@ -826,6 +882,8 @@
             </summary>
             <param name="serverPath"></param>
         </member>
+=======
+>>>>>>> master
         <member name="M:Bugtracker.Variables.VariableManager.#ctor(System.Object)">
             <summary>
             Loads 

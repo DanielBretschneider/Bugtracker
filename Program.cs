@@ -7,7 +7,6 @@ using System.Linq;
 using Bugtracker.Configuration;
 using Bugtracker.Globals_and_Information;
 using Bugtracker.Plugin;
-using Bugtracker.Utils;
 
 namespace Bugtracker
 {
@@ -63,6 +62,33 @@ namespace Bugtracker
 
 
         /// <summary>
+        /// Run bugtracker as CMDlet using
+        /// ConsoleHandler. 
+        /// 
+        /// As this project is define as windows 
+        /// forms application system.console.writeline (..)
+        /// wont work, so we have to manually include
+        /// kernel32.dll.
+        /// 
+        /// For more info look into ConsoleHandler.cs
+        /// </summary>
+        static void StartCommandLineApplication(string[] args)
+        {
+            // create console window
+            ConsoleHandler.Create();
+
+            // create new bugtrackerConsole object
+            //BugtrackConsole console = new BugtrackConsole();
+
+            // start console version of bugtracker
+            BugtrackConsole.StartBugtrackerConsoleLogic(args);
+
+            // close console session
+            ConsoleHandler.Destroy();
+        }
+
+
+        /// <summary>
         /// This is the main method.
         /// </summary>
         [STAThread]
@@ -78,11 +104,22 @@ namespace Bugtracker
             // and initialize logging
             SetupApplication(args);
 
+            if (args.Contains("-sp"))
+                args = new[] {""};
+
             // decide which Bugtracker version should be
             // executed.
 
-            if (!runningConfiguration.HideConsole)
-                BugtrackerUtils.StartCommandLineApplication(args);
+            if ((args.Length > 0 && args[0].Contains("gui")) || ConfigHandler.IsGUIEnabledOnStartup())
+                //    // As the gui command line argument has been
+                //    // passed Bugtracker will be executed as 
+                //    // GUI Application
+                StartGraphicalInterfaceApplication();
+            else
+                //    // Command line Arguments have been entered
+                //    // so the application will be executed on terminal
+                //    StartCommandLineApplication();
+                StartCommandLineApplication(args);
         }
     }
 }
