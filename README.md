@@ -49,7 +49,6 @@ Die Zweitversion des Bugtrackers wird in verschiedenen Unterversionen entwickelt
 ### Versionierung
 
 #### Version 2.1 ✔
->>>>>>> 967faee2b8e4298a39669ff99af171af5404abd4
 In der Erstversion des Bugtrackers steht Grundfunktionalität im Vordergrund, dies inkludiert:
 *	Fertiges Grundgerüst (Programmstruktur)
 *	Fertige Konfigurationsdatei
