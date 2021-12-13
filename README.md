@@ -59,7 +59,7 @@ In der Erstversion des Bugtrackers steht Grundfunktionalität im Vordergrund, di
 *	Command Line Befehl zur Steuerung des Bugtrackers
 
 
-#### Version 2.2
+#### Version 2.2 ✔
 Die Zweitversion erweitert den Bugtracker um Folgende Funktionalitäten und Inhalte: 
 * Bedienung via GUI möglich (https://github.com/isaatonimov/Bugtracker-Diagnostics-UI-Plugin)
 * Dynamische Programmsektion
