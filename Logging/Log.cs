@@ -12,6 +12,7 @@ namespace Bugtracker.Logging
         public enum LogLocationType
         {
             client,
+            host,
             server
         }
 
@@ -40,6 +41,8 @@ namespace Bugtracker.Logging
         /// the log lines will be fetched
         /// </summary>
         public TimeSpan TimeSpan { get; set; }
+
+        public string? Lines { get; set; }
 
         #endregion
 

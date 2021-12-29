@@ -21,15 +21,18 @@ namespace Bugtracker
         /// <summary>
         /// 
         /// </summary>
-        private static void SetupApplication(IEnumerable<string> args)
+        private static void SetupApplication(string[] args)
         {
+            Logger.Log("Deleted Blackhole folder contents", LoggingSeverity.Info);
+            BugtrackerUtils.DeleteContentOfDirectory(Globals_and_Information.Globals.LOCAL_BLACKHOLE_FODLER_PATH);
+
             // log start of application
             Logger.Log("Bugtracker version 2 was started", (LoggingSeverity)2);
 
             // create tmp folder
             CreateTempFolder();
 
-            if(!args.Contains("-sp"))
+            if(args.Length == 0  || (args[0] != "-sp" && args[0] != "-skipplugins"))
                 PluginManager.Load();
         }
 
@@ -105,11 +108,15 @@ namespace Bugtracker
             // and initialize logging
             SetupApplication(args);
 
-            if (args.Contains("-sp"))
-                args = new[] {""};
-
             // decide which Bugtracker version should be
             // executed.
+
+            if (args.Length > 0 && (args[0].Contains("-sp") || args[0].Contains("-skipplugins")))
+            {
+                List<string> argsL = new List<string>(args);
+                argsL.RemoveAt(0);
+                args = argsL.ToArray();
+            }
 
             if (!runningConfiguration.HideConsole)
                 StartCommandLineApplication(args);

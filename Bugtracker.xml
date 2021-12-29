@@ -28,14 +28,14 @@
             <param name="filepath"></param>
             <returns></returns>
         </member>
-        <member name="M:Bugtracker.Capture.Log.LogfileFetcher.CopyFile(System.String,System.String)">
+        <member name="M:Bugtracker.Capture.Log.LogfileFetcher.CopyFile(System.String,Bugtracker.Logging.Log,System.String)">
             <summary>
             Copies file 
             If file has more lines than n = MAX_LINES_OF_LOG_FILE
             than only the last n lines will be stored in bugtracker zip
             </summary>
         </member>
-        <member name="M:Bugtracker.Capture.Log.LogfileFetcher.FetchLog(System.String,Bugtracker.InternalApplication.Application)">
+        <member name="M:Bugtracker.Capture.Log.LogfileFetcher.FetchLog(System.String,System.ValueTuple{Bugtracker.InternalApplication.Application,Bugtracker.Logging.Log})">
             <summary>
             This procedure fetches the last 2000 
             (default value is MAX_LINES_OF_LOG_FILE) lines
@@ -71,13 +71,6 @@
             for PC01 01.02.2021 08:12:43
             </summary>
         </member>
-        <member name="M:Bugtracker.Capture.Screen.ScreenCaptureHandler.GenerateScreenshotSequence">
-            <summary>
-            This method is responsible for
-            generating the screenshots for
-            the current bugtrack in a sequence following the mouse click event
-            </summary>
-        </member>
         <member name="M:Bugtracker.Capture.Screen.ScreenCaptureHandler.GenerateScreenshots(System.String,System.Boolean)">
             <summary>
             This method is responsible for
@@ -104,14 +97,14 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Bugtracker.Configuration.ConfigHandler.GetSpecifiedApplications(System.String)">
+        <member name="M:Bugtracker.Configuration.ConfigHandler.GetSpecifiedApplications(Bugtracker.Configuration.RunningConfiguration,System.String)">
             <summary>
             Returns a List of applications specified in the logfile
             Parameters are loglocation type, path, filename (regex), find (per timeperiod)
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Bugtracker.Configuration.ConfigHandler.IsLoggingEnabled(System.String)">
+        <member name="M:Bugtracker.Configuration.ConfigHandler.IsLoggingEnabled(Bugtracker.Configuration.RunningConfiguration,System.String)">
             <summary>
             To log, or not to log.
             Checks if logging is enabled via the logger - enabled xml tag and attribute
@@ -434,6 +427,11 @@
             domain.
             </summary>
         </member>
+        <member name="F:Bugtracker.Globals_and_Information.Globals.LOCAL_BLACKHOLE_FODLER_PATH">
+            <summary>
+            LOCAL_BLACKHOLE_FODLER_PATH holds the path of the local blackhole folder
+            </summary>
+        </member>
         <member name="F:Bugtracker.Globals_and_Information.Globals.LOCAL_PLUGIN_FILES_PATH">
             <summary>
             CONFIG_FILE_PATH holds the path where the configuration xml files are stored
@@ -642,7 +640,7 @@
             bugtracker programming project
             </summary>
         </member>
-        <member name="M:Bugtracker.Program.SetupApplication(System.Collections.Generic.IEnumerable{System.String})">
+        <member name="M:Bugtracker.Program.SetupApplication(System.String[])">
             <summary>
             
             </summary>
@@ -818,6 +816,13 @@
             <param name="destDirName"></param>
             <param name="copySubDirs"></param>
         </member>
+        <member name="M:Bugtracker.Utils.BugtrackerUtils.ExecuteScript(System.String)">
+            <summary>
+            Executes Scripts or small programs
+            can execute ps1, bat and exe files.
+            </summary>
+            <param name="path"></param>
+        </member>
         <member name="P:Bugtracker.Utils.Server.ServerStatus">
             <summary>
             
@@ -839,7 +844,7 @@
             </summary>
             <param name="serverPath"></param>
         </member>
-        <member name="M:Bugtracker.Variables.VariableManager.#ctor(System.Object)">
+        <member name="M:Bugtracker.Variables.VariableManager.#ctor(Bugtracker.Configuration.RunningConfiguration)">
             <summary>
             Loads 
             </summary>

@@ -1,44 +1,77 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using Bugtracker.Attributes;
+﻿using Bugtracker.Attributes;
 using Bugtracker.Configuration;
-using Bugtracker.Console.Commands;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Reflection;
 
 namespace Bugtracker.Variables
 {
     public class VariableManager
     {
-        public Dictionary<string, dynamic> VariableDictionary { get; set; } = new Dictionary<string, dynamic>();
-
+        public Dictionary<string, (dynamic value, bool isDynamic)> VariableDictionary { get; set; } = new Dictionary<string, (dynamic value, bool isDynamic)>();
+        private RunningConfiguration rc;
 
         /// <summary>
         /// Loads 
         /// </summary>
         /// <param name="runningConfiguration"></param>
-        public VariableManager(Object objectToLoadFrom)
+        public VariableManager(RunningConfiguration rc)
         {
-            LoadAllKeyValuePairs(objectToLoadFrom);
-            ReplaceKeysInValuesTillKeyless();
-            SetValuesAccordingToVariables(objectToLoadFrom);
+            this.rc = rc;
+            FullRefresh();
         }
 
+        private void SetCustomKeyValues()
+        {
+            string hostname = rc.PcInfo.GetHostname();
+            VariableDictionary["clientname"] = (hostname, false);
+            VariableDictionary["computername"] = (hostname, false);
+        }
 
-        private void LoadAllKeyValuePairs(Object objectToLoadFrom)
+        private void LoadInAllEnvironmentVariables()
+        {
+            foreach (DictionaryEntry dictEntry in Environment.GetEnvironmentVariables())
+            {
+                VariableDictionary[(string)dictEntry.Key] = (dictEntry.Value, false);
+            }
+        }
+
+        private void ReloadSpecificAnnotatedKeyValuePair(Object objectToLoadFrom, string key)
         {
             foreach (PropertyInfo propertyInfo in objectToLoadFrom.GetType().GetProperties())
             {
                 if (propertyInfo.GetCustomAttributes(typeof(KeyAttribute), true).Length > 0)
                 {
-                    KeyAttribute ka = (KeyAttribute) propertyInfo.GetCustomAttribute(typeof(KeyAttribute), true);
+                    KeyAttribute ka = (KeyAttribute)propertyInfo.GetCustomAttribute(typeof(KeyAttribute), true);
 
-                    VariableDictionary.Add(ka.Name, propertyInfo.GetValue(objectToLoadFrom) ?? "not set.");
+                    if (ka.Name == key)
+                    {
+                        if (ka.Dynamic)
+                            VariableDictionary[ka.Name] = (propertyInfo.GetValue(objectToLoadFrom) ?? "not set.", true);
+                        else
+                            VariableDictionary[ka.Name] = (propertyInfo.GetValue(objectToLoadFrom) ?? "not set.", false);
 
-                    System.Diagnostics.Debug.WriteLine("key = " + ka.Name + "value: " +  propertyInfo.GetValue(objectToLoadFrom));
+                        System.Diagnostics.Debug.WriteLine("key = " + ka.Name + "value: " + propertyInfo.GetValue(objectToLoadFrom));
+                    }
+                }
+            }
+        }
+
+        private void LoadAllAnnotatedKeyValuePairs(Object objectToLoadFrom)
+        {
+            foreach (PropertyInfo propertyInfo in objectToLoadFrom.GetType().GetProperties())
+            {
+                if (propertyInfo.GetCustomAttributes(typeof(KeyAttribute), true).Length > 0)
+                {
+                    KeyAttribute ka = (KeyAttribute)propertyInfo.GetCustomAttribute(typeof(KeyAttribute), true);
+
+                    if (ka.Dynamic)
+                        VariableDictionary[ka.Name] = (propertyInfo.GetValue(objectToLoadFrom) ?? "not set.", true);
+                    else 
+                        VariableDictionary[ka.Name] = (propertyInfo.GetValue(objectToLoadFrom) ?? "not set.", false);
+
+                    System.Diagnostics.Debug.WriteLine("key = " + ka.Name + "value: " + propertyInfo.GetValue(objectToLoadFrom));
                 }
             }
         }
@@ -54,7 +87,7 @@ namespace Bugtracker.Variables
                     foreach (var keyValuePair in VariableDictionary)
                     {
                         if (keyValuePair.Key == ka.Name)
-                            propertyInfo.SetValue(objectToLoadFrom, keyValuePair.Value);
+                            propertyInfo.SetValue(objectToLoadFrom, keyValuePair.Value.value);
                     }
 
                     
@@ -69,7 +102,7 @@ namespace Bugtracker.Variables
         {
             foreach (var keyValuePair in VariableDictionary)
             {
-                System.Diagnostics.Debug.WriteLine(".......Current Key Values:....... " + System.Environment.NewLine + "Key: " + keyValuePair.Key + ", Value: " + keyValuePair.Value);
+                System.Diagnostics.Debug.WriteLine(".......Current Key Values:....... " + System.Environment.NewLine + "Key: " + keyValuePair.Key + ", Value: " + keyValuePair.Value.value);
             }
         }
 
@@ -85,14 +118,14 @@ namespace Bugtracker.Variables
                     {
                         if (keyValuePairX.ToString().Contains("%" + keyValuePairY.Key + "%"))
                         {
-                            string newString = ((string) keyValuePairX.Value).Replace("%" + keyValuePairY.Key + "%",
-                                keyValuePairY.Value);
+                            string newString = ((string) keyValuePairX.Value.value).Replace("%" + keyValuePairY.Key + "%",
+                                keyValuePairY.Value.value);
 
                             keysAndNewValues.Add((keyValuePairX.Key, newString));
 
 
                             //((string)VariableDictionary[keyValuePairX.Key]).Replace("%" + keyValuePairY.Key + "%", keyValuePairY.Value);
-                            System.Diagnostics.Debug.WriteLine("value to insert: " + (string)keyValuePairY.Value);
+                            System.Diagnostics.Debug.WriteLine("value to insert: " + (string)keyValuePairY.Value.value);
                             //System.Diagnostics.Debug.WriteLine("Replaced Key with value, new string: " + (string) keyValuePairX.Value);
                         }
                     }
@@ -101,7 +134,7 @@ namespace Bugtracker.Variables
                 foreach (var tuple in keysAndNewValues)
                 {
                     System.Diagnostics.Debug.WriteLine("Try to change Dict var: key: " + tuple.Key + "new value" + tuple.NewValue);
-                    VariableDictionary[tuple.Key] = tuple.NewValue;
+                    VariableDictionary[tuple.Key] = (tuple.NewValue, false);
                 }
             }
         }
@@ -114,13 +147,53 @@ namespace Bugtracker.Variables
                 {
                     if (keyValuePair.Value.ToString().Contains("%" + keyValuePairY.Key + "%"))
                     {
-                        System.Diagnostics.Debug.WriteLine("Found Value with key inside: " + (string)keyValuePair.Value);
+                        System.Diagnostics.Debug.WriteLine("Found Value with key inside: " + (string)keyValuePair.Value.value);
                         return true;
                     }
                 }
             }
 
             return false;
+        }
+
+        public string ReplaceKeywords(string value)
+        {
+            //Refresh(true);
+
+            string newValue = value;
+
+            if (value != null)
+            {
+
+                foreach (var key in VariableDictionary.Keys)
+                {
+                    if (newValue.Contains("%" + key + "%"))
+                    {
+                        if (VariableDictionary[key].isDynamic)
+                        {
+                            ReloadSpecificAnnotatedKeyValuePair(rc, key);
+                        }
+
+                        newValue = newValue.Replace("%" + key + "%", VariableDictionary[key].value);
+                        System.Diagnostics.Debug.WriteLine("Replaced " + "%" + key + "%" + ", New Value: " + newValue);
+                        Logging.Logger.Log("Replaced " + "%" + key + "%" + ", New Value: " + newValue, Logging.LoggingSeverity.Info);
+                    }
+                        
+                }
+            }
+
+            return newValue;
+        }
+
+        
+
+        public void FullRefresh()
+        {
+            LoadInAllEnvironmentVariables();
+            SetCustomKeyValues();
+            LoadAllAnnotatedKeyValuePairs(rc);
+            ReplaceKeysInValuesTillKeyless();
+            SetValuesAccordingToVariables(rc);
         }
     }
 }

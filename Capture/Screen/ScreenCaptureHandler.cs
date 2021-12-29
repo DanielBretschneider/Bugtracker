@@ -15,7 +15,7 @@ namespace Bugtracker.Capture.Screen
     /// 
     /// TODO: Test with multiple screens
     /// </summary>
-    class ScreenCaptureHandler
+    public class ScreenCaptureHandler
     {
         private int CurrentNumberInSequence = 1;
         /// <summary>
@@ -57,18 +57,7 @@ namespace Bugtracker.Capture.Screen
             return filename;
         }
 
-        /// <summary>
-        /// This method is responsible for
-        /// generating the screenshots for
-        /// the current bugtrack in a sequence following the mouse click event
-        /// </summary>
-        public void GenerateScreenshotSequence()
-        {
-            GenerateScreenshotInSequence();
-
-        }
-
-        private void GenerateScreenshotInSequence()
+        public void GenerateScreenshotInSequence()
         {
             CurrentNumberInSequence++;
             BugtrackConsole.Print("Screenshot Number" + CurrentNumberInSequence + "captured.");

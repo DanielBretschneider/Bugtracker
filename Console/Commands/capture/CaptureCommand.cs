@@ -28,20 +28,6 @@ namespace Bugtracker.Console.Commands.capture
         }
     }
 
-    [Command("-sequence", "-seq", "Captures screenshot every time the mouse gets clicked.", typeof(CaptureCommand))]
-    class CaptureScreenshotSequenceCommand : Command
-    {
-        public override string Execute()
-        {
-
-            BugtrackConsole.Print("Started recording");
-            ScreenCaptureHandler sch = new ScreenCaptureHandler();
-            sch.GenerateScreenshotSequence();
-            BugtrackConsole.Pause();
-            return "Stopped recording";
-        }
-    }
-
     [Command("-log", "-l", "Captures Log Files only", typeof(CaptureCommand))]
     [Arguments(new[] { "application / all" }, new[] { "application2", "application3..." })]
     class CaptureLogFilesCommand : Command

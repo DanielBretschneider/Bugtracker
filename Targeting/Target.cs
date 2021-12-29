@@ -30,6 +30,7 @@ namespace Bugtracker.Targeting
         /// 
         /// </summary>
         public string Address { get; set; }
+        public string CustomBugtrackerFolderName { get; internal set; }
 
         public override string ToString()
         {

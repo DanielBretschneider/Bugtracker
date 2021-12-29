@@ -103,7 +103,7 @@ namespace Bugtracker.Utils
             var screenCaptureHandler = new ScreenCaptureHandler();
 
             // do it
-            return screenCaptureHandler.GenerateScreenshots(RunningConfiguration.GetInstance().BugtrackerFolderName);
+            return screenCaptureHandler.GenerateScreenshots(RunningConfiguration.GetInstance().NewestBugtrackerFolder.FullName);
         }
 
         /// <summary>
@@ -149,5 +149,50 @@ namespace Bugtracker.Utils
             }
         }
 
+
+        /// <summary>
+        /// Executes Scripts or small programs
+        /// can execute ps1, bat and exe files.
+        /// </summary>
+        /// <param name="path"></param>
+
+        public static void ExecuteScript(string path)
+        {
+            if (path.Contains(".ps1"))
+            {
+                var ps1File = path;
+                var startInfo = new ProcessStartInfo()
+                {
+                    FileName = "powershell.exe",
+                    Arguments = $"-NoProfile -ExecutionPolicy unrestricted -file \"{ps1File}\"",
+                    UseShellExecute = false
+                };
+                Process.Start(startInfo);
+            }
+
+            if (path.Contains(".bat") || path.Contains(".exe"))
+            {
+                System.Diagnostics.Process.Start(path);
+            }
+        }
+
+        public static string LoadFileContentAsString(string path)
+        {
+            return File.ReadAllText(path, Encoding.UTF8);
+        }
+
+        public static void DeleteContentOfDirectory(string path)
+        {
+            System.IO.DirectoryInfo di = new DirectoryInfo(path);
+
+            foreach (FileInfo file in di.GetFiles())
+            {
+                file.Delete();
+            }
+            foreach (DirectoryInfo dir in di.GetDirectories())
+            {
+                dir.Delete(true);
+            }
+        }
     }
 }

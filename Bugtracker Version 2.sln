@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bugtracker", "Bugtracker.cs
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bugtracker UI", "..\GUIBugtracker\Bugtracker Diagnostics UI\Bugtracker UI.csproj", "{E7D7ABEA-1A6E-48D0-BC9F-A992CA84A7C4}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "BugtrackerSetup", "..\BugtrackerSetup\BugtrackerSetup.vdproj", "{DCD09CDC-EAC4-4130-B5E9-8FB1FD0686F6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +33,14 @@ Global
 		{E7D7ABEA-1A6E-48D0-BC9F-A992CA84A7C4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E7D7ABEA-1A6E-48D0-BC9F-A992CA84A7C4}.Release|x86.ActiveCfg = Release|Any CPU
 		{E7D7ABEA-1A6E-48D0-BC9F-A992CA84A7C4}.Release|x86.Build.0 = Release|Any CPU
+		{DCD09CDC-EAC4-4130-B5E9-8FB1FD0686F6}.Debug|Any CPU.ActiveCfg = Debug
+		{DCD09CDC-EAC4-4130-B5E9-8FB1FD0686F6}.Debug|Any CPU.Build.0 = Debug
+		{DCD09CDC-EAC4-4130-B5E9-8FB1FD0686F6}.Debug|x86.ActiveCfg = Debug
+		{DCD09CDC-EAC4-4130-B5E9-8FB1FD0686F6}.Debug|x86.Build.0 = Debug
+		{DCD09CDC-EAC4-4130-B5E9-8FB1FD0686F6}.Release|Any CPU.ActiveCfg = Release
+		{DCD09CDC-EAC4-4130-B5E9-8FB1FD0686F6}.Release|Any CPU.Build.0 = Release
+		{DCD09CDC-EAC4-4130-B5E9-8FB1FD0686F6}.Release|x86.ActiveCfg = Release
+		{DCD09CDC-EAC4-4130-B5E9-8FB1FD0686F6}.Release|x86.Build.0 = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

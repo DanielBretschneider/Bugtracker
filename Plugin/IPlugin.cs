@@ -7,9 +7,9 @@ namespace Bugtracker.Plugin
     /// </summary>
     public interface IPlugin
     {
-        public string Name { get; }
-        public string Version { get; }  
-        public string Author { get; }   
-        public void OnLoad();
+         string Name { get; }
+         string Version { get; }  
+         string Author { get; }   
+         void OnLoad();
     }
 }

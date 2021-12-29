@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Windows.Forms;
 using Bugtracker.Utils;
 using Bugtracker.Variables;
@@ -147,6 +148,24 @@ namespace Bugtracker.Configuration
             set => bugtrackerFolders = value;
         }
 
+        public string dateString;
+
+        [Key("date", true)]
+        public string DateString 
+        { 
+            set => dateString = value;
+            get => DateTime.Now.ToString("MM-dd-yyyy"); 
+        }
+
+        public string timeString;
+
+        [Key("time", true)]
+        public string TimeString 
+        {
+            set => timeString = value;
+            get => DateTime.Now.ToString("HH-mm-ss"); 
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -176,9 +195,17 @@ namespace Bugtracker.Configuration
         /// </summary>
         public RunningConfiguration()
         {
-            ServerAddress = GetMainServerAddress(Globals.LOCAL_CONFIG_FILE_PATH);
-            ConfigurationFolderPath = GetConfigurationFolderPath();
-            ServerPath = GetConfigurationFolderPath();
+            PcInfo = new PCInfo();
+            VariableManager = new VariableManager(this);
+
+            ServerAddress = GetMainServerAddress(this, Globals.LOCAL_CONFIG_FILE_PATH);
+            MainServer = new Server(ServerAddress);
+
+            VariableManager.FullRefresh();
+            ConfigurationFolderPath = GetConfigurationFolderPath(this);
+            VariableManager.FullRefresh();
+            ServerPath = GetConfigurationFolderPath(this);
+            VariableManager.FullRefresh();
 
             BugtrackerFolders = new List<DirectoryInfo>();
 
@@ -186,20 +213,14 @@ namespace Bugtracker.Configuration
             TargetManager = new TargetManager();
             ProblemManager = new ProblemManager();
 
-            PcInfo = new PCInfo();
-            MainServer = new Server(ServerAddress);
-
             StartupTime = DateTime.Now;
-
-            VariableManager = new VariableManager(this);
 
             InitParametersAccordingToConfigurationFiles();
             InitServerConnectionStatusTimer();
-
-            
         }
 
         private Timer serverConnectionStatusTimer;
+        private ProblemCategory _selectedProblemCategory;
 
         /// <summary>
         /// 
@@ -249,11 +270,11 @@ namespace Bugtracker.Configuration
                     File.Copy(filePath, Globals.LOCAL_CONFIG_FILES_PATH + "\\" + Path.GetFileName(filePath), true);
                 }
 
-                LoggerEnabled = IsLoggingEnabled(filePath);
-                LogSeverity = GetLoggingSeverity(filePath);
-                ApplicationManager.Applications.AddRange(GetSpecifiedApplications(filePath));
-                TargetManager.Targets.AddRange(GetSpecifiedTargets(filePath));
-                ProblemManager.ProblemCategories.AddRange(GetSpecifiedProblemCategories(filePath));
+                LoggerEnabled = IsLoggingEnabled(this, filePath);
+                LogSeverity = GetLoggingSeverity(this, filePath);
+                ApplicationManager.Applications.AddRange(GetSpecifiedApplications(this, filePath));
+                TargetManager.Targets.AddRange(GetSpecifiedTargets(this, filePath));
+                ProblemManager.ProblemCategories.AddRange(GetSpecifiedProblemCategories(this, filePath));
             }
         }
 

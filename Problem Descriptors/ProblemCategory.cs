@@ -8,6 +8,8 @@ namespace Bugtracker.Problem_Descriptors
 {
     public class ProblemCategory
     {
+        public string TicketAbbreviation { get; set; }
+
         public string Name { get; set; }
         public List<string> Descriptions { get; set; }
         public List<InternalApplication.Application> SelectedApplications { get; set; }

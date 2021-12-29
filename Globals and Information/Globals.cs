@@ -56,6 +56,12 @@
 
 
         /// <summary>
+        /// LOCAL_BLACKHOLE_FODLER_PATH holds the path of the local blackhole folder
+        /// </summary>
+        public const string LOCAL_BLACKHOLE_FODLER_PATH = APPLICATION_DIRECTORY + "\\blackhole";
+
+
+        /// <summary>
         /// CONFIG_FILE_PATH holds the path where the configuration xml files are stored
         /// The 'x' on the end of filename can be changed into a combination of pc name and 
         /// domain.

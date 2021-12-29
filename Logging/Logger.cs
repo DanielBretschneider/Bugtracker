@@ -1,9 +1,7 @@
 ﻿using System;
 using System.IO;
-using System.Runtime.CompilerServices;
 using Bugtracker.Configuration;
 using Bugtracker.Globals_and_Information;
-using Microsoft.VisualBasic;
 
 namespace Bugtracker.Logging
 {
@@ -33,6 +31,7 @@ namespace Bugtracker.Logging
     public static class Logger
     {
         public static event EventHandler LoggedNewLine;
+        private static bool loggingEnabled = RunningConfiguration.GetInstance().LoggerEnabled;
 
         /// <summary>
         /// Check if log file exists
@@ -40,6 +39,7 @@ namespace Bugtracker.Logging
         /// </summary>
         public static void InitializeLogging()
         {
+
             // if file doesn't exist create file 
             if (!File.Exists(Globals.LOG_FILE_PATH))
             {
@@ -148,10 +148,18 @@ namespace Bugtracker.Logging
             // if logging is enabled in config file, log
             if (true)
             {
-                using (StreamWriter writer = File.AppendText(Globals.LOG_FILE_PATH))
+                try
                 {
-                    writer.WriteLine(msg);
+                    using (StreamWriter writer = File.AppendText(Globals.LOG_FILE_PATH))
+                    {
+                        writer.WriteLine(msg);
+                    }
                 }
+                catch (Exception e)
+                {
+                    System.Diagnostics.Debug.WriteLine("Cannot log, File ist being used by another process");
+                }
+
             }
         }
     }

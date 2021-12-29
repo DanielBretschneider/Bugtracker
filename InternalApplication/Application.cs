@@ -1,6 +1,7 @@
 ﻿using Bugtracker.Logging;
 using System.Collections.Generic;
 using System.IO;
+using Bugtracker.Utils;
 
 namespace Bugtracker.InternalApplication
 {
@@ -8,9 +9,9 @@ namespace Bugtracker.InternalApplication
     {
         public enum ShowAppSpecifier
         {
-            onExist,
-            show,
-            hide
+            installed,
+            always,
+            never
         }
 
 
@@ -40,9 +41,7 @@ namespace Bugtracker.InternalApplication
             get
             {
                 System.Diagnostics.Debug.WriteLine("File check exist: " + Name + ": " + (LogFiles[0].Path != "" && Directory.Exists(LogFiles[0].Path)));
-                if (LogFiles[0].Path != "" && Directory.Exists(LogFiles[0].Path))
-                    return true;
-                return false;
+                return Directory.Exists(ExecutableLocation);
             }
         }
 
@@ -55,6 +54,9 @@ namespace Bugtracker.InternalApplication
         /// 
         /// </summary>
         public List<Log> LogFiles { get; set; }
+
+        public string? PreFetchExecutionPath { get; set; }
+        public string? PostFetchExecutionPath { get; set; }
 
         #endregion
 
@@ -70,6 +72,18 @@ namespace Bugtracker.InternalApplication
                    "Enabled: " + this.Enabled + "\t" +
                    "Standard: " + this.IsStandard + "\t" +
                    "Show: " + this.ShowSpecifier;
+        }
+
+        public void ExecutePreFetching()
+        {
+            if(PreFetchExecutionPath != null)
+                BugtrackerUtils.ExecuteScript(PreFetchExecutionPath);
+        }
+
+        public void ExecutePostFetching()
+        {
+            if(PostFetchExecutionPath != null)
+                BugtrackerUtils.ExecuteScript(PostFetchExecutionPath);
         }
     }
 }

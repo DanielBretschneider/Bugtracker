@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml;
-using Bugtracker.Exceptions;
 using Bugtracker.Globals_and_Information;
 using Bugtracker.InternalApplication;
 using Bugtracker.Logging;
 using Bugtracker.Problem_Descriptors;
 using Bugtracker.Targeting;
+using Bugtracker.Variables;
 using static Bugtracker.Logging.Log;
 
 namespace Bugtracker.Configuration
@@ -55,8 +54,11 @@ namespace Bugtracker.Configuration
             return appCount;
         }
 
-        public static string GetMainServerAddress(string customConfigPath = Globals.LOCAL_CONFIG_FILES_PATH)
+        public static string GetMainServerAddress(RunningConfiguration rc,
+            string customConfigPath = Globals.LOCAL_CONFIG_FILES_PATH)
         {
+            VariableManager vm = rc.VariableManager;
+
             string serverAddress = "";
 
             using (XmlReader reader = XmlReader.Create(customConfigPath))
@@ -66,15 +68,18 @@ namespace Bugtracker.Configuration
                     if (reader.NodeType == XmlNodeType.Element)
                     {
                         if (reader.LocalName.Equals("startup"))
-                            serverAddress = reader.GetAttribute("mainserver");
+                            serverAddress = vm.ReplaceKeywords(reader.GetAttribute("mainserver"));
                     }
                 }
             }
 
             return serverAddress;
         }
-        public static bool IsGUIEnabledOnStartup(string customConfigPath = Globals.LOCAL_CONFIG_FILE_PATH)
+        public static bool IsGUIEnabledOnStartup(RunningConfiguration rc,
+            string customConfigPath = Globals.LOCAL_CONFIG_FILE_PATH)
         {
+            VariableManager vm = rc.VariableManager;
+
             bool GUIEnabled = false;
 
             using (XmlReader reader = XmlReader.Create(customConfigPath))
@@ -84,7 +89,7 @@ namespace Bugtracker.Configuration
                     if (reader.NodeType == XmlNodeType.Element)
                     {
                         if (reader.LocalName.Equals("startup"))
-                            Boolean.TryParse(reader.GetAttribute("startGUI"), out GUIEnabled);
+                            Boolean.TryParse(vm.ReplaceKeywords(reader.GetAttribute("startGUI")), out GUIEnabled);
                     }
                 }
             }
@@ -92,8 +97,11 @@ namespace Bugtracker.Configuration
             return GUIEnabled;
         }
 
-        public static string GetConfigurationFolderPath(string customConfigPath = Globals.LOCAL_CONFIG_FILE_PATH)
+        public static string GetConfigurationFolderPath(RunningConfiguration rc,
+            string customConfigPath = Globals.LOCAL_CONFIG_FILE_PATH)
         {
+            VariableManager vm = rc.VariableManager;
+
             string path = "";
 
             using (XmlReader reader = XmlReader.Create(Globals.LOCAL_CONFIG_FILE_PATH))
@@ -103,7 +111,7 @@ namespace Bugtracker.Configuration
                     if (reader.NodeType == XmlNodeType.Element)
                     {
                         if (reader.LocalName.Equals("startup"))
-                            path = reader.GetAttribute("loadConfigsFrom");
+                            path = vm.ReplaceKeywords(reader.GetAttribute("loadConfigsFrom"));
                     }
                 }
             }
@@ -116,8 +124,11 @@ namespace Bugtracker.Configuration
         /// Parameters are loglocation type, path, filename (regex), find (per timeperiod)
         /// </summary>
         /// <returns></returns>
-        public static List<Application> GetSpecifiedApplications(string customConfigPath = Globals.LOCAL_CONFIG_FILE_PATH)
+        public static List<Application> GetSpecifiedApplications(RunningConfiguration rc,
+            string customConfigPath = Globals.LOCAL_CONFIG_FILE_PATH)
         {
+            VariableManager vm = rc.VariableManager;
+
             List<Application> applications = new List<Application>();
 
             // start reading autostart.config.xml
@@ -136,11 +147,15 @@ namespace Bugtracker.Configuration
                         {
                             Application appToAdd = new Application();
 
-                            appToAdd.Name = reader.GetAttribute("name");
-                            appToAdd.ExecutableLocation = reader.GetAttribute("executable");
-                            appToAdd.Enabled = Convert.ToBoolean(reader.GetAttribute("enable"));
-                            appToAdd.IsStandard = Convert.ToBoolean(reader.GetAttribute("standard"));
-                            appToAdd.ShowSpecifier = ConvertStringToShowSpecifier(reader.GetAttribute("show"), appToAdd.Name, lineInfo.LineNumber, lineInfo.LinePosition);
+                            appToAdd.Name = vm.ReplaceKeywords(reader.GetAttribute("name"));
+                            appToAdd.ExecutableLocation = vm.ReplaceKeywords(reader.GetAttribute("executable"));
+                            appToAdd.IsStandard = Convert.ToBoolean(vm.ReplaceKeywords(reader.GetAttribute("standard")));
+
+                            Application.ShowAppSpecifier show;
+
+                            Enum.TryParse<Application.ShowAppSpecifier>(vm.ReplaceKeywords(reader.GetAttribute("show")), out show);
+
+                            appToAdd.ShowSpecifier = show;
 
                             currentApplication = appToAdd;
 
@@ -153,19 +168,33 @@ namespace Bugtracker.Configuration
                             Log logToAppend = new Log();
                             LogLocationType type = LogLocationType.client;
 
-                            if (Enum.TryParse<LogLocationType>(reader.GetAttribute("location"), out type))
+                            if (Enum.TryParse<LogLocationType>(vm.ReplaceKeywords(reader.GetAttribute("location")), out type))
                                 logToAppend.LocationType = type;
 
-                            logToAppend.Path = reader.GetAttribute("path");
-                            logToAppend.Filename = reader.GetAttribute("filename");
+                            logToAppend.Path = vm.ReplaceKeywords(reader.GetAttribute("path"));
+                            logToAppend.Filename = vm.ReplaceKeywords(reader.GetAttribute("filename"));
 
                             LogFindSpecifier findSpec = LogFindSpecifier.NEW;
 
-                            if (Enum.TryParse<LogFindSpecifier>(reader.GetAttribute("find"), out findSpec))
+                            if (Enum.TryParse<LogFindSpecifier>(vm.ReplaceKeywords(reader.GetAttribute("find")), out findSpec))
                                 logToAppend.Find = findSpec;
+
+                            logToAppend.Lines = reader.GetAttribute("lines");
 
                             if (currentApplication != null)
                                 currentApplication.LogFiles.Add(logToAppend);
+                        }
+
+                        if (reader.Name.Equals("pre-fetch"))
+                        {
+                            if (currentApplication != null)
+                                currentApplication.PreFetchExecutionPath = vm.ReplaceKeywords(reader.GetAttribute("path"));
+                        }
+
+                        if (reader.Name.Equals("post-fetch"))
+                        {
+                            if (currentApplication != null)
+                                currentApplication.PostFetchExecutionPath = vm.ReplaceKeywords(reader.GetAttribute("path"));
                         }
                     }
                 }
@@ -174,8 +203,11 @@ namespace Bugtracker.Configuration
             return applications;
         }
 
-        public static List<ProblemCategory> GetSpecifiedProblemCategories(string customConfigPath = Globals.LOCAL_CONFIG_FILE_PATH)
+        public static List<ProblemCategory> GetSpecifiedProblemCategories(RunningConfiguration rc,
+            string customConfigPath = Globals.LOCAL_CONFIG_FILE_PATH)
         {
+            VariableManager vm = rc.VariableManager;
+
             List<ProblemCategory> problemCategories = new List<ProblemCategory>();
 
             // start reading autostart.config.xml
@@ -190,14 +222,15 @@ namespace Bugtracker.Configuration
                         if (reader.LocalName.Equals("problem-category"))
                         {
                             ProblemCategory categoryToAdd = new ProblemCategory();
-                            categoryToAdd.Name = reader.GetAttribute("name");
+                            categoryToAdd.Name = vm.ReplaceKeywords(reader.GetAttribute("name"));
+                            categoryToAdd.TicketAbbreviation = vm.ReplaceKeywords(reader.GetAttribute("ticket"));
                             currentProblemCategory = categoryToAdd;
                             problemCategories.Add(categoryToAdd);
                         }
 
                         if (reader.Name.Equals("description"))
                         {
-                            string descriptorText = reader.GetAttribute("text");
+                            string descriptorText = vm.ReplaceKeywords(reader.GetAttribute("text"));
 
                             if (currentProblemCategory != null)
                                 currentProblemCategory.Descriptions.Add(descriptorText);
@@ -226,12 +259,12 @@ namespace Bugtracker.Configuration
                                     if (!s.Equals("All") && !s.Equals("Screen") && !s.Equals(""))
                                     {
 
-                                        if (Directory.Exists(GetConfigurationFolderPath()))
-                                            configurationPath = GetConfigurationFolderPath();
+                                        if (Directory.Exists(GetConfigurationFolderPath(rc)))
+                                            configurationPath = GetConfigurationFolderPath(rc);
 
                                         foreach (string path in Directory.GetFiles(configurationPath, "*.xml"))
                                         {
-                                            foreach (Application a in GetSpecifiedApplications(path))
+                                            foreach (Application a in GetSpecifiedApplications(rc, path))
                                             {
                                                 if (a.Name == s)
                                                 {
@@ -256,8 +289,11 @@ namespace Bugtracker.Configuration
             return problemCategories;
         }
 
-        public static List<Target> GetSpecifiedTargets(string customConfigPath = Globals.LOCAL_CONFIG_FILE_PATH)
+        public static List<Target> GetSpecifiedTargets(RunningConfiguration rc,
+            string customConfigPath = Globals.LOCAL_CONFIG_FILE_PATH)
         {
+            VariableManager vm = rc.VariableManager;
+
             List<Target> targets = new List<Target>();
 
             // start reading autostart.config.xml
@@ -275,22 +311,24 @@ namespace Bugtracker.Configuration
                         {
                             Target targetToAdd = new Target();
 
-                            targetToAdd.Name = reader.GetAttribute("name");
+                            targetToAdd.Name = vm.ReplaceKeywords(reader.GetAttribute("name"));
 
                             TargetType type = TargetType.folder;
 
-                            if (Enum.TryParse<TargetType>(reader.GetAttribute("type"), out type))
+                            if (Enum.TryParse<TargetType>(vm.ReplaceKeywords(reader.GetAttribute("type")), out type))
                                 targetToAdd.TargetType = type;
 
                             bool defaultT = false;
 
                             if (reader.GetAttribute("default") != null)
-                                Boolean.TryParse(reader.GetAttribute("default"), out defaultT);
+                                Boolean.TryParse(vm.ReplaceKeywords(reader.GetAttribute("default")), out defaultT);
 
                             targetToAdd.Default = defaultT;
 
-                            targetToAdd.Path = reader.GetAttribute("path");
-                            targetToAdd.Address = reader.GetAttribute("address");
+                            targetToAdd.Path = vm.ReplaceKeywords(reader.GetAttribute("path"));
+                            targetToAdd.Address = vm.ReplaceKeywords(reader.GetAttribute("address"));
+
+                            targetToAdd.CustomBugtrackerFolderName = reader.GetAttribute("foldername");
 
                             targets.Add(targetToAdd);
                         }
@@ -301,8 +339,11 @@ namespace Bugtracker.Configuration
             return targets;
         }
 
-        public static LoggingSeverity GetLoggingSeverity(string customConfigPath = Globals.LOCAL_CONFIG_FILE_PATH)
+        public static LoggingSeverity GetLoggingSeverity(RunningConfiguration rc,
+            string customConfigPath = Globals.LOCAL_CONFIG_FILE_PATH)
         {
+            VariableManager vm = rc.VariableManager;
+
             using (XmlReader reader = XmlReader.Create(customConfigPath))
             {
                 while (reader.Read())
@@ -311,7 +352,7 @@ namespace Bugtracker.Configuration
                     {
                         if (reader.Name.Equals("logger"))
                         {
-                            switch (reader.GetAttribute("severity"))
+                            switch (vm.ReplaceKeywords(reader.GetAttribute("severity")))
                             {
                                 case "1":
                                     return LoggingSeverity.Error;
@@ -339,8 +380,10 @@ namespace Bugtracker.Configuration
         /// Checks if logging is enabled via the logger - enabled xml tag and attribute
         /// </summary>
         /// <returns></returns>
-        public static bool IsLoggingEnabled(string customConfigPath = Globals.LOCAL_CONFIG_FILE_PATH)
+        public static bool IsLoggingEnabled(RunningConfiguration rc,
+            string customConfigPath = Globals.LOCAL_CONFIG_FILE_PATH)
         {
+            VariableManager vm = rc.VariableManager;
             // value of target aka site/ip to be pinged
             bool log = false;
 
@@ -365,32 +408,8 @@ namespace Bugtracker.Configuration
                     }
                 }
             }
+
             return log;
-        }
-
-        public static Application.ShowAppSpecifier ConvertStringToShowSpecifier(string content, string appname, int line, int linePosition)
-        {
-            if (content.Contains("onExist"))
-                return Application.ShowAppSpecifier.onExist;
-            if (content.Contains("show"))
-                return Application.ShowAppSpecifier.show;
-            if (content.Contains("hide"))
-                return Application.ShowAppSpecifier.hide;
-            string showSpecifierList = "";
-
-            int i = 0;
-            int l = Enum.GetNames(typeof(Application.ShowAppSpecifier)).Count();
-            foreach (string showSpecifier in Enum.GetNames(typeof(Application.ShowAppSpecifier)))
-            {
-                i++;
-                if (i < l - 1)
-                    showSpecifierList += showSpecifier + ", ";
-                else
-                    showSpecifierList += showSpecifier;
-            }
-
-            throw new ConfigFileParseException(appname + " at line " + line + "postion: " + linePosition +
-                                               ".show=\"\" has to be one of the following: " + showSpecifierList);
         }
 
     }

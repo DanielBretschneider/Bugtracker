@@ -9,36 +9,11 @@ namespace Bugtracker.Utils
     public static class ServerUtils
     {
         private static readonly RunningConfiguration runningConfiguration = RunningConfiguration.GetInstance();
-        public static EventHandler CheckedServerStatus;
-
-
-        public static string IsTerminalServer()
-        {
-            //create a management scope object
-            ManagementScope scope = new ManagementScope("\\\\.\\ROOT\\CIMV2\\TerminalServices");
-
-            //create object query
-            ObjectQuery query = new ObjectQuery("SELECT * FROM Win32_TerminalServiceSetting");
-
-            //create object searcher
-            ManagementObjectSearcher searcher =
-                new ManagementObjectSearcher(scope, query);
-
-            //get a collection of WMI objects
-            ManagementObjectCollection queryCollection = searcher.Get();
-
-            foreach (ManagementObject m in queryCollection)
-            {
-                // access properties of the WMI object
-                return "Terminal Server enabled: " + m["AllowTSConnections"];
-            }
-
-            return "";
-        }
     }
 
     public class Server
     {
+        public static event EventHandler CheckedServerStatus;
         /// <summary>
         /// 
         /// </summary>
@@ -60,20 +35,24 @@ namespace Bugtracker.Utils
         /// <param name="serverPath"></param>
         public Server(string serverPath)
         {
+            pinger = new Ping();
             this.ServerPath = serverPath;
 
-            pinger = new Ping();
+            SetTimer();
+
+            
+
         }
 
         private void SetTimer()
         {
-            _aTimer = new System.Timers.Timer(CheckInterval);
+            _aTimer = new System.Timers.Timer(5000);
             _aTimer.Elapsed += OnTimedEvent;
             _aTimer.AutoReset = true;
             _aTimer.Enabled = true;
         }
 
-        private void OnTimedEvent(object? sender, ElapsedEventArgs e)
+        private void OnTimedEvent(object sender, ElapsedEventArgs e)
         {
             try
             {
@@ -85,10 +64,9 @@ namespace Bugtracker.Utils
             {
                 ServerStatus = ServerStatus.NotAvailable;
             }
-            finally
-            {
-                pinger.Dispose();
-            }
+
+            if(CheckedServerStatus != null)
+                CheckedServerStatus?.Invoke(null,null);
         }
     }
 }

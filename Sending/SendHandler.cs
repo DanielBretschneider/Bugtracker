@@ -1,10 +1,12 @@
-﻿using Bugtracker.Globals_and_Information;
-using Bugtracker.Targeting;
-using System.Collections.Generic;
-using System.IO;
+﻿using System;
 using Bugtracker.Configuration;
 using Bugtracker.Problem_Descriptors;
+using Bugtracker.Targeting;
 using Bugtracker.Utils;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
 
 namespace Bugtracker.Sending
 {
@@ -55,7 +57,7 @@ namespace Bugtracker.Sending
             foreach (Target t in targets)
             {
                 if (t.TargetType == TargetType.folder)
-                    completionStatus.Add(SendPerCopy(t));
+                    completionStatus.Add(SendPerCopy(t, problemDescriptor));
                 else if (t.TargetType == TargetType.mail)
                     completionStatus.Add(SendPerMail(t));
             }
@@ -83,17 +85,47 @@ namespace Bugtracker.Sending
         {
             if ((t.Path != null || t.Path != ""))
             {
+                bool useCustomBTFolderName = false;
+                //Custom Bugtracker Folder Name creation
+                if(t.CustomBugtrackerFolderName != null || t.CustomBugtrackerFolderName != "")
+                {
+                    useCustomBTFolderName = true;
+
+                    if (problemDescriptor?.ProblemCategory != null)
+                    {
+                        RunningConfiguration.GetInstance().VariableManager.VariableDictionary["ticket"] =
+                            (problemDescriptor.ProblemCategory.TicketAbbreviation, false);
+                    }
+
+                    t.CustomBugtrackerFolderName = RunningConfiguration.GetInstance().VariableManager.ReplaceKeywords(t.CustomBugtrackerFolderName);
+                }
+
                 if (RunningConfiguration.GetInstance().BugtrackerFolders.Count != 0)
                 {
                     foreach (DirectoryInfo di in RunningConfiguration.GetInstance().BugtrackerFolders)
                     {
-                        Directory.CreateDirectory(t.Path + "\\" + di.Name);
+                        string bugtrackerFolderName = di.Name;
+                        //Create bugtracker folder at target path
+                        if (useCustomBTFolderName)
+                            bugtrackerFolderName = t.CustomBugtrackerFolderName;    
 
-                        if(problemDescriptor != null)
-                            CreateProblemDescriptionFile(t.Path + "\\" + di.Name + "\\" + problemDescriptor.ProblemCategory + "_Problem_Description", problemDescriptor);
+                        Directory.CreateDirectory(t.Path + "\\" + bugtrackerFolderName);
 
-                        BugtrackerUtils.DirectoryCopy(di.FullName, t.Path + "\\" + di.Name, true);
+                        if(problemDescriptor?.ProblemCategory != null)
+                            CreateProblemDescriptionFile(t.Path + "\\" + bugtrackerFolderName + "\\" + problemDescriptor.ProblemCategory.Name + "_Problem_Description", problemDescriptor);
+
+                        //copy content of bugtracker folder to target path
+                        BugtrackerUtils.DirectoryCopy(di.FullName, t.Path + "\\" + bugtrackerFolderName, true);
+
+                        //create blackhole folder at target path
+                        Directory.CreateDirectory(t.Path + "\\" + bugtrackerFolderName + "\\blackhole");
+
+                        //copy content of blackhole folder to target path
+
+                        BugtrackerUtils.DirectoryCopy(Globals_and_Information.Globals.LOCAL_BLACKHOLE_FODLER_PATH, t.Path + "\\" + bugtrackerFolderName + "\\blackhole", true);
                     }
+
+                    
 
                     return true;
                 }
@@ -104,8 +136,13 @@ namespace Bugtracker.Sending
 
         public void CreateProblemDescriptionFile(string path, ProblemDescriptor problemDescriptor)
         {
-            using (StreamWriter sw = File.CreateText(path))
+            using (StreamWriter sw = File.CreateText(path + ".txt"))
             {
+                System.Diagnostics.Debug.WriteLine("Created Problem Description file....");
+                sw.WriteLine("Problem Kategorie");
+                sw.WriteLine(problemDescriptor.ProblemCategory.Name);
+                sw.WriteLine("---------------------------------------------" + Environment.NewLine);
+                sw.WriteLine("Problem Beschreibung:");
                 sw.WriteLine(problemDescriptor.ProblemDescription);
             }
         }
