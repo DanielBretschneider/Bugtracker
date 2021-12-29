@@ -1,11 +1,3 @@
-<<<<<<< HEAD
-```bat
-Code wird zur Zeit im Master-Branch entwickelt.
-```
-
-
-=======
->>>>>>> 967faee2b8e4298a39669ff99af171af5404abd4
 # Bugtracker
 Der Bugtracker dient in erster Linie der raschen Fehlerdokumentation und erleichtert die Analyse und Identifikation bei Softwareproblematiken. Ausgeführt als Applikation mit 
 grafischem Interface, oder via CMD/Terminal sammelt der Bugtracker Logdateien der jeweiligen Software und speichert sie auf einem Shared-Folder im Unternehmensnetzwerk. 
@@ -56,11 +48,7 @@ Die Zweitversion des Bugtrackers wird in verschiedenen Unterversionen entwickelt
 
 ### Versionierung
 
-<<<<<<< HEAD
-#### Version 2.1
-=======
 #### Version 2.1 ✔
->>>>>>> 967faee2b8e4298a39669ff99af171af5404abd4
 In der Erstversion des Bugtrackers steht Grundfunktionalität im Vordergrund, dies inkludiert:
 *	Fertiges Grundgerüst (Programmstruktur)
 *	Fertige Konfigurationsdatei
@@ -71,7 +59,7 @@ In der Erstversion des Bugtrackers steht Grundfunktionalität im Vordergrund, di
 *	Command Line Befehl zur Steuerung des Bugtrackers
 
 
-#### Version 2.2
+#### Version 2.2 ✔
 Die Zweitversion erweitert den Bugtracker um Folgende Funktionalitäten und Inhalte: 
 * Bedienung via GUI möglich (https://github.com/isaatonimov/Bugtracker-Diagnostics-UI-Plugin)
 * Dynamische Programmsektion
