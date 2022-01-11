@@ -4,38 +4,33 @@
         <name>BugtrackerSystem</name>
     </assembly>
     <members>
-        <member name="M:Bugtracker.Capture.Log.LogfileFetcher.#ctor(System.Collections.Generic.List{Bugtracker.InternalApplication.Application})">
-            <summary>
-            LogFileFetcher() - default Constructor
-            </summary>
-        </member>
-        <member name="M:Bugtracker.Capture.Log.LogfileFetcher.InitLogFilesFromAllTargetedApplications">
+        <member name="M:Bugtracker.Capture.LogProcessing.LogProcessor.InitLogFilesFromAllTargetedApplications(System.Collections.Generic.List{Bugtracker.InternalApplication.Application})">
             <summary>
             Returns a list of paths for each log file existing
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Bugtracker.Capture.Log.LogfileFetcher.BuildDestinationPath">
+        <member name="M:Bugtracker.Capture.LogProcessing.LogProcessor.BuildDestinationPath">
             <summary>
             
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Bugtracker.Capture.Log.LogfileFetcher.GetLineCount(System.String)">
+        <member name="M:Bugtracker.Capture.LogProcessing.LogProcessor.GetLineCount(System.String)">
             <summary>
             
             </summary>
             <param name="filepath"></param>
             <returns></returns>
         </member>
-        <member name="M:Bugtracker.Capture.Log.LogfileFetcher.CopyFile(System.String,Bugtracker.Logging.Log,System.String)">
+        <member name="M:Bugtracker.Capture.LogProcessing.LogProcessor.CopyFile(System.String,Bugtracker.Logging.Log,System.String)">
             <summary>
             Copies file 
             If file has more lines than n = MAX_LINES_OF_LOG_FILE
             than only the last n lines will be stored in bugtracker zip
             </summary>
         </member>
-        <member name="M:Bugtracker.Capture.Log.LogfileFetcher.FetchLog(System.String,System.ValueTuple{Bugtracker.InternalApplication.Application,Bugtracker.Logging.Log})">
+        <member name="M:Bugtracker.Capture.LogProcessing.LogProcessor.FetchLog(System.String,System.ValueTuple{Bugtracker.InternalApplication.Application,Bugtracker.Logging.Log})">
             <summary>
             This procedure fetches the last 2000 
             (default value is MAX_LINES_OF_LOG_FILE) lines
@@ -71,7 +66,7 @@
             for PC01 01.02.2021 08:12:43
             </summary>
         </member>
-        <member name="M:Bugtracker.Capture.Screen.ScreenCaptureHandler.GenerateScreenshots(System.String,System.Boolean)">
+        <member name="M:Bugtracker.Capture.Screen.ScreenCaptureHandler.GenerateScreenshot(System.String,System.Boolean)">
             <summary>
             This method is responsible for
             generating the screenshots for
@@ -85,26 +80,20 @@
             This class is only here to handle all the XML-Magic
             </summary>
         </member>
-        <member name="M:Bugtracker.Configuration.ConfigHandler.#ctor">
+        <member name="M:Bugtracker.Configuration.ConfigHandler.#ctor(Bugtracker.Configuration.RunningConfiguration)">
             <summary>
             Default Constructor,
             does nothing
             </summary>
         </member>
-        <member name="M:Bugtracker.Configuration.ConfigHandler.GetNumberOfApplications">
-            <summary>
-            Returns number of applications specified in bugtracker Config
-            </summary>
-            <returns></returns>
-        </member>
-        <member name="M:Bugtracker.Configuration.ConfigHandler.GetSpecifiedApplications(Bugtracker.Configuration.RunningConfiguration,System.String)">
+        <member name="M:Bugtracker.Configuration.ConfigHandler.GetSpecifiedApplications(System.String)">
             <summary>
             Returns a List of applications specified in the logfile
             Parameters are loglocation type, path, filename (regex), find (per timeperiod)
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Bugtracker.Configuration.ConfigHandler.IsLoggingEnabled(Bugtracker.Configuration.RunningConfiguration,System.String)">
+        <member name="M:Bugtracker.Configuration.ConfigHandler.IsLoggingEnabled(System.String)">
             <summary>
             To log, or not to log.
             Checks if logging is enabled via the logger - enabled xml tag and attribute
@@ -397,48 +386,6 @@
             space
             </summary>
         </member>
-        <member name="F:Bugtracker.Globals_and_Information.Globals.APPLICATION_DIRECTORY">
-            <summary>
-            APPLICATION_PATH stores the path to the bugtracker directory
-            </summary>
-        </member>
-        <member name="F:Bugtracker.Globals_and_Information.Globals.TMP_DIRECTORY">
-            <summary>
-            Temp folder where the bugtrack files will be gathered, zipped and sent
-            out. BT Files + .zip files will be automatically deleted when sent out
-            </summary>
-        </member>
-        <member name="F:Bugtracker.Globals_and_Information.Globals.LOG_FILE_PATH">
-            <summary>
-            LOG_FILE_PATH stores the absolute path to bugtracker.log
-            </summary>
-        </member>
-        <member name="F:Bugtracker.Globals_and_Information.Globals.LOCAL_CONFIG_FILE_PATH">
-            <summary>
-            CONFIG_FILE_PATH holds the path where the configuration xml file is stored
-            The 'x' on the end of filename can be changed into a combination of pc name and 
-            domain.
-            </summary>
-        </member>
-        <member name="F:Bugtracker.Globals_and_Information.Globals.LOCAL_CONFIG_FILES_PATH">
-            <summary>
-            CONFIG_FILE_PATH holds the path where the configuration xml files are stored
-            The 'x' on the end of filename can be changed into a combination of pc name and 
-            domain.
-            </summary>
-        </member>
-        <member name="F:Bugtracker.Globals_and_Information.Globals.LOCAL_BLACKHOLE_FODLER_PATH">
-            <summary>
-            LOCAL_BLACKHOLE_FODLER_PATH holds the path of the local blackhole folder
-            </summary>
-        </member>
-        <member name="F:Bugtracker.Globals_and_Information.Globals.LOCAL_PLUGIN_FILES_PATH">
-            <summary>
-            CONFIG_FILE_PATH holds the path where the configuration xml files are stored
-            The 'x' on the end of filename can be changed into a combination of pc name and 
-            domain.
-            </summary>
-        </member>
         <member name="F:Bugtracker.Globals_and_Information.Globals.DEFAULT_BUGTRACKER_SERVER">
             <summary>
             DEFAULT_BUGTRACKER_SERVER holds the default value where the file have to be copied to
@@ -695,31 +642,31 @@
               Ressourcenzuordnungen, die diese stark typisierte Ressourcenklasse verwenden.
             </summary>
         </member>
-        <member name="T:Bugtracker.Sending.SendHandler">
+        <member name="T:Bugtracker.Send.SendHandler">
             <summary>
             Providing methods to send Bugtracker folders of local session to given targets.
             </summary>
         </member>
-        <member name="M:Bugtracker.Sending.SendHandler.ReturnCompletionStatus(System.Collections.Generic.List{System.Boolean})">
+        <member name="M:Bugtracker.Send.SendHandler.ReturnCompletionStatus(System.Collections.Generic.List{System.Boolean})">
             <summary>
             Returns completion status tuple ex. 1
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Bugtracker.Sending.SendHandler.Send(Bugtracker.Problem_Descriptors.ProblemDescriptor)">
+        <member name="M:Bugtracker.Send.SendHandler.Send(Bugtracker.Problem_Descriptors.ProblemDescriptor)">
             <summary>
             Sends bugtracker folders either by copy or per mail
             </summary>
             <returns>The status of sending completion of all folders</returns>
         </member>
-        <member name="M:Bugtracker.Sending.SendHandler.SendPerMail(Bugtracker.Targeting.Target,Bugtracker.Problem_Descriptors.ProblemDescriptor)">
+        <member name="M:Bugtracker.Send.SendHandler.SendPerMail(Bugtracker.Targeting.Target,Bugtracker.Problem_Descriptors.ProblemDescriptor)">
             <summary>
             Per Default sends all folders created in this bugtracker session per mail
             to default target
             </summary>
             <returns>The status of sending completion of all folders</returns>
         </member>
-        <member name="M:Bugtracker.Sending.SendHandler.SendPerCopy(Bugtracker.Targeting.Target,Bugtracker.Problem_Descriptors.ProblemDescriptor)">
+        <member name="M:Bugtracker.Send.SendHandler.SendPerCopy(Bugtracker.Targeting.Target,Bugtracker.Problem_Descriptors.ProblemDescriptor)">
             <summary>
             Per Default send all folder created in this bugtracker session per copy
             to default target
@@ -789,10 +736,6 @@
         </member>
         <member name="M:Bugtracker.Utils.BugtrackerUtils.CreateBugtrackFolder">
             <summary>
-            PCname and date will be added later
-            name of folder / zip file
-            </summary>
-            <summary>
             Create current bugtrack folder
             </summary>
         </member>
@@ -801,7 +744,7 @@
             Create Bugtracker folder name
             </summary>
         </member>
-        <member name="M:Bugtracker.Utils.BugtrackerUtils.GenerateScreenCapture">
+        <member name="M:Bugtracker.Utils.BugtrackerUtils.GenerateScreenCapture(System.Boolean)">
             <summary>
             Generates screenshots of all
             monitors
@@ -822,6 +765,13 @@
             can execute ps1, bat and exe files.
             </summary>
             <param name="path"></param>
+        </member>
+        <member name="M:Bugtracker.Utils.ServerUtils.GetXMLFromURI(System.String)">
+            <summary>
+            Load XML File from given URI
+            </summary>
+            <param name="uri"></param>
+            <returns></returns>
         </member>
         <member name="P:Bugtracker.Utils.Server.ServerStatus">
             <summary>

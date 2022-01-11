@@ -1,12 +1,9 @@
 ﻿using Bugtracker.Attributes;
-using Bugtracker.Globals_and_Information;
 using Bugtracker.InternalApplication;
-using Bugtracker.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using Bugtracker.Capture.Log;
-using Bugtracker.Capture.Screen;
+using Bugtracker.Capture.LogProcessing;
 using Bugtracker.Configuration;
 using Bugtracker.Utils;
 
@@ -45,8 +42,7 @@ namespace Bugtracker.Console.Commands.capture
                     return "One or more given applications do not exist or names do not match!";
             }
 
-            LogfileFetcher lff = new LogfileFetcher(targetedApplications);
-            lff.FetchAllLogFiles();
+            LogProcessor.FetchAllLogFiles(targetedApplications);
 
             return "Fetched all log files from given applications(s).";
         }
@@ -68,8 +64,7 @@ namespace Bugtracker.Console.Commands.capture
 
             System.Diagnostics.Debug.WriteLine("targeted Applications all: " + targetedApplications.Count);
 
-            LogfileFetcher lff = new LogfileFetcher(targetedApplications);
-            lff.FetchAllLogFiles();
+            LogProcessor.FetchAllLogFiles(targetedApplications);
 
             return "Fetched all log files from all installed applications(s).";
         }

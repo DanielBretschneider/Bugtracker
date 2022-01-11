@@ -79,10 +79,10 @@ namespace Bugtracker.Logging
         public static void CheckConfigFile()
         {
             // check if local config exists
-            if (!File.Exists(Globals.LOCAL_CONFIG_FILE_PATH))
+            if (!File.Exists(Globals.LOCAL_STARTUP_CONFIG_FILE_PATH))
             {
                 // Create a file to write to.
-                using (StreamWriter sw = File.CreateText(Globals.LOCAL_CONFIG_FILE_PATH))
+                using (StreamWriter sw = File.CreateText(Globals.LOCAL_STARTUP_CONFIG_FILE_PATH))
                 {
                     // write xml content to file
                     sw.WriteLine(GetConfigFileContent());

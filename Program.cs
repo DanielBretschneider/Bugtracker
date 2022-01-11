@@ -32,6 +32,8 @@ namespace Bugtracker
             // create tmp folder
             CreateTempFolder();
 
+            
+
             if(args.Length == 0  || (args[0] != "-sp" && args[0] != "-skipplugins"))
                 PluginManager.Load();
         }
@@ -100,6 +102,8 @@ namespace Bugtracker
         {
             //Initialize Running Configuration Instance, before everything else
             RunningConfiguration runningConfiguration = RunningConfiguration.GetInstance();
+
+            runningConfiguration.InitStartupProcedure();
 
             //sends all unhandled exception to console handler unhandled exception trapper
             System.AppDomain.CurrentDomain.UnhandledException += ConsoleHandler.UnhandledExceptionTrapper;

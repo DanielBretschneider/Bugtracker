@@ -45,6 +45,8 @@ namespace Bugtracker.Configuration
     public class RunningConfiguration : Singleton<RunningConfiguration>
     {
 
+        public static event EventHandler InitiliazedRunningConfiguration;
+
         /// <summary>
         /// The Manager Object for modifying Applications
         /// </summary>
@@ -98,6 +100,8 @@ namespace Bugtracker.Configuration
         /// </summary>
         public PCInfo PcInfo { get; protected set; }
 
+        public ConfigHandler ConfigHandler { get; protected set; }
+
         /// <summary>
         /// The Main Server Object containing the ServerStatus
         /// </summary>
@@ -150,6 +154,16 @@ namespace Bugtracker.Configuration
 
         public string dateString;
 
+
+        private bool isRemoteSession;
+
+        [Key("remoteSession")]
+        public bool IsRemoteSession
+        {
+            set => isRemoteSession = value;
+            get => System.Windows.Forms.SystemInformation.TerminalServerSession;
+        }
+
         [Key("date", true)]
         public string DateString 
         { 
@@ -195,16 +209,25 @@ namespace Bugtracker.Configuration
         /// </summary>
         public RunningConfiguration()
         {
+
             PcInfo = new PCInfo();
             VariableManager = new VariableManager(this);
 
-            ServerAddress = GetMainServerAddress(this, Globals.LOCAL_CONFIG_FILE_PATH);
+            ConfigHandler = new ConfigHandler(this);
+
+        }
+
+        public void InitStartupProcedure()
+        {
+            OverwriteStartupConfigIfFirstStartup();
+
+            ServerAddress = ConfigHandler.GetMainServerAddress(Globals.LOCAL_STARTUP_CONFIG_FILE_PATH);
             MainServer = new Server(ServerAddress);
 
             VariableManager.FullRefresh();
-            ConfigurationFolderPath = GetConfigurationFolderPath(this);
+            ConfigurationFolderPath = ConfigHandler.GetConfigurationFolderPath();
             VariableManager.FullRefresh();
-            ServerPath = GetConfigurationFolderPath(this);
+            ServerPath = ConfigHandler.GetConfigurationFolderPath();
             VariableManager.FullRefresh();
 
             BugtrackerFolders = new List<DirectoryInfo>();
@@ -217,6 +240,8 @@ namespace Bugtracker.Configuration
 
             InitParametersAccordingToConfigurationFiles();
             InitServerConnectionStatusTimer();
+
+            InitiliazedRunningConfiguration?.Invoke(null, null);
         }
 
         private Timer serverConnectionStatusTimer;
@@ -233,6 +258,17 @@ namespace Bugtracker.Configuration
             serverConnectionStatusTimer.Start();
         }
         
+        public void OverwriteStartupConfigIfFirstStartup()
+        {
+            if(VariableManager.VariableDictionary["firststartup"].value == "TRUE")
+            {
+                ConfigHandler.OverwriteStartupConfiguration(
+                    VariableManager.VariableDictionary["serverdest"].value, VariableManager.VariableDictionary["configdest"].value);
+
+                VariableManager.ToggleFirstStartup();
+            }
+        }
+
         private void CheckServerConnectionStatus(object sender, EventArgs e)
         {
             switch (MainServer.ServerStatus)
@@ -270,11 +306,12 @@ namespace Bugtracker.Configuration
                     File.Copy(filePath, Globals.LOCAL_CONFIG_FILES_PATH + "\\" + Path.GetFileName(filePath), true);
                 }
 
-                LoggerEnabled = IsLoggingEnabled(this, filePath);
-                LogSeverity = GetLoggingSeverity(this, filePath);
-                ApplicationManager.Applications.AddRange(GetSpecifiedApplications(this, filePath));
-                TargetManager.Targets.AddRange(GetSpecifiedTargets(this, filePath));
-                ProblemManager.ProblemCategories.AddRange(GetSpecifiedProblemCategories(this, filePath));
+                LoggerEnabled = ConfigHandler.IsLoggingEnabled(filePath);
+                LogSeverity = ConfigHandler.GetLoggingSeverity(filePath);
+
+                ApplicationManager.Applications.AddRange(ConfigHandler.GetSpecifiedApplications(filePath));
+                TargetManager.Targets.AddRange(ConfigHandler.GetSpecifiedTargets(filePath));
+                ProblemManager.ProblemCategories.AddRange(ConfigHandler.GetSpecifiedProblemCategories(filePath));
             }
         }
 

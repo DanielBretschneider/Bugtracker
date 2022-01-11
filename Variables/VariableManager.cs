@@ -3,7 +3,9 @@ using Bugtracker.Configuration;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Reflection;
+using Microsoft.Win32;
 
 namespace Bugtracker.Variables
 {
@@ -27,6 +29,31 @@ namespace Bugtracker.Variables
             string hostname = rc.PcInfo.GetHostname();
             VariableDictionary["clientname"] = (hostname, false);
             VariableDictionary["computername"] = (hostname, false);
+
+            //Read KEYS created during program setup
+
+            VariableDictionary["configdest"] =
+                (Registry.GetValue(@"HKEY_CURRENT_USER\Software\ManageMed", "CONFIGDEST", null), false);
+            VariableDictionary["serverdest"] =
+                (Registry.GetValue(@"HKEY_CURRENT_USER\Software\ManageMed", "SERVERDEST", null), false);
+            VariableDictionary["targetdir"] =
+                (Registry.GetValue(@"HKEY_CURRENT_USER\Software\ManageMed", "TARGETDIR", null), false);
+            VariableDictionary["firststartup"] =
+                (Registry.GetValue(@"HKEY_CURRENT_USER\Software\ManageMed", "FIRSTSTARTUP", null), false);
+        }
+
+        public void ToggleFirstStartup()
+        {
+            if (VariableDictionary["firststartup"].value == "TRUE")
+            {
+                VariableDictionary["firststartup"] = ("FALSE", false);
+                Registry.SetValue(@"HKEY_CURRENT_USER\Software\ManageMed", "FIRSTSTARTUP", "FALSE");
+            }
+            else
+            {
+                VariableDictionary["firststartup"] = ("TRUE", false);
+                Registry.SetValue(@"HKEY_CURRENT_USER\Software\ManageMed", "FIRSTSTARTUP", "TRUE");
+            }
         }
 
         private void LoadInAllEnvironmentVariables()
@@ -158,8 +185,6 @@ namespace Bugtracker.Variables
 
         public string ReplaceKeywords(string value)
         {
-            //Refresh(true);
-
             string newValue = value;
 
             if (value != null)

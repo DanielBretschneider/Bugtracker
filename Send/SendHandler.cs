@@ -4,11 +4,9 @@ using Bugtracker.Problem_Descriptors;
 using Bugtracker.Targeting;
 using Bugtracker.Utils;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 
-namespace Bugtracker.Sending
+namespace Bugtracker.Send
 {
     /// <summary>
     /// Providing methods to send Bugtracker folders of local session to given targets.

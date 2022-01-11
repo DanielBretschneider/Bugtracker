@@ -16,47 +16,26 @@ namespace Bugtracker.Configuration
     /// <summary>
     /// This class is only here to handle all the XML-Magic
     /// </summary>
-    class ConfigHandler
+    public class ConfigHandler
     {
+        private RunningConfiguration rc;
+
         /// <summary>
         /// Default Constructor,
         /// does nothing
         /// </summary>
-        public ConfigHandler()
+        public ConfigHandler(RunningConfiguration runningConfiguration)
         {
-
+            rc = runningConfiguration;
         }
 
-        /// <summary>
-        /// Returns number of applications specified in bugtracker Config
-        /// </summary>
-        /// <returns></returns>
-        public int GetNumberOfApplications()
+        public string GetMainServerAddress(
+            string customConfigPath = null)
         {
-            // value of target aka site/ip to be pinged
-            int appCount = 0;
+            if (customConfigPath == null)
+                customConfigPath = Globals_and_Information.Globals.LOCAL_STARTUP_CONFIG_FILE_PATH;
 
-            // start reading autostart.config.xml
-            using (XmlReader reader = XmlReader.Create(Globals.LOCAL_CONFIG_FILE_PATH))
-            {
-                while (reader.Read())
-                {
-                    if (reader.NodeType == XmlNodeType.Element)
-                    {
-                        if (reader.LocalName == "application")
-                        {
-                            appCount++;
-                        }
-                    }
-                }
-            }
 
-            return appCount;
-        }
-
-        public static string GetMainServerAddress(RunningConfiguration rc,
-            string customConfigPath = Globals.LOCAL_CONFIG_FILES_PATH)
-        {
             VariableManager vm = rc.VariableManager;
 
             string serverAddress = "";
@@ -75,8 +54,28 @@ namespace Bugtracker.Configuration
 
             return serverAddress;
         }
-        public static bool IsGUIEnabledOnStartup(RunningConfiguration rc,
-            string customConfigPath = Globals.LOCAL_CONFIG_FILE_PATH)
+
+        public void OverwriteStartupConfiguration(string mainserver, string configsPath, string customConfigPath = null)
+        {
+            if (customConfigPath == null)
+                customConfigPath = Globals_and_Information.Globals.LOCAL_STARTUP_CONFIG_FILE_PATH;
+
+            XmlDocument xmlDocument = new XmlDocument();
+
+            xmlDocument.Load(customConfigPath);
+
+            XmlElement node = xmlDocument.SelectSingleNode("configuration/startup") as XmlElement;
+
+            if(node != null)
+            {
+                node.SetAttribute("mainserver", mainserver);
+                node.SetAttribute("loadConfigsFrom", configsPath);
+            }
+
+            xmlDocument.Save(customConfigPath);
+        }
+        public bool IsGUIEnabledOnStartup(
+            string customConfigPath = null)
         {
             VariableManager vm = rc.VariableManager;
 
@@ -97,14 +96,17 @@ namespace Bugtracker.Configuration
             return GUIEnabled;
         }
 
-        public static string GetConfigurationFolderPath(RunningConfiguration rc,
-            string customConfigPath = Globals.LOCAL_CONFIG_FILE_PATH)
+        public string GetConfigurationFolderPath(
+            string customConfigPath = null)
         {
+            if (customConfigPath == null)
+                customConfigPath = Globals_and_Information.Globals.LOCAL_STARTUP_CONFIG_FILE_PATH;
+
             VariableManager vm = rc.VariableManager;
 
             string path = "";
 
-            using (XmlReader reader = XmlReader.Create(Globals.LOCAL_CONFIG_FILE_PATH))
+            using (XmlReader reader = XmlReader.Create(Globals.LOCAL_STARTUP_CONFIG_FILE_PATH))
             {
                 while (reader.Read())
                 {
@@ -124,9 +126,12 @@ namespace Bugtracker.Configuration
         /// Parameters are loglocation type, path, filename (regex), find (per timeperiod)
         /// </summary>
         /// <returns></returns>
-        public static List<Application> GetSpecifiedApplications(RunningConfiguration rc,
-            string customConfigPath = Globals.LOCAL_CONFIG_FILE_PATH)
+        public List<Application> GetSpecifiedApplications(
+            string customConfigPath = null)
         {
+            if (customConfigPath == null)
+                customConfigPath = Globals_and_Information.Globals.LOCAL_STARTUP_CONFIG_FILE_PATH;
+
             VariableManager vm = rc.VariableManager;
 
             List<Application> applications = new List<Application>();
@@ -203,9 +208,12 @@ namespace Bugtracker.Configuration
             return applications;
         }
 
-        public static List<ProblemCategory> GetSpecifiedProblemCategories(RunningConfiguration rc,
-            string customConfigPath = Globals.LOCAL_CONFIG_FILE_PATH)
+        public List<ProblemCategory> GetSpecifiedProblemCategories(
+            string customConfigPath = null)
         {
+            if (customConfigPath == null)
+                customConfigPath = Globals_and_Information.Globals.LOCAL_STARTUP_CONFIG_FILE_PATH;
+
             VariableManager vm = rc.VariableManager;
 
             List<ProblemCategory> problemCategories = new List<ProblemCategory>();
@@ -259,12 +267,13 @@ namespace Bugtracker.Configuration
                                     if (!s.Equals("All") && !s.Equals("Screen") && !s.Equals(""))
                                     {
 
-                                        if (Directory.Exists(GetConfigurationFolderPath(rc)))
-                                            configurationPath = GetConfigurationFolderPath(rc);
+
+                                        if (Directory.Exists(this.GetConfigurationFolderPath(Globals_and_Information.Globals.LOCAL_STARTUP_CONFIG_FILE_PATH)))
+                                            configurationPath = this.GetConfigurationFolderPath(Globals_and_Information.Globals.LOCAL_STARTUP_CONFIG_FILE_PATH);
 
                                         foreach (string path in Directory.GetFiles(configurationPath, "*.xml"))
                                         {
-                                            foreach (Application a in GetSpecifiedApplications(rc, path))
+                                            foreach (Application a in this.GetSpecifiedApplications(path))
                                             {
                                                 if (a.Name == s)
                                                 {
@@ -289,9 +298,12 @@ namespace Bugtracker.Configuration
             return problemCategories;
         }
 
-        public static List<Target> GetSpecifiedTargets(RunningConfiguration rc,
-            string customConfigPath = Globals.LOCAL_CONFIG_FILE_PATH)
+        public List<Target> GetSpecifiedTargets(
+            string customConfigPath = null)
         {
+            if (customConfigPath == null)
+                customConfigPath = Globals_and_Information.Globals.LOCAL_STARTUP_CONFIG_FILE_PATH;
+
             VariableManager vm = rc.VariableManager;
 
             List<Target> targets = new List<Target>();
@@ -339,9 +351,12 @@ namespace Bugtracker.Configuration
             return targets;
         }
 
-        public static LoggingSeverity GetLoggingSeverity(RunningConfiguration rc,
-            string customConfigPath = Globals.LOCAL_CONFIG_FILE_PATH)
+        public LoggingSeverity GetLoggingSeverity(
+            string customConfigPath = null)
         {
+            if (customConfigPath == null)
+                customConfigPath = Globals_and_Information.Globals.LOCAL_STARTUP_CONFIG_FILE_PATH;
+
             VariableManager vm = rc.VariableManager;
 
             using (XmlReader reader = XmlReader.Create(customConfigPath))
@@ -380,9 +395,12 @@ namespace Bugtracker.Configuration
         /// Checks if logging is enabled via the logger - enabled xml tag and attribute
         /// </summary>
         /// <returns></returns>
-        public static bool IsLoggingEnabled(RunningConfiguration rc,
-            string customConfigPath = Globals.LOCAL_CONFIG_FILE_PATH)
+        public bool IsLoggingEnabled(
+            string customConfigPath = null)
         {
+            if (customConfigPath == null)
+                customConfigPath = Globals_and_Information.Globals.LOCAL_STARTUP_CONFIG_FILE_PATH;
+
             VariableManager vm = rc.VariableManager;
             // value of target aka site/ip to be pinged
             bool log = false;

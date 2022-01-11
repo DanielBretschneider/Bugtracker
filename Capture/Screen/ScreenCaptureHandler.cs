@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Media;
 using System.Windows.Forms;
 using Bugtracker.Configuration;
 using Bugtracker.Console;
@@ -17,7 +18,7 @@ namespace Bugtracker.Capture.Screen
     /// </summary>
     public class ScreenCaptureHandler
     {
-        private int CurrentNumberInSequence = 1;
+        private int CurrentNumberInSequence = 0;
         /// <summary>
         /// public constructor
         /// </summary>
@@ -26,6 +27,8 @@ namespace Bugtracker.Capture.Screen
             Logger.Log("ScreenCaptureHandler objet was created.", (LoggingSeverity)2);
         }
 
+
+        public static event EventHandler TookScreenshot;
 
         /// <summary>
         /// Assamble screenshot image file name
@@ -61,9 +64,28 @@ namespace Bugtracker.Capture.Screen
         {
             CurrentNumberInSequence++;
             BugtrackConsole.Print("Screenshot Number" + CurrentNumberInSequence + "captured.");
-            GenerateScreenshots(RunningConfiguration.GetInstance().BugtrackerFolderName, true);
+            GenerateScreenshot(RunningConfiguration.GetInstance().BugtrackerFolderName, true);
         }
 
+        private void playShutterSound()
+        {
+            SoundPlayer shutterSound = new SoundPlayer(System.AppDomain.CurrentDomain.BaseDirectory + "shutter.wav");
+            shutterSound.Play();
+        }
+
+        public string GenerateScreenshotFromBitmap(string bugtrackFolderName, Bitmap bitmap)
+        {
+            var screenShotFileName = BuildScreenShotFileName();
+            bitmap.Save(bugtrackFolderName + @"\" + screenShotFileName, ImageFormat.Jpeg);
+
+            Logger.Log("Screenshot generated and saved at '" + screenShotFileName + "'", (LoggingSeverity)2);
+
+            TookScreenshot?.Invoke(null, null);
+
+            playShutterSound();
+
+            return screenShotFileName;
+        }
 
         /// <summary>
         /// This method is responsible for
@@ -72,9 +94,10 @@ namespace Bugtracker.Capture.Screen
         /// </summary>
         /// <param name="bugtrackFolderName"></param>
         /// <returns>Screenshot Path</returns>
-        public string GenerateScreenshots(string bugtrackFolderName, bool sequence = false)
+        public string GenerateScreenshot(string bugtrackFolderName, bool sequence = false)
         {
             CurrentNumberInSequence++;
+
             // log info
             Logger.Log("Generating screenshot now", (LoggingSeverity)2);
 
@@ -97,13 +120,18 @@ namespace Bugtracker.Capture.Screen
                     using (Graphics g = Graphics.FromImage(bmp))
                     {
                         g.CopyFromScreen(screenLeft, screenTop, 0, 0, bmp.Size);
+
+                        g.DrawIcon(new Icon(System.AppDomain.CurrentDomain.BaseDirectory + "ico_cursor.ico"), Cursor.Position.X - 195, Cursor.Position.Y -87);
+                        playShutterSound();
                     }
 
                     if (sequence)
-                        bmp.Save(bugtrackFolderName + @"\" + screenShotFileName + "sequence_" + CurrentNumberInSequence, ImageFormat.Jpeg);
+                        bmp.Save(bugtrackFolderName + @"\" + "step_" + CurrentNumberInSequence + "_" + screenShotFileName, ImageFormat.Jpeg);
                     else
                         // Do something with the Bitmap here, like save it to a file:
                         bmp.Save(bugtrackFolderName + @"\" + screenShotFileName, ImageFormat.Jpeg);
+
+                    TookScreenshot?.Invoke(null, null);
                 }
 
                 Logger.Log("Screenshot generated and saved at '" + screenShotFileName + "'", (LoggingSeverity)2);

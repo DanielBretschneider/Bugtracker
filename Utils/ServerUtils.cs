@@ -1,7 +1,12 @@
 ﻿using System;
+using System.IO;
 using System.Management;
+using System.Net;
 using System.Net.NetworkInformation;
+using System.Text;
 using System.Timers;
+using System.Xml;
+using System.Xml.Linq;
 using Bugtracker.Configuration;
 
 namespace Bugtracker.Utils
@@ -9,6 +14,19 @@ namespace Bugtracker.Utils
     public static class ServerUtils
     {
         private static readonly RunningConfiguration runningConfiguration = RunningConfiguration.GetInstance();
+
+        /// <summary>
+        /// Load XML File from given URI
+        /// </summary>
+        /// <param name="uri"></param>
+        /// <returns></returns>
+        public static XmlDocument GetXMLFromURI(string uri)
+        {
+            XmlDocument xmlDoc = new XmlDocument();
+            xmlDoc.Load(uri);
+
+            return xmlDoc;
+        }
     }
 
     public class Server

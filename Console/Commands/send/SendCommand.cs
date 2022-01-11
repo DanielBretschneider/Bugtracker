@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using Bugtracker.Attributes;
+using Bugtracker.Capture.LogProcessing;
 using Bugtracker.Configuration;
-using Bugtracker.Sending;
+using Bugtracker.Send;
 using Bugtracker.Targeting;
 
 namespace Bugtracker.Console.Commands.send

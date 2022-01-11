@@ -43,10 +43,7 @@ namespace Bugtracker.Utils
             ConsoleHandler.Destroy();
         }
 
-        /// <summary>
-        /// PCname and date will be added later
-        /// name of folder / zip file
-        /// </summary>
+
 
 
         /// <summary>
@@ -97,13 +94,13 @@ namespace Bugtracker.Utils
         /// monitors
         /// </summary>
         /// <returns>Screen capture file path</returns>
-        public static string GenerateScreenCapture()
+        public static string GenerateScreenCapture(bool inSequence = false)
         {
             // Handler class for screenshots
             var screenCaptureHandler = new ScreenCaptureHandler();
 
             // do it
-            return screenCaptureHandler.GenerateScreenshots(RunningConfiguration.GetInstance().NewestBugtrackerFolder.FullName);
+            return screenCaptureHandler.GenerateScreenshot(RunningConfiguration.GetInstance().NewestBugtrackerFolder.FullName, inSequence);
         }
 
         /// <summary>
