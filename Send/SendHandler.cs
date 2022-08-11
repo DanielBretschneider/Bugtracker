@@ -5,6 +5,8 @@ using Bugtracker.Targeting;
 using Bugtracker.Utils;
 using System.Collections.Generic;
 using System.IO;
+using Bugtracker.Ticketing;
+using Bugtracker.Globals_and_Information;
 
 namespace Bugtracker.Send
 {
@@ -13,6 +15,11 @@ namespace Bugtracker.Send
     /// </summary>
     public class SendHandler
     {
+        enum TicketType
+        {
+            GLPI
+        }
+
         List<Target> targets;
         public SendHandler(List<Target> targets)
         {
@@ -74,6 +81,13 @@ namespace Bugtracker.Send
             return false;
         }
 
+        public bool CreateTicket(TicketCreationObject ticketObject)
+        {
+            return ticketObject.Create();
+        }
+
+
+
         /// <summary>
         /// Per Default send all folder created in this bugtracker session per copy
         /// to default target
@@ -84,6 +98,7 @@ namespace Bugtracker.Send
             if ((t.Path != null || t.Path != ""))
             {
                 bool useCustomBTFolderName = false;
+
                 //Custom Bugtracker Folder Name creation
                 if(t.CustomBugtrackerFolderName != null || t.CustomBugtrackerFolderName != "")
                 {
@@ -91,11 +106,11 @@ namespace Bugtracker.Send
 
                     if (problemDescriptor?.ProblemCategory != null)
                     {
-                        RunningConfiguration.GetInstance().VariableManager.VariableDictionary["ticket"] =
+                        RunningConfiguration.GetInstance().Variables.VariableDictionary["ticket"] =
                             (problemDescriptor.ProblemCategory.TicketAbbreviation, false);
                     }
 
-                    t.CustomBugtrackerFolderName = RunningConfiguration.GetInstance().VariableManager.ReplaceKeywords(t.CustomBugtrackerFolderName);
+                    t.CustomBugtrackerFolderName = RunningConfiguration.GetInstance().Variables.ReplaceKeywords(t.CustomBugtrackerFolderName);
                 }
 
                 if (RunningConfiguration.GetInstance().BugtrackerFolders.Count != 0)
@@ -136,12 +151,15 @@ namespace Bugtracker.Send
         {
             using (StreamWriter sw = File.CreateText(path + ".txt"))
             {
-                System.Diagnostics.Debug.WriteLine("Created Problem Description file....");
+                sw.Write(PCInfo.Summary());
+
                 sw.WriteLine("Problem Kategorie");
                 sw.WriteLine(problemDescriptor.ProblemCategory.Name);
                 sw.WriteLine("---------------------------------------------" + Environment.NewLine);
                 sw.WriteLine("Problem Beschreibung:");
                 sw.WriteLine(problemDescriptor.ProblemDescription);
+
+                System.Diagnostics.Debug.WriteLine("Created Problem Description file....");
             }
         }
     }

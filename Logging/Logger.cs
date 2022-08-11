@@ -17,13 +17,13 @@ namespace Bugtracker.Logging
     public class LoggedNewLineEventArgs : EventArgs
     {
         public LoggingSeverity LoggingSeverity { get; set; }
-        public string dateAndTime { get; set; }
+        public string DateAndTime { get; set; }
         public string Message { get; set; }
 
         public LoggedNewLineEventArgs(LoggingSeverity loggingSeverity, string dateAndTime, string message)
         {
             this.LoggingSeverity = loggingSeverity;
-            this.dateAndTime = dateAndTime;
+            this.DateAndTime = dateAndTime;
             this.Message = message;
         }
     }
@@ -31,7 +31,6 @@ namespace Bugtracker.Logging
     public static class Logger
     {
         public static event EventHandler LoggedNewLine;
-        private static bool loggingEnabled = RunningConfiguration.GetInstance().LoggerEnabled;
 
         /// <summary>
         /// Check if log file exists
@@ -47,8 +46,6 @@ namespace Bugtracker.Logging
                 Directory.CreateDirectory(Globals.APPLICATION_DIRECTORY);
                 File.Create(Globals.LOG_FILE_PATH).Dispose();
             }
-
-
 
             // check if config file exists
             Logger.CheckConfigFile();
@@ -82,11 +79,9 @@ namespace Bugtracker.Logging
             if (!File.Exists(Globals.LOCAL_STARTUP_CONFIG_FILE_PATH))
             {
                 // Create a file to write to.
-                using (StreamWriter sw = File.CreateText(Globals.LOCAL_STARTUP_CONFIG_FILE_PATH))
-                {
-                    // write xml content to file
-                    sw.WriteLine(GetConfigFileContent());
-                }
+                using StreamWriter sw = File.CreateText(Globals.LOCAL_STARTUP_CONFIG_FILE_PATH);
+                // write xml content to file
+                sw.WriteLine(GetConfigFileContent());
             }
         }
 
@@ -150,16 +145,13 @@ namespace Bugtracker.Logging
             {
                 try
                 {
-                    using (StreamWriter writer = File.AppendText(Globals.LOG_FILE_PATH))
-                    {
-                        writer.WriteLine(msg);
-                    }
+                    using StreamWriter writer = File.AppendText(Globals.LOG_FILE_PATH);
+                    writer.WriteLine(msg);
                 }
-                catch (Exception e)
+                catch
                 {
                     System.Diagnostics.Debug.WriteLine("Cannot log, File ist being used by another process");
                 }
-
             }
         }
     }

@@ -11,6 +11,9 @@ using Bugtracker.Configuration;
 using Bugtracker.Console;
 using Bugtracker.Globals_and_Information;
 using Bugtracker.Logging;
+using System.Collections.Generic;
+using System.Linq;
+using Bugtracker.Plugin;
 
 namespace Bugtracker.Utils
 {
@@ -43,8 +46,15 @@ namespace Bugtracker.Utils
             ConsoleHandler.Destroy();
         }
 
+        internal static void FirstStartupProcedure(RunningConfiguration runningConfiguration, object rc)
+        {
+            throw new NotImplementedException();
+        }
 
-
+        internal static void FirstStartupProcedure(RunningConfiguration rc)
+        {
+            throw new NotImplementedException();
+        }
 
         /// <summary>
         /// Create current bugtrack folder
@@ -55,11 +65,11 @@ namespace Bugtracker.Utils
             string folderName = CreateBugtrackFolderName();
 
             // full path 
-            string fullPath = Globals.TMP_DIRECTORY + folderName;
+            string fullPath = Path.Join(Globals.TMP_DIRECTORY, folderName);
 
             // create folder
             Logger.Log("Creating new bugtrack folder at '" + fullPath + "'", (LoggingSeverity)2);
-            DirectoryInfo currentBugtrackFolder = new DirectoryInfo(fullPath);
+            DirectoryInfo currentBugtrackFolder = new(fullPath);
             currentBugtrackFolder.Create();
             Logger.Log("Tmp folder created", (LoggingSeverity)2);
 
@@ -76,7 +86,12 @@ namespace Bugtracker.Utils
             var bugtrackFolderName = "Bugtracker_";
 
             // add pc name
-            bugtrackFolderName += RunningConfiguration.GetInstance().PcInfo.GetHostname();
+            
+
+            if (PCInfo.IsRemoteSession)
+                bugtrackFolderName += $"{PCInfo.Clientname}_on_{PCInfo.Hostname}";
+            else
+                bugtrackFolderName += PCInfo.Clientname;
 
             // build date format
             DateTime dt = DateTime.Now; // Or whatever
@@ -84,6 +99,10 @@ namespace Bugtracker.Utils
 
             // finish folder name
             bugtrackFolderName += date;
+
+            if(RunningConfiguration.GetInstance().SelectedProblemCategory != null)
+                bugtrackFolderName += RunningConfiguration.GetInstance().SelectedProblemCategory.TicketAbbreviation;
+
 
             // return
             return bugtrackFolderName;
@@ -102,6 +121,7 @@ namespace Bugtracker.Utils
             // do it
             return screenCaptureHandler.GenerateScreenshot(RunningConfiguration.GetInstance().NewestBugtrackerFolder.FullName, inSequence);
         }
+
 
         /// <summary>
         /// Copys full direcotry
@@ -180,7 +200,7 @@ namespace Bugtracker.Utils
 
         public static void DeleteContentOfDirectory(string path)
         {
-            System.IO.DirectoryInfo di = new DirectoryInfo(path);
+            System.IO.DirectoryInfo di = new(path);
 
             foreach (FileInfo file in di.GetFiles())
             {
@@ -189,6 +209,34 @@ namespace Bugtracker.Utils
             foreach (DirectoryInfo dir in di.GetDirectories())
             {
                 dir.Delete(true);
+            }
+        }
+
+        public static List<DirectoryInfo> GetAllExisitingDirectories(List<DirectoryInfo> toCheck)
+        {
+            foreach (var di in toCheck.Where(di => di.Exists == false))
+            {
+                toCheck.Remove(di);
+            }
+
+            return toCheck;
+        }
+
+        /// <summary>
+        /// Creates directory in bugtrack folder where the 
+        /// different logfiles and screenshots will be gathered,
+        /// zipped and sent out to management server 
+        /// After successfully sending the file it gets deleted
+        /// </summary>
+        public static void CreateTempFolder()
+        {
+            // check if tmp path exits
+            if (!File.Exists(Globals.TMP_DIRECTORY))
+            {
+                Logger.Log("Creating tmp directory at '" + Globals.TMP_DIRECTORY + "'", (LoggingSeverity)2);
+                DirectoryInfo tmpfolder = new(Globals.TMP_DIRECTORY);
+                tmpfolder.Create();
+                Logger.Log("Tmp folder created", (LoggingSeverity)2);
             }
         }
     }

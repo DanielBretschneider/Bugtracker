@@ -2,12 +2,11 @@
 using Bugtracker.Logging;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using Bugtracker.Configuration;
-using Bugtracker.Globals_and_Information;
 using Bugtracker.Plugin;
 using Bugtracker.Utils;
+using System.IO;
+using Bugtracker.Properties;
 
 namespace Bugtracker
 {
@@ -19,10 +18,43 @@ namespace Bugtracker
     static class Program
     {
         /// <summary>
+        /// This is the main method.
+        /// </summary>
+        [STAThread]
+        private static void Main(String[] args)
+        {
+            //Initialize Running Configuration Instance, before everything else
+            RunningConfiguration runningConfiguration = RunningConfiguration.GetInstance();
+            runningConfiguration.InitStartupProcedure();
+
+            //sends all unhandled exception to console handler unhandled exception trapper
+            //System.AppDomain.CurrentDomain.UnhandledException += ConsoleHandler.UnhandledExceptionTrapper;
+
+            // set up basic application directory 
+            // and initialize logging
+            SetupApplication(runningConfiguration, args);
+
+            if (args.Length > 0 && (args[0].Contains("-sp") || args[0].Contains("-skipplugins")))
+            {
+                List<string> argsL = new(args);
+                argsL.RemoveAt(0);
+                args = argsL.ToArray();
+            }
+
+            if (!runningConfiguration.HideConsole)
+                StartCommandLineApplication(args);
+        }
+
+        /// <summary>
         /// 
         /// </summary>
-        private static void SetupApplication(string[] args)
+        private static void SetupApplication(RunningConfiguration rc, string[] args)
         {
+            Logger.Log("Checking if Blackholder exists.", LoggingSeverity.Info);
+            System.IO.Directory.CreateDirectory(Globals_and_Information.Globals.LOCAL_BLACKHOLE_FODLER_PATH);
+
+            System.IO.Directory.CreateDirectory(Globals_and_Information.Globals.LOCAL_PLUGIN_FILES_PATH);
+
             Logger.Log("Deleted Blackhole folder contents", LoggingSeverity.Info);
             BugtrackerUtils.DeleteContentOfDirectory(Globals_and_Information.Globals.LOCAL_BLACKHOLE_FODLER_PATH);
 
@@ -30,55 +62,46 @@ namespace Bugtracker
             Logger.Log("Bugtracker version 2 was started", (LoggingSeverity)2);
 
             // create tmp folder
-            CreateTempFolder();
+            BugtrackerUtils.CreateTempFolder();
 
-            
+            Logger.Log("Checking if Program was started for the first Time. Executing first startup procedure if so.", LoggingSeverity.Info);
 
-            if(args.Length == 0  || (args[0] != "-sp" && args[0] != "-skipplugins"))
+            if (FirstStartupProcedure(rc))
+                Logger.Log("Began first startup Procedure.", LoggingSeverity.Info);
+            else
+                Logger.Log("Skipped First Startup Procedure.", LoggingSeverity.Info);
+
+            if (args.Length == 0 || (args[0] != "-sp" && args[0] != "-skipplugins"))
                 PluginManager.Load();
         }
 
+        //TODO: Drüber nachdenken ob die Funktion Sinn macht.
+        //TODO: GIT!
+
         /// <summary>
-        /// Creates directory in bugtrack folder where the 
-        /// different logfiles and screenshots will be gathered,
-        /// zipped and sent out to management server 
-        /// After successfully sending the file it gets deleted
+        /// Leiche - > war früher für registry zuständig.
         /// </summary>
-        private static void CreateTempFolder()
+        /// <param name="rc"></param>
+        /// <returns></returns>
+        private static bool FirstStartupProcedure(RunningConfiguration rc)
         {
-            // check if tmp path exits
-            if (!File.Exists(Globals.TMP_DIRECTORY))
+            if(rc.FirstStartup)
             {
-                Logger.Log("Creating tmp directory at '" + Globals.TMP_DIRECTORY + "'", (LoggingSeverity)2);
-                DirectoryInfo tmpfolder = new DirectoryInfo(Globals.TMP_DIRECTORY);
-                tmpfolder.Create();
-                Logger.Log("Tmp folder created", (LoggingSeverity)2);
+                //overwrites startup configuration, if this is the first startup of the application
+                ConfigurationManager.OverwriteStartupConfig(null, ("firstStartup", "false"));
+                return true;
+            }
+            else
+            {
+                return false;
             }
         }
 
-
         /// <summary>
-        /// This application is responsible for displaying
-        /// the Bugtracker GUI. As the GUI will be developed in 
-        /// Version 2.2, this method will not be called in this Version.
-        /// <br />
-        /// This method is only called when no command line arguments
-        /// have been passed
+        /// Method to start command line interface, as this is included as is
         /// </summary>
-
-
-        /// <summary>
-        /// Run bugtracker as CMDlet using
-        /// ConsoleHandler. 
-        /// 
-        /// As this project is define as windows 
-        /// forms application system.console.writeline (..)
-        /// wont work, so we have to manually include
-        /// kernel32.dll.
-        /// 
-        /// For more info look into ConsoleHandler.cs
-        /// </summary>
-        static void StartCommandLineApplication(string[] args)
+        /// <param name="args"></param>
+        private static void StartCommandLineApplication(string[] args)
         {
             // create console window
             ConsoleHandler.Create();
@@ -91,39 +114,6 @@ namespace Bugtracker
 
             // close console session
             ConsoleHandler.Destroy();
-        }
-
-
-        /// <summary>
-        /// This is the main method.
-        /// </summary>
-        [STAThread]
-        private static void Main(String[] args)
-        {
-            //Initialize Running Configuration Instance, before everything else
-            RunningConfiguration runningConfiguration = RunningConfiguration.GetInstance();
-
-            runningConfiguration.InitStartupProcedure();
-
-            //sends all unhandled exception to console handler unhandled exception trapper
-            System.AppDomain.CurrentDomain.UnhandledException += ConsoleHandler.UnhandledExceptionTrapper;
-
-            // set up basic application directory 
-            // and initialize logging
-            SetupApplication(args);
-
-            // decide which Bugtracker version should be
-            // executed.
-
-            if (args.Length > 0 && (args[0].Contains("-sp") || args[0].Contains("-skipplugins")))
-            {
-                List<string> argsL = new List<string>(args);
-                argsL.RemoveAt(0);
-                args = argsL.ToArray();
-            }
-
-            if (!runningConfiguration.HideConsole)
-                StartCommandLineApplication(args);
         }
     }
 }

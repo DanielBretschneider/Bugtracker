@@ -24,7 +24,7 @@ namespace Bugtracker.Console.Commands.application
         {
             string retString = "";
 
-            Application appX = RunningConfiguration.GetInstance().ApplicationManager.GetApplicationByName(GivenArguments[0]);
+            Application appX = RunningConfiguration.GetInstance().Applications.GetApplicationByName(GivenArguments[0]);
 
             foreach (Log l in appX.LogFiles)
             {

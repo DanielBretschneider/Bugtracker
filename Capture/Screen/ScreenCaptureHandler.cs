@@ -7,6 +7,7 @@ using Bugtracker.Configuration;
 using Bugtracker.Console;
 using Bugtracker.Globals_and_Information;
 using Bugtracker.Logging;
+using Microsoft.VisualBasic.Devices;
 
 namespace Bugtracker.Capture.Screen
 {
@@ -42,11 +43,8 @@ namespace Bugtracker.Capture.Screen
             // log info
             Logger.Log("Building filename for screenshot file(s).", (LoggingSeverity)2);
 
-            // PcInfo object
-            PCInfo pcinfo = RunningConfiguration.GetInstance().PcInfo;
-
             // start with hostname
-            string filename = "screenshot_" + pcinfo.GetHostname();
+            string filename = "screenshot_" + PCInfo.Hostname;
 
             // build date format
             DateTime dt = DateTime.Now; // Or whatever
@@ -67,11 +65,6 @@ namespace Bugtracker.Capture.Screen
             GenerateScreenshot(RunningConfiguration.GetInstance().BugtrackerFolderName, true);
         }
 
-        private void playShutterSound()
-        {
-            SoundPlayer shutterSound = new SoundPlayer(System.AppDomain.CurrentDomain.BaseDirectory + "shutter.wav");
-            shutterSound.Play();
-        }
 
         public string GenerateScreenshotFromBitmap(string bugtrackFolderName, Bitmap bitmap)
         {
@@ -82,8 +75,6 @@ namespace Bugtracker.Capture.Screen
 
             TookScreenshot?.Invoke(null, null);
 
-            playShutterSound();
-
             return screenShotFileName;
         }
 
@@ -92,14 +83,16 @@ namespace Bugtracker.Capture.Screen
         /// generating the screenshots for
         /// the current bugtrack
         /// </summary>
-        /// <param name="bugtrackFolderName"></param>
+        /// <param name="bugtrackerDirectoryPath"></param>
         /// <returns>Screenshot Path</returns>
-        public string GenerateScreenshot(string bugtrackFolderName, bool sequence = false)
+        public string GenerateScreenshot(string bugtrackerDirectoryPath, bool sequence = false)
         {
             CurrentNumberInSequence++;
 
             // log info
             Logger.Log("Generating screenshot now", (LoggingSeverity)2);
+
+            Logger.Log($"Bugtracker Directory Path for Screenshot: {bugtrackerDirectoryPath}", LoggingSeverity.Info);
 
             // get file name for screenshot file
             string screenShotFileName = BuildScreenShotFileName();
@@ -121,15 +114,26 @@ namespace Bugtracker.Capture.Screen
                     {
                         g.CopyFromScreen(screenLeft, screenTop, 0, 0, bmp.Size);
 
-                        g.DrawIcon(new Icon(System.AppDomain.CurrentDomain.BaseDirectory + "ico_cursor.ico"), Cursor.Position.X - 195, Cursor.Position.Y -87);
-                        playShutterSound();
+                        Icon cursor =  (Icon) Bugtracker.Properties.Resources.ico_cursor;;
+
+                        Brush cursorBrush = new SolidBrush(Color.FromArgb(80, Color.Yellow));
+                        Brush fontBrush = new SolidBrush(Color.FromArgb(100, Color.White));
+                        Pen curosrPen = new Pen(cursorBrush, 25f);
+
+                        g.DrawEllipse(curosrPen, Cursor.Position.X, Cursor.Position.Y, 80, 80);
+                        
+                        if(sequence)
+                        {
+                            Font fontCanvas = new Font("Arial", 200f);
+                            g.DrawString("Schritt " + CurrentNumberInSequence, fontCanvas, fontBrush, 100, 100);
+                        }
                     }
 
                     if (sequence)
-                        bmp.Save(bugtrackFolderName + @"\" + "step_" + CurrentNumberInSequence + "_" + screenShotFileName, ImageFormat.Jpeg);
+                        bmp.Save(bugtrackerDirectoryPath + "\\" + "step_" + CurrentNumberInSequence + "_" + screenShotFileName, ImageFormat.Jpeg);
                     else
                         // Do something with the Bitmap here, like save it to a file:
-                        bmp.Save(bugtrackFolderName + @"\" + screenShotFileName, ImageFormat.Jpeg);
+                        bmp.Save(bugtrackerDirectoryPath + "\\" + screenShotFileName, ImageFormat.Jpeg);
 
                     TookScreenshot?.Invoke(null, null);
                 }

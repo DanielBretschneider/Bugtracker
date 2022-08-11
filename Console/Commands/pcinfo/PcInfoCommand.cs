@@ -14,7 +14,7 @@ namespace Bugtracker.Console.Commands.pcinfo
             PCInfo pcinfo = new PCInfo();
 
             // get pc info summary as string
-            string pcInfoString = pcinfo.GetPCInformationSummary();
+            string pcInfoString = PCInfo.Summary();
 
             // print to terminal 
             return pcInfoString + Globals.EOL_CHARACTER;

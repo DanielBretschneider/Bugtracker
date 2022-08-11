@@ -7,34 +7,32 @@ using Bugtracker.Targeting;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Reflection.Metadata.Ecma335;
 using System.Windows.Forms;
 using Bugtracker.Utils;
 using Bugtracker.Variables;
-using static Bugtracker.Configuration.ConfigHandler;
 using Timer = System.Windows.Forms.Timer;
+using Bugtracker.Plugin;
+using System.Threading.Tasks;
 
 namespace Bugtracker.Configuration
 {
-
     /// <summary>
     /// The current status of the Server of the running instance server connection
     /// </summary>
     public enum ServerStatus
     {
         /// <summary>
-        /// 
+        /// Server is available.
         /// </summary>
         Available,
         /// <summary>
-        /// 
+        /// Server is not available.
         /// </summary>
         NotAvailable
     }
 
     /// <summary>
-    /// 
+    /// Type of Config Source
     /// </summary>
     public enum ConfigSource
     {
@@ -45,27 +43,71 @@ namespace Bugtracker.Configuration
     public class RunningConfiguration : Singleton<RunningConfiguration>
     {
 
+        //public Task GetServerStatus
+        //{
+        //    return Task.Run(() => ServerStatus)
+        //}
+
         public static event EventHandler InitiliazedRunningConfiguration;
 
         /// <summary>
         /// The Manager Object for modifying Applications
         /// </summary>
-        public ApplicationManager ApplicationManager { get; set; }
+        public ApplicationManager Applications { get; set; }
 
         /// <summary>
         /// The Manager Object for modifying Targets
         /// </summary>
-        public TargetManager TargetManager { get; set; }
+        public TargetManager Targets { get; set; }
 
         /// <summary>
         /// The Manager Object for modifying Problems and their categories
         /// </summary>
-        public ProblemManager ProblemManager { get; set; }
+        public ProblemManager ProblemCategories { get; set; }
 
         /// <summary>
-        /// 
+        /// The Manager Object for storing variables that can be used in configuration
         /// </summary>
-        public VariableManager VariableManager { get; set; }
+        public VariableManager Variables { get; set; }
+
+        /// <summary>
+        /// The Manager Object reading and writing config-file data to and from running Configuration
+        /// </summary>
+        public ConfigurationManager Configurations { get; protected set; }
+
+        [Key("version")]
+        public string Version
+        {
+            get
+            {
+                return null;
+            }
+            //get
+            //{
+            //    if (ApplicationDeployment.IsNetworkDeployed)
+            //        myVersion = ApplicationDeployment.CurrentDeployment.CurrentVersion;
+            //}
+        }
+
+
+        /// <summary>
+        /// For Folder 
+        /// </summary>
+        [Key("idString")]
+        public String IdentificationString
+        { 
+            get
+            {
+                if(PCInfo.IsRemoteSession)
+                {
+                    return PCInfo.Clientname + "-on-" + PCInfo.Hostname;
+                }
+                else
+                {
+                    return PCInfo.Clientname;
+                }
+            }
+        } 
 
         /// <summary>
         /// The current status of the Server, where configurations are loaded from and Captures are sent
@@ -83,7 +125,10 @@ namespace Bugtracker.Configuration
         /// The last successful connection time to the main server
         /// </summary>
         [Key("serverLastConnectionTime")]
-        public DateTime ServerLastConnectionTime { get; set; }
+        public DateTime ServerLastConnectionTime 
+        { 
+            get; set; 
+        }
         /// <summary>
         /// 
         /// </summary>
@@ -100,17 +145,36 @@ namespace Bugtracker.Configuration
         /// </summary>
         public PCInfo PcInfo { get; protected set; }
 
-        public ConfigHandler ConfigHandler { get; protected set; }
-
         /// <summary>
         /// The Main Server Object containing the ServerStatus
         /// </summary>
         public Server MainServer { get; set; }
 
         /// <summary>
-        /// 
+        /// LoggerEnabled
         /// </summary>
         public bool LoggerEnabled { get; set; }
+
+        /// <summary>
+        /// Returns the currently selected problem category, either selcted via the console or gui
+        /// </summary>
+        public ProblemCategory SelectedProblemCategory { get; set; }
+
+        /// <summary>
+        /// Abrreviation of Selected Problem Category used for variable replacement in configuration
+        /// </summary>
+        [Key("abbrev", true)]
+        public string SelectedProblemCategoryAbbrev
+        {
+            get
+            {
+                if (SelectedProblemCategory != null)
+                    return SelectedProblemCategory.TicketAbbreviation;
+                else
+                    return "non-selected";
+            }
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -130,39 +194,36 @@ namespace Bugtracker.Configuration
         /// </summary>
         public bool HideConsole { get; set; } = false;
 
-        /// <summary>
-        /// 
-        /// </summary>
+        [Key("firststartup")]
+        public bool FirstStartup { get; set; } = (bool) ConfigurationManager.GetStartupValue("firstStartup");
+
         [Key("configurationFolderPath")]
         public string ConfigurationFolderPath { get; protected set; }
+
         /// <summary>
-        /// 
+        /// The startup time of the application
         /// </summary>
+        [Key("startupTime")]
         public DateTime StartupTime { get; protected set; }
 
-        private List<DirectoryInfo> bugtrackerFolders;
+        private List<DirectoryInfo> _bugtrackerFolders;
 
         /// <summary>
-        /// 
+        /// All Bugtrack Folders of current Session
         /// </summary>
         public List<DirectoryInfo> BugtrackerFolders
         {
-            get => GetAllDirectoriesStillExisting(bugtrackerFolders);
+            get => BugtrackerUtils.GetAllExisitingDirectories(_bugtrackerFolders);
 
-            set => bugtrackerFolders = value;
+            set => _bugtrackerFolders = value;
         }
+
+        /// <summary>
+        /// List of all current loaded Plugins
+        /// </summary>
+        public List<IPlugin> LoadedPlugins = new();
 
         public string dateString;
-
-
-        private bool isRemoteSession;
-
-        [Key("remoteSession")]
-        public bool IsRemoteSession
-        {
-            set => isRemoteSession = value;
-            get => System.Windows.Forms.SystemInformation.TerminalServerSession;
-        }
 
         [Key("date", true)]
         public string DateString 
@@ -181,7 +242,7 @@ namespace Bugtracker.Configuration
         }
 
         /// <summary>
-        /// 
+        /// The most recently created bugtrack folder
         /// </summary>
         public DirectoryInfo NewestBugtrackerFolder
         {
@@ -199,77 +260,77 @@ namespace Bugtracker.Configuration
         }
 
         /// <summary>
-        /// 
+        /// Returns the name of the most recent bugtrack folder
         /// </summary>
         public string BugtrackerFolderName => NewestBugtrackerFolder.Name;
 
 
         /// <summary>
-        /// 
+        /// Default constructor of Running Configuration, use the InitStartupProcedure Method to begin
         /// </summary>
         public RunningConfiguration()
         {
-
-            PcInfo = new PCInfo();
-            VariableManager = new VariableManager(this);
-
-            ConfigHandler = new ConfigHandler(this);
-
+            //first, initialize pcinfo object - collects usefull pc info
+            PcInfo                      = new PCInfo();
+            //second, initialize variable manager - load in all variables that could be used in the configuration
+            Variables             = new VariableManager(this, PcInfo);
+            //after initializing data that can be used in the configuration files, load in all config files and replace all placeholders with values stored in variables
+            Configurations        = new ConfigurationManager(this);
         }
 
         public void InitStartupProcedure()
         {
-            OverwriteStartupConfigIfFirstStartup();
 
-            ServerAddress = ConfigHandler.GetMainServerAddress(Globals.LOCAL_STARTUP_CONFIG_FILE_PATH);
-            MainServer = new Server(ServerAddress);
+            //sets server address according to configuration file
+            ServerAddress               = Configurations.GetMainServerAddress();
+            //set and initializes new server object with server address loaded in from configuration
+            MainServer                  = new Server(ServerAddress);
 
-            VariableManager.FullRefresh();
-            ConfigurationFolderPath = ConfigHandler.GetConfigurationFolderPath();
-            VariableManager.FullRefresh();
-            ServerPath = ConfigHandler.GetConfigurationFolderPath();
-            VariableManager.FullRefresh();
+            //variable manager loads in all variables for the first time
+            Variables.FullRefresh();
+            //sets configuration folder path according to configuration file
+            ConfigurationFolderPath = ConfigurationManager.GetStartupValue("loadConfigsFrom");
+            //after setting the configuraion folder path, refreshes all variables
+            Variables.FullRefresh();
+            //sets server path according to configuration file
+            ServerPath = ConfigurationManager.GetStartupValue("mainserver");
+            //after setting the server path, refreshes all variables
+            Variables.FullRefresh();
 
-            BugtrackerFolders = new List<DirectoryInfo>();
-
-            ApplicationManager = new ApplicationManager();
-            TargetManager = new TargetManager();
-            ProblemManager = new ProblemManager();
+            //Init new List for BugtrackerFolders
+            BugtrackerFolders     = new List<DirectoryInfo>();
+            //Initializes all other Manager Objects
+            Applications          = new ApplicationManager();
+            Targets               = new TargetManager();
+            ProblemCategories     = new ProblemManager();
 
             StartupTime = DateTime.Now;
 
-            InitParametersAccordingToConfigurationFiles();
-            InitServerConnectionStatusTimer();
+            Load();
+            SetupConnectionStatusTimer();
 
             InitiliazedRunningConfiguration?.Invoke(null, null);
         }
 
-        private Timer serverConnectionStatusTimer;
-        private ProblemCategory _selectedProblemCategory;
+        private Timer _serverConnectionStatusTimer;
+        private readonly ProblemCategory _selectedProblemCategory;
 
         /// <summary>
         /// 
         /// </summary>
-        public void InitServerConnectionStatusTimer()
+        public void SetupConnectionStatusTimer()
         {
-            serverConnectionStatusTimer = new Timer();
-            serverConnectionStatusTimer.Tick += new EventHandler(CheckServerConnectionStatus);
-            serverConnectionStatusTimer.Interval = 2000;
-            serverConnectionStatusTimer.Start();
-        }
-        
-        public void OverwriteStartupConfigIfFirstStartup()
-        {
-            if(VariableManager.VariableDictionary["firststartup"].value == "TRUE")
-            {
-                ConfigHandler.OverwriteStartupConfiguration(
-                    VariableManager.VariableDictionary["serverdest"].value, VariableManager.VariableDictionary["configdest"].value);
-
-                VariableManager.ToggleFirstStartup();
-            }
+            _serverConnectionStatusTimer             = new Timer();
+            _serverConnectionStatusTimer.Tick        += new EventHandler(CheckServerConnectionStatusAsync);
+            _serverConnectionStatusTimer.Interval    = 2000;
+            _serverConnectionStatusTimer.Start();
         }
 
-        private void CheckServerConnectionStatus(object sender, EventArgs e)
+        public event CheckServerConnectionCompletedEventHandler CheckServerConnectionCompleted;
+
+        public delegate void CheckServerConnectionCompletedEventHandler(object sender, System.ComponentModel.AsyncCompletedEventArgs e);
+
+        private void CheckServerConnectionStatusAsync(object sender, EventArgs e)
         {
             switch (MainServer.ServerStatus)
             {
@@ -283,53 +344,44 @@ namespace Bugtracker.Configuration
             }
         }
 
-        private void InitParametersAccordingToConfigurationFiles()
+        private void Load()
         {
             string[] configPaths;
 
             if (Directory.Exists(ConfigurationFolderPath))
             {
-                configPaths = Directory.GetFiles(ConfigurationFolderPath, "*.xml");
-                ConfigSource = ConfigSource.Server;
+                configPaths     = Directory.GetFiles(ConfigurationFolderPath, "*.xml");
+                ConfigSource    = ConfigSource.Server;
             }
             else
             {
-                configPaths = Directory.GetFiles(Globals.LOCAL_CONFIG_FILES_PATH, "*.xml");
-                ConfigSource = ConfigSource.Client;
+                configPaths     = Directory.GetFiles(Globals.INTERNAL_CONFIG_FOLDER_PATH, "*.xml");
+                ConfigSource    = ConfigSource.Client;
             }
-                
-
+            
+            //copy files to internal config folder
             foreach (var filePath in configPaths)
             {
                 if(ConfigSource == ConfigSource.Server)
                 {
-                    File.Copy(filePath, Globals.LOCAL_CONFIG_FILES_PATH + "\\" + Path.GetFileName(filePath), true);
+                    File.Copy(Path.Join(ConfigurationFolderPath, Path.GetFileName(filePath)), Path.Join(Globals.INTERNAL_CONFIG_FOLDER_PATH, Path.GetFileName(filePath)), true);
                 }
 
-                LoggerEnabled = ConfigHandler.IsLoggingEnabled(filePath);
-                LogSeverity = ConfigHandler.GetLoggingSeverity(filePath);
+                LoggerEnabled   = ConfigurationManager.IsLoggingEnabled(filePath);
+                LogSeverity     = Configurations.GetLoggingSeverity(filePath);
 
-                ApplicationManager.Applications.AddRange(ConfigHandler.GetSpecifiedApplications(filePath));
-                TargetManager.Targets.AddRange(ConfigHandler.GetSpecifiedTargets(filePath));
-                ProblemManager.ProblemCategories.AddRange(ConfigHandler.GetSpecifiedProblemCategories(filePath));
+                Applications.Applications.AddRange(Configurations.GetSpecifiedApplications(filePath));
+                Targets.Targets.AddRange(Configurations.GetSpecifiedTargets(filePath));
+                ProblemCategories.ProblemCategories.AddRange(Configurations.GetSpecifiedProblemCategories(filePath));
             }
         }
 
-        private static List<DirectoryInfo> GetAllDirectoriesStillExisting(List<DirectoryInfo> toCheck)
-        {
-            foreach (var di in toCheck.Where(di => di.Exists == false))
-            {
-                toCheck.Remove(di);
-            }
-
-            return toCheck;
-        }
         public override string ToString()
         {
             var returnString = "";
 
             returnString += "PcInfo: \n \n";
-            returnString += PcInfo.GetPCInformationSummary() + Environment.NewLine;
+            returnString += PCInfo.Summary() + Environment.NewLine;
             returnString += "Current Bugtracker Folder Name: " + NewestBugtrackerFolder + Environment.NewLine;
             returnString += "Logger Enabled: " + LoggerEnabled + Environment.NewLine;
             returnString += "Log Severity: " + Enum.GetName(typeof(LoggingSeverity), LogSeverity) + Environment.NewLine;

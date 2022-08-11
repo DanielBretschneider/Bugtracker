@@ -11,7 +11,7 @@ namespace Bugtracker.Console.Commands.applications.subcommands
     {
         public override string Execute()
         {
-            return RunningConfiguration.GetInstance().ApplicationManager.ToString();
+            return RunningConfiguration.GetInstance().Applications.ToString();
         }
     }
 

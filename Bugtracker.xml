@@ -16,13 +16,6 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Bugtracker.Capture.LogProcessing.LogProcessor.GetLineCount(System.String)">
-            <summary>
-            
-            </summary>
-            <param name="filepath"></param>
-            <returns></returns>
-        </member>
         <member name="M:Bugtracker.Capture.LogProcessing.LogProcessor.CopyFile(System.String,Bugtracker.Logging.Log,System.String)">
             <summary>
             Copies file 
@@ -72,28 +65,28 @@
             generating the screenshots for
             the current bugtrack
             </summary>
-            <param name="bugtrackFolderName"></param>
+            <param name="bugtrackerDirectoryPath"></param>
             <returns>Screenshot Path</returns>
         </member>
-        <member name="T:Bugtracker.Configuration.ConfigHandler">
+        <member name="T:Bugtracker.Configuration.ConfigurationManager">
             <summary>
             This class is only here to handle all the XML-Magic
             </summary>
         </member>
-        <member name="M:Bugtracker.Configuration.ConfigHandler.#ctor(Bugtracker.Configuration.RunningConfiguration)">
+        <member name="M:Bugtracker.Configuration.ConfigurationManager.#ctor(Bugtracker.Configuration.RunningConfiguration)">
             <summary>
             Default Constructor,
             does nothing
             </summary>
         </member>
-        <member name="M:Bugtracker.Configuration.ConfigHandler.GetSpecifiedApplications(System.String)">
+        <member name="M:Bugtracker.Configuration.ConfigurationManager.GetSpecifiedApplications(System.String)">
             <summary>
             Returns a List of applications specified in the logfile
             Parameters are loglocation type, path, filename (regex), find (per timeperiod)
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Bugtracker.Configuration.ConfigHandler.IsLoggingEnabled(System.String)">
+        <member name="M:Bugtracker.Configuration.ConfigurationManager.IsLoggingEnabled(System.String)">
             <summary>
             To log, or not to log.
             Checks if logging is enabled via the logger - enabled xml tag and attribute
@@ -107,37 +100,47 @@
         </member>
         <member name="F:Bugtracker.Configuration.ServerStatus.Available">
             <summary>
-            
+            Server is available.
             </summary>
         </member>
         <member name="F:Bugtracker.Configuration.ServerStatus.NotAvailable">
             <summary>
-            
+            Server is not available.
             </summary>
         </member>
         <member name="T:Bugtracker.Configuration.ConfigSource">
             <summary>
-            
+            Type of Config Source
             </summary>
         </member>
-        <member name="P:Bugtracker.Configuration.RunningConfiguration.ApplicationManager">
+        <member name="P:Bugtracker.Configuration.RunningConfiguration.Applications">
             <summary>
             The Manager Object for modifying Applications
             </summary>
         </member>
-        <member name="P:Bugtracker.Configuration.RunningConfiguration.TargetManager">
+        <member name="P:Bugtracker.Configuration.RunningConfiguration.Targets">
             <summary>
             The Manager Object for modifying Targets
             </summary>
         </member>
-        <member name="P:Bugtracker.Configuration.RunningConfiguration.ProblemManager">
+        <member name="P:Bugtracker.Configuration.RunningConfiguration.ProblemCategories">
             <summary>
             The Manager Object for modifying Problems and their categories
             </summary>
         </member>
-        <member name="P:Bugtracker.Configuration.RunningConfiguration.VariableManager">
+        <member name="P:Bugtracker.Configuration.RunningConfiguration.Variables">
             <summary>
-            
+            The Manager Object for storing variables that can be used in configuration
+            </summary>
+        </member>
+        <member name="P:Bugtracker.Configuration.RunningConfiguration.Configurations">
+            <summary>
+            The Manager Object reading and writing config-file data to and from running Configuration
+            </summary>
+        </member>
+        <member name="P:Bugtracker.Configuration.RunningConfiguration.IdentificationString">
+            <summary>
+            For Folder 
             </summary>
         </member>
         <member name="P:Bugtracker.Configuration.RunningConfiguration.ServerStatus">
@@ -177,7 +180,17 @@
         </member>
         <member name="P:Bugtracker.Configuration.RunningConfiguration.LoggerEnabled">
             <summary>
-            
+            LoggerEnabled
+            </summary>
+        </member>
+        <member name="P:Bugtracker.Configuration.RunningConfiguration.SelectedProblemCategory">
+            <summary>
+            Returns the currently selected problem category, either selcted via the console or gui
+            </summary>
+        </member>
+        <member name="P:Bugtracker.Configuration.RunningConfiguration.SelectedProblemCategoryAbbrev">
+            <summary>
+            Abrreviation of Selected Problem Category used for variable replacement in configuration
             </summary>
         </member>
         <member name="P:Bugtracker.Configuration.RunningConfiguration.LogSeverity">
@@ -200,37 +213,37 @@
             
             </summary>
         </member>
-        <member name="P:Bugtracker.Configuration.RunningConfiguration.ConfigurationFolderPath">
-            <summary>
-            
-            </summary>
-        </member>
         <member name="P:Bugtracker.Configuration.RunningConfiguration.StartupTime">
             <summary>
-            
+            The startup time of the application
             </summary>
         </member>
         <member name="P:Bugtracker.Configuration.RunningConfiguration.BugtrackerFolders">
             <summary>
-            
+            All Bugtrack Folders of current Session
+            </summary>
+        </member>
+        <member name="F:Bugtracker.Configuration.RunningConfiguration.LoadedPlugins">
+            <summary>
+            List of all current loaded Plugins
             </summary>
         </member>
         <member name="P:Bugtracker.Configuration.RunningConfiguration.NewestBugtrackerFolder">
             <summary>
-            
+            The most recently created bugtrack folder
             </summary>
         </member>
         <member name="P:Bugtracker.Configuration.RunningConfiguration.BugtrackerFolderName">
             <summary>
-            
+            Returns the name of the most recent bugtrack folder
             </summary>
         </member>
         <member name="M:Bugtracker.Configuration.RunningConfiguration.#ctor">
             <summary>
-            
+            Default constructor of Running Configuration, use the InitStartupProcedure Method to begin
             </summary>
         </member>
-        <member name="M:Bugtracker.Configuration.RunningConfiguration.InitServerConnectionStatusTimer">
+        <member name="M:Bugtracker.Configuration.RunningConfiguration.SetupConnectionStatusTimer">
             <summary>
             
             </summary>
@@ -377,14 +390,10 @@
             </summary>
         </member>
         <member name="F:Bugtracker.Globals_and_Information.Globals.EOL_CHARACTER">
-            <summary>
             End of Line Character
-            </summary>
         </member>
         <member name="F:Bugtracker.Globals_and_Information.Globals.SPACE_CHARACTER">
-            <summary>
-            space
-            </summary>
+            Whitespace Character
         </member>
         <member name="F:Bugtracker.Globals_and_Information.Globals.DEFAULT_BUGTRACKER_SERVER">
             <summary>
@@ -406,44 +415,44 @@
             constructor
             </summary>
         </member>
-        <member name="M:Bugtracker.Globals_and_Information.PCInfo.GetHostname">
+        <member name="P:Bugtracker.Globals_and_Information.PCInfo.Hostname">
             <summary>
             Returns hostname of device
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Bugtracker.Globals_and_Information.PCInfo.GetDomainName">
+        <member name="P:Bugtracker.Globals_and_Information.PCInfo.DomainName">
             <summary>
             Returns the domain name
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Bugtracker.Globals_and_Information.PCInfo.GetIPAddress">
+        <member name="P:Bugtracker.Globals_and_Information.PCInfo.IPAddress">
             <summary>
             Returns IP address of device
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Bugtracker.Globals_and_Information.PCInfo.GetMACAddress">
+        <member name="P:Bugtracker.Globals_and_Information.PCInfo.MACAddress">
             <summary>
             Returns MAC address of device
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Bugtracker.Globals_and_Information.PCInfo.GetCurrentUserName">
+        <member name="P:Bugtracker.Globals_and_Information.PCInfo.CurrentUserName">
             <summary>
             Returns name of current user
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Bugtracker.Globals_and_Information.PCInfo.GetLastBootUpTime">
+        <member name="P:Bugtracker.Globals_and_Information.PCInfo.LastBootTime">
             <summary>
             Get time and date of last boot up 
             from WMI
             </summary>
             <returns></returns>
         </member>
-        <member name="M:Bugtracker.Globals_and_Information.PCInfo.GetPCInformationSummary">
+        <member name="M:Bugtracker.Globals_and_Information.PCInfo.Summary">
             <summary>
             Summary on pc contains, hostname
             ip, mac, domain name and currently logged
@@ -587,44 +596,28 @@
             bugtracker programming project
             </summary>
         </member>
-        <member name="M:Bugtracker.Program.SetupApplication(System.String[])">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="M:Bugtracker.Program.CreateTempFolder">
-            <summary>
-            Creates directory in bugtrack folder where the 
-            different logfiles and screenshots will be gathered,
-            zipped and sent out to management server 
-            After successfully sending the file it gets deleted
-            </summary>
-        </member>
-        <member name="M:Bugtracker.Program.StartCommandLineApplication(System.String[])">
-            <summary>
-            This application is responsible for displaying
-            the Bugtracker GUI. As the GUI will be developed in 
-            Version 2.2, this method will not be called in this Version.
-            <br />
-            This method is only called when no command line arguments
-            have been passed
-            </summary>
-            <summary>
-            Run bugtracker as CMDlet using
-            ConsoleHandler. 
-            
-            As this project is define as windows 
-            forms application system.console.writeline (..)
-            wont work, so we have to manually include
-            kernel32.dll.
-            
-            For more info look into ConsoleHandler.cs
-            </summary>
-        </member>
         <member name="M:Bugtracker.Program.Main(System.String[])">
             <summary>
             This is the main method.
             </summary>
+        </member>
+        <member name="M:Bugtracker.Program.SetupApplication(Bugtracker.Configuration.RunningConfiguration,System.String[])">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Bugtracker.Program.FirstStartupProcedure(Bugtracker.Configuration.RunningConfiguration)">
+            <summary>
+            Leiche - > war früher für registry zuständig.
+            </summary>
+            <param name="rc"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Bugtracker.Program.StartCommandLineApplication(System.String[])">
+            <summary>
+            Method to start command line interface, as this is included as is
+            </summary>
+            <param name="args"></param>
         </member>
         <member name="T:Bugtracker.Properties.Resources">
             <summary>
@@ -640,6 +633,11 @@
             <summary>
               Überschreibt die CurrentUICulture-Eigenschaft des aktuellen Threads für alle
               Ressourcenzuordnungen, die diese stark typisierte Ressourcenklasse verwenden.
+            </summary>
+        </member>
+        <member name="P:Bugtracker.Properties.Resources.ico_cursor">
+            <summary>
+              Sucht eine lokalisierte Ressource vom Typ System.Drawing.Icon ähnlich wie (Symbol).
             </summary>
         </member>
         <member name="T:Bugtracker.Send.SendHandler">
@@ -766,6 +764,14 @@
             </summary>
             <param name="path"></param>
         </member>
+        <member name="M:Bugtracker.Utils.BugtrackerUtils.CreateTempFolder">
+            <summary>
+            Creates directory in bugtrack folder where the 
+            different logfiles and screenshots will be gathered,
+            zipped and sent out to management server 
+            After successfully sending the file it gets deleted
+            </summary>
+        </member>
         <member name="M:Bugtracker.Utils.ServerUtils.GetXMLFromURI(System.String)">
             <summary>
             Load XML File from given URI
@@ -794,7 +800,7 @@
             </summary>
             <param name="serverPath"></param>
         </member>
-        <member name="M:Bugtracker.Variables.VariableManager.#ctor(Bugtracker.Configuration.RunningConfiguration)">
+        <member name="M:Bugtracker.Variables.VariableManager.#ctor(System.Object[])">
             <summary>
             Loads 
             </summary>

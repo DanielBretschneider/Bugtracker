@@ -12,48 +12,37 @@ namespace Bugtracker.Variables
     public class VariableManager
     {
         public Dictionary<string, (dynamic value, bool isDynamic)> VariableDictionary { get; set; } = new Dictionary<string, (dynamic value, bool isDynamic)>();
-        private RunningConfiguration rc;
+        //private RunningConfiguration rc;
+        private readonly Object[] toLoadFrom = Array.Empty<object>(); 
 
         /// <summary>
         /// Loads 
         /// </summary>
         /// <param name="runningConfiguration"></param>
-        public VariableManager(RunningConfiguration rc)
+        public VariableManager(params Object[] toLoadFrom)
         {
-            this.rc = rc;
+            this.toLoadFrom = toLoadFrom;
             FullRefresh();
         }
 
         private void SetCustomKeyValues()
         {
-            string hostname = rc.PcInfo.GetHostname();
-            VariableDictionary["clientname"] = (hostname, false);
-            VariableDictionary["computername"] = (hostname, false);
-
             //Read KEYS created during program setup
 
-            VariableDictionary["configdest"] =
-                (Registry.GetValue(@"HKEY_CURRENT_USER\Software\ManageMed", "CONFIGDEST", null), false);
-            VariableDictionary["serverdest"] =
-                (Registry.GetValue(@"HKEY_CURRENT_USER\Software\ManageMed", "SERVERDEST", null), false);
-            VariableDictionary["targetdir"] =
-                (Registry.GetValue(@"HKEY_CURRENT_USER\Software\ManageMed", "TARGETDIR", null), false);
-            VariableDictionary["firststartup"] =
-                (Registry.GetValue(@"HKEY_CURRENT_USER\Software\ManageMed", "FIRSTSTARTUP", null), false);
-        }
+            //disabled due to insufficients rights
+            //VariableDictionary["configdest"] =
+            //    (Registry.GetValue(@"HKEY_CURRENT_USER\Software\ManageMed", "CONFIGDEST", null), false);
+            //VariableDictionary["serverdest"] =
+            //    (Registry.GetValue(@"HKEY_CURRENT_USER\Software\ManageMed", "SERVERDEST", null), false);
+            //VariableDictionary["targetdir"] =
+            //    (Registry.GetValue(@"HKEY_CURRENT_USER\Software\ManageMed", "TARGETDIR", null), false);
+            //VariableDictionary["firststartup"] =
+            //    (Registry.GetValue(@"HKEY_CURRENT_USER\Software\ManageMed", "FIRSTSTARTUP", null), false);
 
-        public void ToggleFirstStartup()
-        {
-            if (VariableDictionary["firststartup"].value == "TRUE")
-            {
-                VariableDictionary["firststartup"] = ("FALSE", false);
-                Registry.SetValue(@"HKEY_CURRENT_USER\Software\ManageMed", "FIRSTSTARTUP", "FALSE");
-            }
-            else
-            {
-                VariableDictionary["firststartup"] = ("TRUE", false);
-                Registry.SetValue(@"HKEY_CURRENT_USER\Software\ManageMed", "FIRSTSTARTUP", "TRUE");
-            }
+            //hardcoded
+            VariableDictionary["configdest"]    = ("\\10.74.10.100\\bugTracker\\", false);
+            VariableDictionary["serverdest"]    = ("10.74.10.100", false);
+            VariableDictionary["targetdir"]     = ("C:\\Bugtracker", false);
         }
 
         private void LoadInAllEnvironmentVariables()
@@ -85,43 +74,54 @@ namespace Bugtracker.Variables
             }
         }
 
-        private void LoadAllAnnotatedKeyValuePairs(Object objectToLoadFrom)
+        private void LoadAllAnnotatedKeyValuePairs(Object[] objectsToLoadFrom)
         {
-            foreach (PropertyInfo propertyInfo in objectToLoadFrom.GetType().GetProperties())
+            foreach(Object obj in objectsToLoadFrom)
             {
-                if (propertyInfo.GetCustomAttributes(typeof(KeyAttribute), true).Length > 0)
+                foreach (PropertyInfo propertyInfo in obj.GetType().GetProperties())
                 {
-                    KeyAttribute ka = (KeyAttribute)propertyInfo.GetCustomAttribute(typeof(KeyAttribute), true);
+                    if (propertyInfo.GetCustomAttributes(typeof(KeyAttribute), true).Length > 0)
+                    {
+                        KeyAttribute ka = (KeyAttribute)propertyInfo.GetCustomAttribute(typeof(KeyAttribute), true);
 
-                    if (ka.Dynamic)
-                        VariableDictionary[ka.Name] = (propertyInfo.GetValue(objectToLoadFrom) ?? "not set.", true);
-                    else 
-                        VariableDictionary[ka.Name] = (propertyInfo.GetValue(objectToLoadFrom) ?? "not set.", false);
+                        if (ka.Dynamic)
+                            VariableDictionary[ka.Name] = (propertyInfo.GetValue(obj) ?? "not set.", true);
+                        else
+                            VariableDictionary[ka.Name] = (propertyInfo.GetValue(obj) ?? "not set.", false);
 
-                    System.Diagnostics.Debug.WriteLine("key = " + ka.Name + "value: " + propertyInfo.GetValue(objectToLoadFrom));
+                        System.Diagnostics.Debug.WriteLine("key = " + ka.Name + "value: " + propertyInfo.GetValue(obj));
+                    }
                 }
             }
         }
 
-        private void SetValuesAccordingToVariables(Object objectToLoadFrom)
+        private void SetValuesAccordingToVariables(Object[] objectsToLoadFrom)
         {
-            foreach (PropertyInfo propertyInfo in objectToLoadFrom.GetType().GetProperties())
+            foreach(Object obj in objectsToLoadFrom)
             {
-                if (propertyInfo.GetCustomAttributes(typeof(KeyAttribute), true).Length > 0)
+                foreach (PropertyInfo propertyInfo in obj.GetType().GetProperties())
                 {
-                    KeyAttribute ka = (KeyAttribute)propertyInfo.GetCustomAttribute(typeof(KeyAttribute), true);
-
-                    foreach (var keyValuePair in VariableDictionary)
+                    if (propertyInfo.GetCustomAttributes(typeof(KeyAttribute), true).Length > 0)
                     {
-                        if (keyValuePair.Key == ka.Name)
-                            propertyInfo.SetValue(objectToLoadFrom, keyValuePair.Value.value);
+                        KeyAttribute ka = (KeyAttribute)propertyInfo.GetCustomAttribute(typeof(KeyAttribute), true);
+
+                        foreach (var keyValuePair in VariableDictionary)
+                        {
+                            if (keyValuePair.Key == ka.Name)
+                            {
+                                if(propertyInfo.CanWrite)
+                                {
+                                    propertyInfo.SetValue(obj, keyValuePair.Value.value);
+                                }
+                            }
+                                
+                        }
+
+                        System.Diagnostics.Debug.WriteLine("set value for key = " + ka.Name + " new value: " + propertyInfo.GetValue(obj));
                     }
-
-                    
-
-                    System.Diagnostics.Debug.WriteLine("set value for key = " + ka.Name + " new value: " + propertyInfo.GetValue(objectToLoadFrom));
                 }
             }
+            
         }
 
 
@@ -158,10 +158,10 @@ namespace Bugtracker.Variables
                     }
                 }
 
-                foreach (var tuple in keysAndNewValues)
+                foreach (var (Key, NewValue) in keysAndNewValues)
                 {
-                    System.Diagnostics.Debug.WriteLine("Try to change Dict var: key: " + tuple.Key + "new value" + tuple.NewValue);
-                    VariableDictionary[tuple.Key] = (tuple.NewValue, false);
+                    System.Diagnostics.Debug.WriteLine("Try to change Dict var: key: " + Key + "new value" + NewValue);
+                    VariableDictionary[Key] = (NewValue, false);
                 }
             }
         }
@@ -196,7 +196,10 @@ namespace Bugtracker.Variables
                     {
                         if (VariableDictionary[key].isDynamic)
                         {
-                            ReloadSpecificAnnotatedKeyValuePair(rc, key);
+                            foreach(Object obj in toLoadFrom)
+                            {
+                                ReloadSpecificAnnotatedKeyValuePair(obj, key);
+                            }
                         }
 
                         newValue = newValue.Replace("%" + key + "%", VariableDictionary[key].value);
@@ -216,9 +219,9 @@ namespace Bugtracker.Variables
         {
             LoadInAllEnvironmentVariables();
             SetCustomKeyValues();
-            LoadAllAnnotatedKeyValuePairs(rc);
+            LoadAllAnnotatedKeyValuePairs(toLoadFrom);
             ReplaceKeysInValuesTillKeyless();
-            SetValuesAccordingToVariables(rc);
+            SetValuesAccordingToVariables(toLoadFrom);
         }
     }
 }

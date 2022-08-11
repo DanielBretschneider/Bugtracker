@@ -23,7 +23,7 @@ namespace Bugtracker.Console.Commands.applications
         {
             string retString = "";
 
-            ApplicationManager appX = RunningConfiguration.GetInstance().ApplicationManager;
+            ApplicationManager appX = RunningConfiguration.GetInstance().Applications;
 
             foreach (Application app in appX.GetApplications())
             {
@@ -46,7 +46,7 @@ namespace Bugtracker.Console.Commands.applications
         {
             string retString = "";
 
-            ApplicationManager appX = RunningConfiguration.GetInstance().ApplicationManager;
+            ApplicationManager appX = RunningConfiguration.GetInstance().Applications;
 
             foreach (Application app in appX.GetApplications())
             {

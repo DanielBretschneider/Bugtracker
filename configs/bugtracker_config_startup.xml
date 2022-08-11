@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+  <!-- 
+	STARTUP: Here start parameters can be set
+	-->
+  <startup startGUI="true" firstStartup="true" mainserver="10.74.10.100" loadConfigsFrom="\\10.74.10.100\bugTracker\bugtrackerV2Current">
+  </startup>
+</configuration>

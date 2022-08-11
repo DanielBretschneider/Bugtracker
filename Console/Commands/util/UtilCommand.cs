@@ -26,7 +26,7 @@ namespace Bugtracker.Console.Commands.util
         public override string Execute()
         {
             List<InternalApplication.Application> targetedApplications = new List<InternalApplication.Application>();
-            ApplicationManager am = RunningConfiguration.GetInstance().ApplicationManager;
+            ApplicationManager am = RunningConfiguration.GetInstance().Applications;
 
             foreach (string argument in GivenArguments)
             {
@@ -49,7 +49,7 @@ namespace Bugtracker.Console.Commands.util
         public override string Execute()
         {
             List<InternalApplication.Application> targetedApplications = new List<InternalApplication.Application>();
-            ApplicationManager am = RunningConfiguration.GetInstance().ApplicationManager;
+            ApplicationManager am = RunningConfiguration.GetInstance().Applications;
 
             foreach (string argument in GivenArguments)
             {

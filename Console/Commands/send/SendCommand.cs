@@ -13,7 +13,7 @@ namespace Bugtracker.Console.Commands.send
     {
         public override string Execute()
         {
-            TargetManager tm = RunningConfiguration.GetInstance().TargetManager;
+            TargetManager tm = RunningConfiguration.GetInstance().Targets;
             List<Target> targetsToSend = new List<Target>();
 
             foreach (string target in GivenArguments)
@@ -36,7 +36,7 @@ namespace Bugtracker.Console.Commands.send
     {
         public override string Execute()
         {
-            TargetManager tm = RunningConfiguration.GetInstance().TargetManager;
+            TargetManager tm = RunningConfiguration.GetInstance().Targets;
             List<Target> targetsToSend = new List<Target>();
 
             SendHandler sh = new SendHandler(tm.GetDefaultTargets());

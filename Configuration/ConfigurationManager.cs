@@ -16,15 +16,15 @@ namespace Bugtracker.Configuration
     /// <summary>
     /// This class is only here to handle all the XML-Magic
     /// </summary>
-    public class ConfigHandler
+    public class ConfigurationManager
     {
-        private RunningConfiguration rc;
+        private readonly RunningConfiguration rc;
 
         /// <summary>
         /// Default Constructor,
         /// does nothing
         /// </summary>
-        public ConfigHandler(RunningConfiguration runningConfiguration)
+        public ConfigurationManager(RunningConfiguration runningConfiguration)
         {
             rc = runningConfiguration;
         }
@@ -33,10 +33,10 @@ namespace Bugtracker.Configuration
             string customConfigPath = null)
         {
             if (customConfigPath == null)
-                customConfigPath = Globals_and_Information.Globals.LOCAL_STARTUP_CONFIG_FILE_PATH;
+                customConfigPath = Globals_and_Information.Globals.GetFittingStartupConfigPath();
 
 
-            VariableManager vm = rc.VariableManager;
+            VariableManager vm = rc.Variables;
 
             string serverAddress = "";
 
@@ -55,31 +55,10 @@ namespace Bugtracker.Configuration
             return serverAddress;
         }
 
-        public void OverwriteStartupConfiguration(string mainserver, string configsPath, string customConfigPath = null)
+        public static dynamic GetStartupValue(string attribute, string customConfigPath = null)
         {
             if (customConfigPath == null)
-                customConfigPath = Globals_and_Information.Globals.LOCAL_STARTUP_CONFIG_FILE_PATH;
-
-            XmlDocument xmlDocument = new XmlDocument();
-
-            xmlDocument.Load(customConfigPath);
-
-            XmlElement node = xmlDocument.SelectSingleNode("configuration/startup") as XmlElement;
-
-            if(node != null)
-            {
-                node.SetAttribute("mainserver", mainserver);
-                node.SetAttribute("loadConfigsFrom", configsPath);
-            }
-
-            xmlDocument.Save(customConfigPath);
-        }
-        public bool IsGUIEnabledOnStartup(
-            string customConfigPath = null)
-        {
-            VariableManager vm = rc.VariableManager;
-
-            bool GUIEnabled = false;
+                customConfigPath = Globals_and_Information.Globals.GetFittingStartupConfigPath();
 
             using (XmlReader reader = XmlReader.Create(customConfigPath))
             {
@@ -88,37 +67,42 @@ namespace Bugtracker.Configuration
                     if (reader.NodeType == XmlNodeType.Element)
                     {
                         if (reader.LocalName.Equals("startup"))
-                            Boolean.TryParse(vm.ReplaceKeywords(reader.GetAttribute("startGUI")), out GUIEnabled);
+                        {
+                            //try parsing into boolean
+                            if (Boolean.TryParse(reader.GetAttribute(attribute), out bool startupValue))
+                            {
+                                return startupValue;
+                            } // if it fails, return string
+                            else
+                            {
+                                return reader.GetAttribute(attribute);
+                            }
+                        }
                     }
                 }
             }
 
-            return GUIEnabled;
+            throw new Exception("Didn't find attribute in startup configuration.");
         }
 
-        public string GetConfigurationFolderPath(
-            string customConfigPath = null)
+        internal static void OverwriteStartupConfig(string customConfigPath = null, params (string attribute, string value)[] settings)
         {
             if (customConfigPath == null)
-                customConfigPath = Globals_and_Information.Globals.LOCAL_STARTUP_CONFIG_FILE_PATH;
+                customConfigPath = Globals_and_Information.Globals.GetFittingStartupConfigPath();
 
-            VariableManager vm = rc.VariableManager;
+            XmlDocument xmlDocument = new();
 
-            string path = "";
+            xmlDocument.Load(customConfigPath);
 
-            using (XmlReader reader = XmlReader.Create(Globals.LOCAL_STARTUP_CONFIG_FILE_PATH))
+            if (xmlDocument.SelectSingleNode("configuration/startup") is XmlElement node)
             {
-                while (reader.Read())
+                foreach (var (attribute, value) in settings)
                 {
-                    if (reader.NodeType == XmlNodeType.Element)
-                    {
-                        if (reader.LocalName.Equals("startup"))
-                            path = vm.ReplaceKeywords(reader.GetAttribute("loadConfigsFrom"));
-                    }
+                    node.SetAttribute(attribute, value);
                 }
             }
 
-            return path;
+            xmlDocument.Save(customConfigPath);
         }
 
         /// <summary>
@@ -130,11 +114,11 @@ namespace Bugtracker.Configuration
             string customConfigPath = null)
         {
             if (customConfigPath == null)
-                customConfigPath = Globals_and_Information.Globals.LOCAL_STARTUP_CONFIG_FILE_PATH;
+                customConfigPath = Globals_and_Information.Globals.GetFittingStartupConfigPath();
 
-            VariableManager vm = rc.VariableManager;
+            VariableManager vm = rc.Variables;
 
-            List<Application> applications = new List<Application>();
+            List<Application> applications = new();
 
             // start reading autostart.config.xml
             using (XmlReader reader = XmlReader.Create(customConfigPath))
@@ -150,15 +134,13 @@ namespace Bugtracker.Configuration
                     {
                         if (reader.LocalName.Equals("application"))
                         {
-                            Application appToAdd = new Application();
+                            Application appToAdd = new();
 
                             appToAdd.Name = vm.ReplaceKeywords(reader.GetAttribute("name"));
                             appToAdd.ExecutableLocation = vm.ReplaceKeywords(reader.GetAttribute("executable"));
                             appToAdd.IsStandard = Convert.ToBoolean(vm.ReplaceKeywords(reader.GetAttribute("standard")));
 
-                            Application.ShowAppSpecifier show;
-
-                            Enum.TryParse<Application.ShowAppSpecifier>(vm.ReplaceKeywords(reader.GetAttribute("show")), out show);
+                            Enum.TryParse(vm.ReplaceKeywords(reader.GetAttribute("show")), out Application.ShowAppSpecifier show);
 
                             appToAdd.ShowSpecifier = show;
 
@@ -170,18 +152,16 @@ namespace Bugtracker.Configuration
 
                         if (reader.Name.Equals("log"))
                         {
-                            Log logToAppend = new Log();
-                            LogLocationType type = LogLocationType.client;
+                            Log logToAppend = new();
 
-                            if (Enum.TryParse<LogLocationType>(vm.ReplaceKeywords(reader.GetAttribute("location")), out type))
+                            if (Enum.TryParse<LogLocationType>(vm.ReplaceKeywords(reader.GetAttribute("location")), out LogLocationType type))
                                 logToAppend.LocationType = type;
 
                             logToAppend.Path = vm.ReplaceKeywords(reader.GetAttribute("path"));
                             logToAppend.Filename = vm.ReplaceKeywords(reader.GetAttribute("filename"));
 
-                            LogFindSpecifier findSpec = LogFindSpecifier.NEW;
 
-                            if (Enum.TryParse<LogFindSpecifier>(vm.ReplaceKeywords(reader.GetAttribute("find")), out findSpec))
+                            if (Enum.TryParse<LogFindSpecifier>(vm.ReplaceKeywords(reader.GetAttribute("find")), out LogFindSpecifier findSpec))
                                 logToAppend.Find = findSpec;
 
                             logToAppend.Lines = reader.GetAttribute("lines");
@@ -212,11 +192,11 @@ namespace Bugtracker.Configuration
             string customConfigPath = null)
         {
             if (customConfigPath == null)
-                customConfigPath = Globals_and_Information.Globals.LOCAL_STARTUP_CONFIG_FILE_PATH;
+                customConfigPath = Globals_and_Information.Globals.GetFittingStartupConfigPath();
 
-            VariableManager vm = rc.VariableManager;
+            VariableManager vm = rc.Variables;
 
-            List<ProblemCategory> problemCategories = new List<ProblemCategory>();
+            List<ProblemCategory> problemCategories = new();
 
             // start reading autostart.config.xml
             using (XmlReader reader = XmlReader.Create(customConfigPath))
@@ -229,7 +209,7 @@ namespace Bugtracker.Configuration
                     {
                         if (reader.LocalName.Equals("problem-category"))
                         {
-                            ProblemCategory categoryToAdd = new ProblemCategory();
+                            ProblemCategory categoryToAdd = new();
                             categoryToAdd.Name = vm.ReplaceKeywords(reader.GetAttribute("name"));
                             categoryToAdd.TicketAbbreviation = vm.ReplaceKeywords(reader.GetAttribute("ticket"));
                             currentProblemCategory = categoryToAdd;
@@ -250,7 +230,7 @@ namespace Bugtracker.Configuration
                             System.Diagnostics.Debug.WriteLine("selection text: " + selection);
                             string[] splitSelect = selection.Split(',');
 
-                            string configurationPath = Globals.LOCAL_CONFIG_FILES_PATH;
+                            string configurationPath = Globals.GetFittingConfigFilesPath();
 
                             if (currentProblemCategory != null)
                             {
@@ -268,8 +248,8 @@ namespace Bugtracker.Configuration
                                     {
 
 
-                                        if (Directory.Exists(this.GetConfigurationFolderPath(Globals_and_Information.Globals.LOCAL_STARTUP_CONFIG_FILE_PATH)))
-                                            configurationPath = this.GetConfigurationFolderPath(Globals_and_Information.Globals.LOCAL_STARTUP_CONFIG_FILE_PATH);
+                                        if (Directory.Exists(GetStartupValue(Globals_and_Information.Globals.LOCAL_STARTUP_CONFIG_FILE_PATH)))
+                                            configurationPath = GetStartupValue(Globals_and_Information.Globals.LOCAL_STARTUP_CONFIG_FILE_PATH);
 
                                         foreach (string path in Directory.GetFiles(configurationPath, "*.xml"))
                                         {
@@ -302,11 +282,11 @@ namespace Bugtracker.Configuration
             string customConfigPath = null)
         {
             if (customConfigPath == null)
-                customConfigPath = Globals_and_Information.Globals.LOCAL_STARTUP_CONFIG_FILE_PATH;
+                customConfigPath = Globals_and_Information.Globals.GetFittingStartupConfigPath();
 
-            VariableManager vm = rc.VariableManager;
+            VariableManager vm = rc.Variables;
 
-            List<Target> targets = new List<Target>();
+            List<Target> targets = new();
 
             // start reading autostart.config.xml
             using (XmlReader reader = XmlReader.Create(customConfigPath))
@@ -321,19 +301,18 @@ namespace Bugtracker.Configuration
                     {
                         if (reader.LocalName.Equals("target"))
                         {
-                            Target targetToAdd = new Target();
+                            Target targetToAdd = new();
 
                             targetToAdd.Name = vm.ReplaceKeywords(reader.GetAttribute("name"));
 
-                            TargetType type = TargetType.folder;
 
-                            if (Enum.TryParse<TargetType>(vm.ReplaceKeywords(reader.GetAttribute("type")), out type))
+                            if (Enum.TryParse<TargetType>(vm.ReplaceKeywords(reader.GetAttribute("type")), out TargetType type))
                                 targetToAdd.TargetType = type;
 
                             bool defaultT = false;
 
                             if (reader.GetAttribute("default") != null)
-                                Boolean.TryParse(vm.ReplaceKeywords(reader.GetAttribute("default")), out defaultT);
+                                bool.TryParse(vm.ReplaceKeywords(reader.GetAttribute("default")), out defaultT);
 
                             targetToAdd.Default = defaultT;
 
@@ -355,9 +334,9 @@ namespace Bugtracker.Configuration
             string customConfigPath = null)
         {
             if (customConfigPath == null)
-                customConfigPath = Globals_and_Information.Globals.LOCAL_STARTUP_CONFIG_FILE_PATH;
+                customConfigPath = Globals_and_Information.Globals.GetFittingStartupConfigPath();
 
-            VariableManager vm = rc.VariableManager;
+            VariableManager vm = rc.Variables;
 
             using (XmlReader reader = XmlReader.Create(customConfigPath))
             {
@@ -395,13 +374,12 @@ namespace Bugtracker.Configuration
         /// Checks if logging is enabled via the logger - enabled xml tag and attribute
         /// </summary>
         /// <returns></returns>
-        public bool IsLoggingEnabled(
+        public static bool IsLoggingEnabled(
             string customConfigPath = null)
         {
             if (customConfigPath == null)
-                customConfigPath = Globals_and_Information.Globals.LOCAL_STARTUP_CONFIG_FILE_PATH;
+                customConfigPath = Globals_and_Information.Globals.GetFittingStartupConfigPath();
 
-            VariableManager vm = rc.VariableManager;
             // value of target aka site/ip to be pinged
             bool log = false;
 
