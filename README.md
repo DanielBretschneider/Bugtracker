@@ -70,5 +70,7 @@ Ab dieser Version sollen Bugtracks auch remote durchgeführt werden auf den jewe
 
 Der Agent soll automatisch auf den PCs gestartet werden und auf einem spezifischen Port hören. Dies wird in der Sektion Technische Spezifikationen noch erläutert.
 
+#### Copyright Info
+Nutzung von InputSimulator Project von michaelnoonan für Mouse Event Handling
 
 
