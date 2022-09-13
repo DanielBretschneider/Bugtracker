@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Management;
 using System.Net;
@@ -32,6 +33,7 @@ namespace Bugtracker.Globals_and_Information
         {
             get
             {
+                Logger.Log("GetHostname() executed", (LoggingSeverity)2);
                 return Dns.GetHostName();
             }
             
@@ -42,9 +44,8 @@ namespace Bugtracker.Globals_and_Information
         {
             get
             {
-                Logger.Log("GetHostname() executed", (LoggingSeverity)2);
-
-                if(IsRemoteSession)
+                Logger.Log("Clientname executed", (LoggingSeverity)2);
+                if (IsRemoteSession)
                 {
                     return System.Environment.GetEnvironmentVariable("CLIENTNAME");
                 }
@@ -140,6 +141,19 @@ namespace Bugtracker.Globals_and_Information
             }
         }
 
+        //Credits: - https://stackoverflow.com/a/972189/14617010
+        //Author: SLaks
+        public static TimeSpan UpTime
+        {
+            get
+            {
+                using (var uptime = new PerformanceCounter("System", "System Up Time"))
+                {
+                    uptime.NextValue();
+                    return TimeSpan.FromSeconds(uptime.NextValue());
+                }
+            }
+        }
 
         /// <summary>
         /// Get time and date of last boot up 
@@ -151,35 +165,7 @@ namespace Bugtracker.Globals_and_Information
         {
             get
             {
-                // time and date will be stored here
-                string txtDate = "";
-                string txtTime = "";
-
-                // define a select query
-                SelectQuery query =
-                    new(@"SELECT LastBootUpTime FROM Win32_OperatingSystem
-                WHERE Primary='true'");
-
-                // create a new management object searcher and pass it
-                // the select query
-                ManagementObjectSearcher searcher =
-                    new(query);
-
-                // get the datetime value and set the local boot
-                // time variable to contain that value
-                foreach (ManagementObject mo in searcher.Get())
-                {
-                    var dtBootTime =
-                        ManagementDateTimeConverter.ToDateTime(
-                            mo.Properties["LastBootUpTime"].Value.ToString());
-
-                    // display the start time and date
-                    txtDate = dtBootTime.ToLongDateString();
-                    txtTime = dtBootTime.ToLongTimeString();
-                }
-
-                // return time and date formatted
-                return (txtDate + " - " + txtTime);
+                return PCInfo.UpTime.ToString();
             }
         }
 

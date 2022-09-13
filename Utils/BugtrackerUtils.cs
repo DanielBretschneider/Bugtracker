@@ -1,19 +1,14 @@
 ﻿using System;
 using System.IO;
- using Bugtracker.Logging;
-using System;
+using Bugtracker.Logging;
 using System.Diagnostics;
-using System.IO;
-using System.Runtime.InteropServices;
 using System.Text;
- using Bugtracker.Capture.Screen;
+using Bugtracker.Capture.Screen;
 using Bugtracker.Configuration;
 using Bugtracker.Console;
 using Bugtracker.Globals_and_Information;
-using Bugtracker.Logging;
 using System.Collections.Generic;
 using System.Linq;
-using Bugtracker.Plugin;
 
 namespace Bugtracker.Utils
 {
@@ -82,19 +77,22 @@ namespace Bugtracker.Utils
         /// </summary>
         public static string CreateBugtrackFolderName()
         {
+            //To see 
+            //
+            //
+            //
+
             // first part of folder name
             var bugtrackFolderName = "Bugtracker_";
 
-            // add pc name
-            
-
+            //
             if (PCInfo.IsRemoteSession)
                 bugtrackFolderName += $"{PCInfo.Clientname}_on_{PCInfo.Hostname}";
             else
                 bugtrackFolderName += PCInfo.Clientname;
 
             // build date format
-            DateTime dt = DateTime.Now; // Or whatever
+            DateTime dt = DateTime.Now;
             string date = dt.ToString("_dd-MM-yy_HH-mm-ss");
 
             // finish folder name

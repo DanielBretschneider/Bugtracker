@@ -1,20 +1,18 @@
-﻿using System;
+﻿using Bugtracker.Targeting;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Bugtracker.Problem_Descriptors
 {
     public class ProblemCategory
     {
-        public string TicketAbbreviation { get; set; }
+        public string TicketAbbreviation { get; internal set; }
 
-        public string Name { get; set; }
-        public List<string> Descriptions { get; set; }
-        public List<InternalApplication.Application> SelectedApplications { get; set; }
-        public bool SelectAllApplications { get; set; }
-        public bool SelectScreenshot { get; set; }
+        public string Name { get; internal set; }
+        public List<string> Descriptions { get; internal set; }
+        public List<InternalApplication.Application> SelectedApplications { get; internal set; }
+        public bool SelectAllApplications { get; internal set; }
+        public bool SelectScreenshot { get; internal set; }
+        public List<Target> Targets { get; internal set; }
 
         public ProblemCategory()
         {
@@ -23,6 +21,7 @@ namespace Bugtracker.Problem_Descriptors
 
             Descriptions = new List<string>();
             SelectedApplications = new List<InternalApplication.Application>();
+            Targets = new List<Target>();
         }
     }
 }

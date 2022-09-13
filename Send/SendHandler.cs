@@ -110,6 +110,7 @@ namespace Bugtracker.Send
                             (problemDescriptor.ProblemCategory.TicketAbbreviation, false);
                     }
 
+                    //set Custom Bugtracker folder Name, uses Replace Keywords method from Variable Class
                     t.CustomBugtrackerFolderName = RunningConfiguration.GetInstance().Variables.ReplaceKeywords(t.CustomBugtrackerFolderName);
                 }
 

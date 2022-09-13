@@ -146,7 +146,7 @@ namespace Bugtracker.Configuration
         public PCInfo PcInfo { get; protected set; }
 
         /// <summary>
-        /// The Main Server Object containing the ServerStatus
+        /// The Main Server Object containing ServerStatus and other networking information
         /// </summary>
         public Server MainServer { get; set; }
 

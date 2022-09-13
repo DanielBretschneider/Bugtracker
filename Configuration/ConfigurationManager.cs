@@ -40,7 +40,7 @@ namespace Bugtracker.Configuration
 
             string serverAddress = "";
 
-            using (XmlReader reader = XmlReader.Create(customConfigPath))
+            using(XmlReader reader = XmlReader.Create(customConfigPath))
             {
                 while (reader.Read())
                 {
@@ -195,6 +195,7 @@ namespace Bugtracker.Configuration
                 customConfigPath = Globals_and_Information.Globals.GetFittingStartupConfigPath();
 
             VariableManager vm = rc.Variables;
+            TargetManager tm = rc.Targets;
 
             List<ProblemCategory> problemCategories = new();
 
@@ -212,6 +213,7 @@ namespace Bugtracker.Configuration
                             ProblemCategory categoryToAdd = new();
                             categoryToAdd.Name = vm.ReplaceKeywords(reader.GetAttribute("name"));
                             categoryToAdd.TicketAbbreviation = vm.ReplaceKeywords(reader.GetAttribute("ticket"));
+
                             currentProblemCategory = categoryToAdd;
                             problemCategories.Add(categoryToAdd);
                         }
@@ -261,14 +263,25 @@ namespace Bugtracker.Configuration
                                                 }
                                             }
                                         }
-
                                     }
-                                        
                                 }
 
                                 Logger.Log("Content of " + currentProblemCategory.Name + " : " + currentProblemCategory.SelectedApplications.ToString(), LoggingSeverity.Info);
                                 Logger.Log("Screenshot selection: " + currentProblemCategory.SelectScreenshot, LoggingSeverity.Info);
                                 Logger.Log("Alle apps selected " + currentProblemCategory.SelectScreenshot, LoggingSeverity.Info);
+                            }
+                        }
+
+                        if(reader.Name.Equals("target"))
+                        {
+                            string targetName = vm.ReplaceKeywords(reader.GetAttribute("name"));
+
+                            if(currentProblemCategory != null)
+                            {
+                                if (tm.GetTargetByName(targetName) != null)
+                                {
+                                    currentProblemCategory.Targets.Add(tm.GetTargetByName(targetName));
+                                }
                             }
                         }
                     }

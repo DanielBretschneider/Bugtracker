@@ -53,12 +53,10 @@ namespace Bugtracker.Utils
         /// <param name="serverPath"></param>
         public Server(string serverPath)
         {
-            pinger = new Ping();
+            //pinger = new Ping();
             this.ServerPath = serverPath;
 
-            SetTimer();
-
-            
+            //SetTimer();
 
         }
 
@@ -72,7 +70,7 @@ namespace Bugtracker.Utils
 
         private void OnTimedEvent(object sender, ElapsedEventArgs e)
         {
-            try
+            /*try
             {
                 PingReply reply = pinger.Send(ServerPath);
                 if(reply.Status == IPStatus.Success)
@@ -84,7 +82,9 @@ namespace Bugtracker.Utils
             }
 
             if(CheckedServerStatus != null)
-                CheckedServerStatus?.Invoke(null,null);
+                CheckedServerStatus?.Invoke(null,null);*/
+            ServerStatus = ServerStatus.Available;
+
         }
     }
 }

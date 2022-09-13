@@ -27,22 +27,6 @@ namespace Bugtracker.Variables
 
         private void SetCustomKeyValues()
         {
-            //Read KEYS created during program setup
-
-            //disabled due to insufficients rights
-            //VariableDictionary["configdest"] =
-            //    (Registry.GetValue(@"HKEY_CURRENT_USER\Software\ManageMed", "CONFIGDEST", null), false);
-            //VariableDictionary["serverdest"] =
-            //    (Registry.GetValue(@"HKEY_CURRENT_USER\Software\ManageMed", "SERVERDEST", null), false);
-            //VariableDictionary["targetdir"] =
-            //    (Registry.GetValue(@"HKEY_CURRENT_USER\Software\ManageMed", "TARGETDIR", null), false);
-            //VariableDictionary["firststartup"] =
-            //    (Registry.GetValue(@"HKEY_CURRENT_USER\Software\ManageMed", "FIRSTSTARTUP", null), false);
-
-            //hardcoded
-            VariableDictionary["configdest"]    = ("\\10.74.10.100\\bugTracker\\", false);
-            VariableDictionary["serverdest"]    = ("10.74.10.100", false);
-            VariableDictionary["targetdir"]     = ("C:\\Bugtracker", false);
         }
 
         private void LoadInAllEnvironmentVariables()

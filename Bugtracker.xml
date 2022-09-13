@@ -175,7 +175,7 @@
         </member>
         <member name="P:Bugtracker.Configuration.RunningConfiguration.MainServer">
             <summary>
-            The Main Server Object containing the ServerStatus
+            The Main Server Object containing ServerStatus and other networking information
             </summary>
         </member>
         <member name="P:Bugtracker.Configuration.RunningConfiguration.LoggerEnabled">
@@ -671,6 +671,11 @@
             </summary>
             <returns>The status of sending completion of all folders</returns>
         </member>
+        <member name="T:Bugtracker.Targeting.Target">
+            <summary>
+            Class representing the xml object definitaion of Target
+            </summary>
+        </member>
         <member name="P:Bugtracker.Targeting.Target.Default">
             <summary>
             
@@ -697,11 +702,6 @@
             </summary>
         </member>
         <member name="T:Bugtracker.Targeting.TargetManager">
-            <summary>
-            
-            </summary>
-        </member>
-        <member name="M:Bugtracker.Targeting.TargetManager.#ctor">
             <summary>
             
             </summary>

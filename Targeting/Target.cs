@@ -8,6 +8,10 @@ namespace Bugtracker.Targeting
         mail
     }
 
+
+    /// <summary>
+    /// Class representing the xml object definitaion of Target
+    /// </summary>
     public class Target
     {
         /// <summary>

@@ -58,13 +58,22 @@ namespace Bugtracker.Capture.Screen
             return filename;
         }
 
+        public void StartScreenRecording()
+        { 
+            //TODO: To be continued.
+        }
+
+        public void StopScreenRecording()
+        {
+            //TODO: To be continued.
+        }
+
         public void GenerateScreenshotInSequence()
         {
             CurrentNumberInSequence++;
             BugtrackConsole.Print("Screenshot Number" + CurrentNumberInSequence + "captured.");
             GenerateScreenshot(RunningConfiguration.GetInstance().BugtrackerFolderName, true);
         }
-
 
         public string GenerateScreenshotFromBitmap(string bugtrackFolderName, Bitmap bitmap)
         {
@@ -147,7 +156,6 @@ namespace Bugtracker.Capture.Screen
             }
 
             return screenShotFileName;
-
         }
 
     }

@@ -11,9 +11,6 @@ namespace Bugtracker.Targeting
     {
         public List<Target> Targets { get; set; }
 
-        /// <summary>
-        /// 
-        /// </summary>
         public TargetManager()
         {
             Targets = new List<Target>();
